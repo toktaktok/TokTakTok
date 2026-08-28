@@ -1,6 +1,7 @@
 /* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill + section links · footer: Ft4 · sections: hero(풀블리드 씬 + 마퀴 + 경력 팝업) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
  * hero enrichment: Tier-B 손제작 SVG 들판(XP Bliss 오마주) + Black Han Sans 대형 마퀴 — 외부 이미지 없음, 폰트는 Google Fonts.
+ * mascot: 입 없음 — 표정은 눈으로만(.pix--smile이 뜬 눈을 웃는 눈 호와 맞바꿈). 도킹 전환은 FLIP 비행(.pix--travel 걷는 모션).
  */
 
 /* ---------- base ---------- */
@@ -268,25 +269,35 @@ a:active { color: var(--color-accent); }
    반복이 눈에 띄지 않게 어긋나 있습니다. 눈 추적은 js/render.js.
 
    ▸ 표정/동작 모듈 — svg 루트(.pix)에 클래스를 얹어 조합합니다:
-     · 표정(mood):  (기본 무표정) · .pix--smile  입(스마일 곡선)이 나타남
+     · 표정(mood):  (기본 무표정) · .pix--smile  뜬 눈이 웃는 눈(호)으로 바뀜 — 입은 없음
      · 동작(anim):  (기본 아이들: 숨쉬기+팔 흔들림) · .pix--wave  오른팔 손 흔들기 루프
+                    · .pix--travel  자리를 옮기는 동안의 걷는 모션(FLIP 비행 중에만)
      새 표정/동작을 추가할 때도 같은 패턴으로 .pix--<이름> 클래스 하나 = 모듈 하나.
      JS에서는 render.js의 setPixState(svg, { mood, anim })로 켜고 끕니다. */
 
-.pix { display: block; width: 100%; height: auto; overflow: visible; }
+.pix {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  rotate: var(--pix-lean, 0deg);
+  transition: rotate var(--dur-short) var(--ease-out);
+}
 .pix__skin { fill: var(--color-accent); stroke: var(--color-char-line); }
 .pix__eye { fill: var(--color-char-eye); }
 .pix__shine { fill: var(--color-char-shine); }
 
-/* 입 — 기본은 숨김(무표정). mood 모듈이 켭니다 */
-.pix__mouth {
+/* 웃는 눈 — 기본은 숨김. .pix--smile이 뜬 눈과 통째로 맞바꿉니다(입은 그리지 않음).
+   호의 기하는 render.js의 PIX_CHAR 주석 참고: 끝점 y = 그 눈의 맨 아래, 잉크 폭 = 눈 폭. */
+.pix__eyes-smile { display: none; }
+.pix__eye-smile {
   fill: none;
   stroke: var(--color-char-eye);
   stroke-width: 4;
   stroke-linecap: round;
-  display: none;
 }
-.pix--smile .pix__mouth { display: block; }
+.pix--smile .pix__blink { display: none; }
+.pix--smile .pix__eyes-smile { display: block; }
 
 /* 손 흔들기 — 오른팔의 아이들 모션을 큰 스윙 루프로 교체 */
 .pix--wave .pix__arm--r {
@@ -296,6 +307,25 @@ a:active { color: var(--color-accent); }
 @keyframes pix-wave {
   0%, 100% { rotate: -4deg; }
   50%      { rotate: -30deg; }
+}
+
+/* 걷기 — 자리를 옮기는 동안(.helper의 FLIP 비행)만 켜집니다. 짧은 주기의 통통 튀는
+   호핑 + 좌우 팔이 정확히 반대 위상으로 흔들려 "이동 중"으로 읽히게 합니다 */
+.pix--travel .pix__torso { animation: pix-hop 320ms var(--ease-in-out) infinite; }
+.pix--travel .pix__arm--r { animation: pix-step-r 320ms var(--ease-in-out) infinite; }
+.pix--travel .pix__arm--l { animation: pix-step-l 320ms var(--ease-in-out) infinite; }
+@keyframes pix-hop {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  45%      { transform: translateY(-6px) scale(0.98, 1.03); }
+  72%      { transform: translateY(0) scale(1.04, 0.96); }
+}
+@keyframes pix-step-r {
+  0%, 100% { rotate: -18deg; }
+  50%      { rotate: 16deg; }
+}
+@keyframes pix-step-l {
+  0%, 100% { rotate: 16deg; }
+  50%      { rotate: -18deg; }
 }
 
 /* 몸통 — 숨쉬듯 위아래로 뜨면서 살짝 스쿼시/스트레치 */
@@ -351,16 +381,22 @@ a:active { color: var(--color-accent); }
 
 /* ---------- helper · 화면 우하단 도우미 + 말풍선 ---------- */
 
+/* .helper는 "어디에 있는가"(fixed 우하단 ↔ absolute 들판)만 담당하고,
+   안쪽 .helper__inner가 "그 사이를 어떻게 건너가는가"(FLIP transform)를 담당합니다.
+   위치 지정에는 translate만 쓰고 transform은 비워 둡니다 — 비행 애니메이션 전용. */
 .helper {
   position: fixed;
   right: clamp(0.75rem, 3vw, 2rem);
   bottom: clamp(0.75rem, 3vw, 1.75rem);
   z-index: var(--z-toast);
+  pointer-events: none;
+}
+
+.helper__inner {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: var(--space-sm);
-  pointer-events: none;
 }
 
 .helper__bubble {
@@ -426,32 +462,47 @@ a:active { color: var(--color-accent); }
 }
 .helper__char:active { transform: translateY(1px); }
 
-.helper { opacity: 0; transform: translateY(14px); }
-.helper.is-in {
-  opacity: 1;
-  transform: none;
-  transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out);
+/* 등장 — 처음 나타날 때만. 떠오르는 이동은 inner의 translate가 맡아서
+   transform(비행 전용)과 부딪히지 않습니다 */
+.helper { opacity: 0; }
+.helper__inner { translate: 0 14px; }
+.helper.is-in { opacity: 1; transition: opacity var(--dur-long) var(--ease-out); }
+.helper.is-in .helper__inner {
+  translate: none;
+  transition: translate var(--dur-long) var(--ease-out);
 }
 
 /* 들판 도킹 상태 — 히어로 씬의 .hero__dock 안으로 들어가, 언덕 위에 서 있는 것처럼 보임.
-   씬을 스크롤로 벗어나면 render.js가 다시 fixed 우하단(위 기본값)으로 되돌립니다 */
+   씬을 스크롤로 벗어나면 render.js가 캐릭터를 우하단(위 기본값)까지 걸어가게 합니다 */
 .helper--docked {
   position: absolute;
   left: 0;
   right: auto;
   bottom: 0;
-  transform: translateX(-50%);
-  align-items: center;
+  translate: -50% 0;
   /* 앵커(.hero__dock)가 폭 0이라, shrink-to-fit에 맡기면 말풍선이 세로로 짜부라짐 */
   width: max-content;
 }
-.helper--docked.is-in { transform: translateX(-50%); }
+.helper--docked .helper__inner { align-items: center; }
 .helper--docked .helper__char {
   width: clamp(6rem, 12vw, 9rem);
   filter: drop-shadow(var(--shadow-whisper));
 }
 .helper--docked .helper__bubble { max-width: min(56vw, 16rem); }
 .helper--docked .helper__bubble::after { right: 50%; margin-right: -6px; }
+
+/* 비행 중 — 말풍선은 접어 두고 캐릭터만 건너갑니다. 도착해서 다시 말을 겁니다.
+   (말풍선 폭·꼬리 위치가 두 상태에서 서로 달라, 켜 둔 채로 옮기면 글자가 늘어나 보임) */
+.helper.is-travelling .helper__bubble {
+  opacity: 0;
+  scale: 0.94;
+  transition: opacity var(--dur-micro) var(--ease-in), scale var(--dur-micro) var(--ease-in);
+}
+.helper__bubble {
+  transition: opacity var(--dur-short) var(--ease-out) var(--dur-micro),
+              scale var(--dur-short) var(--ease-out) var(--dur-micro);
+}
+.helper.is-travelling .helper__char { cursor: default; }
 
 @media (max-width: 40rem) {
   .helper__bubble { max-width: min(72vw, 15rem); }
@@ -924,7 +975,12 @@ a:active { color: var(--color-accent); }
   }
   .pix__blink, .pix__torso, .pix__arm,
   .pix--wave .pix__arm--r,
+  .pix--travel .pix__torso,
+  .pix--travel .pix__arm--r,
+  .pix--travel .pix__arm--l,
   .nav__cta::before { animation: none; }
+  /* 도킹 전환도 걷지 않고 바로 자리를 옮깁니다(render.js의 canFly가 FLIP 자체를 끔) */
+  .pix { rotate: 0deg; }
   /* 마퀴는 정지 상태로 — 트랙 앞부분(헤드라인 1회분)이 정적으로 보임 */
   .hero__marquee-track { animation: none; }
   .reveal { animation: reveal-reduced 150ms linear forwards; }

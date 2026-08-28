@@ -33,15 +33,25 @@
     '<path class="pix__shine" d="M63.3827 16.3898C63.7349 16.4317 64 16.7303 64 17.0849V27.1142C64 27.885 62.9363 28.0898 62.6501 27.3742L58.4378 16.8434C58.2405 16.3502 58.6429 15.8256 59.1704 15.8884L63.3827 16.3898Z"/>' +
     '<rect class="pix__eye" x="89" y="12.749" width="11" height="31" rx="4"/>' +
     '<path class="pix__shine" d="M97.3827 15.3898C97.7349 15.4317 98 15.7303 98 16.0849V26.1142C98 26.885 96.9363 27.0898 96.6501 26.3742L92.4378 15.8434C92.2405 15.3502 92.6429 14.8256 93.1704 14.8884L97.3827 15.3898Z"/>' +
+    "</g>" +
+    /* 웃는 눈 — 뜬 눈과 맞바꿔 쓰는 호(弧). 기하는 뜬 눈에서 그대로 따왔고,
+       기준은 둘 다 "실제로 칠해지는 잉크"입니다(round cap이 끝점 바깥으로
+       선 두께의 절반=2씩 번지므로, 끝점을 그만큼 안쪽으로 당겨 보정):
+       · 잉크 가로 폭 = 그 눈의 폭 11  → 끝점 x는 55+2 … 66-2 (왼쪽), 89+2 … 100-2 (오른쪽)
+       · 잉크 아래끝 = 그 눈의 맨 아래  → 끝점 y는 42.749-2 (왼쪽), 43.749-2 (오른쪽)
+       호는 반지름 3.5(= 끝점 사이 거리 7의 절반)인 정확한 반원. 2차 베지어로 그리면
+       같은 폭에서 꼭짓점이 반원보다 높이 솟아 캐럿(^)처럼 뾰족해집니다. */
+    '<g class="pix__eyes-smile">' +
+    '<path class="pix__eye-smile" d="M57 40.749A3.5 3.5 0 0 1 64 40.749"/>' +
+    '<path class="pix__eye-smile" d="M91 41.749A3.5 3.5 0 0 1 98 41.749"/>' +
     "</g></g>" +
-    '<path class="pix__mouth" d="M67 52 Q77.5 61 88 52"/>' +
     "</g>";
 
   /* 표정/동작 모듈 — css/site.css의 .pix--<이름> 클래스와 1:1 대응.
-     mood: "neutral"(기본) | "smile" · anim: "idle"(기본) | "wave".
+     mood: "neutral"(기본) | "smile" · anim: "idle"(기본) | "wave" | "travel".
      축을 생략(undefined)하면 그 축은 건드리지 않습니다. 새 모듈을 추가하면 아래 배열에도 등록. */
   var PIX_MOODS = ["smile"];
-  var PIX_ANIMS = ["wave"];
+  var PIX_ANIMS = ["wave", "travel"];
   function setPixState(svg, state) {
     if (!svg || !state) return;
     if (state.mood !== undefined) {
@@ -122,23 +132,23 @@
     return box;
   }
 
-  /* 썸네일/미디어 공통: src가 없거나 로드에 실패하면 자리 표시로 대체 */
+  /* 썸네일/미디어를 지정하지 않았을 때 쓰는 기본 이미지.
+     이 파일이 없으면 아래 mediaBox의 error 핸들러가 캐릭터 자리 표시로 되돌립니다. */
+  var DEFAULT_MEDIA = "assets/images/Aero.png";
+
+  /* 썸네일/미디어 공통: src가 없으면 기본 이미지, 그마저 로드에 실패하면 자리 표시로 대체 */
   function mediaBox(src, alt, eager) {
     var box = el("div", "card__media");
-    if (src) {
-      var img = document.createElement("img");
-      img.src = src;
-      img.alt = alt || "";
-      img.width = 1600;
-      img.height = 1000;
-      if (!eager) img.loading = "lazy";
-      img.addEventListener("error", function () {
-        box.replaceChildren(mediaPlaceholder("이미지를 찾을 수 없음 — 경로 확인"));
-      });
-      box.appendChild(img);
-    } else {
-      box.appendChild(mediaPlaceholder());
-    }
+    var img = document.createElement("img");
+    img.src = src || DEFAULT_MEDIA;
+    img.alt = alt || "";
+    img.width = 1600;
+    img.height = 1000;
+    if (!eager) img.loading = "lazy";
+    img.addEventListener("error", function () {
+      box.replaceChildren(mediaPlaceholder(src ? "이미지를 찾을 수 없음 — 경로 확인" : "이미지 추가"));
+    });
+    box.appendChild(img);
     return box;
   }
 
@@ -535,8 +545,13 @@
     charBtn.appendChild(charSvg);
     trackEyes(charSvg);
 
-    box.appendChild(bubble);
-    box.appendChild(charBtn);
+    /* .helper는 자리(fixed 우하단 ↔ absolute 들판)만 잡고, 안쪽 .helper__inner가
+       도킹 전환 애니메이션(FLIP)의 transform을 전담합니다 — 둘을 한 엘리먼트에
+       얹으면 위치 지정과 이동 애니메이션이 같은 속성을 두고 싸웁니다. */
+    var inner = el("div", "helper__inner");
+    inner.appendChild(bubble);
+    inner.appendChild(charBtn);
+    box.appendChild(inner);
     document.body.appendChild(box);
 
     var idx = 0;
@@ -556,27 +571,103 @@
 
     /* 들판 도킹 — 히어로 씬이 화면에 충분히 남아 있는 동안 캐릭터가 언덕 위에 서서
        웃으며 손을 흔들고(smile+wave 모듈), 씬을 지나치면 우하단 고정 도우미로
-       복귀해 평소 아이들 모션으로 돌아갑니다. */
+       복귀해 평소 아이들 모션으로 돌아갑니다.
+
+       두 자리를 오갈 때는 순간이동이 아니라 캐릭터가 실제로 그 자리까지 걸어가는
+       것처럼 보여야 합니다. 두 자리는 부모(씬 내부 absolute ↔ body 기준 fixed)도
+       크기도 달라서 CSS 트랜지션만으로는 이을 수 없어, FLIP으로 처리합니다:
+       옮기기 전 캐릭터의 화면 좌표를 재고(First) → DOM을 옮긴 뒤 새 좌표를 재서(Last)
+       그 차이만큼 거꾸로 밀어 둔 다음(Invert) → 0으로 풀며 애니메이션합니다(Play). */
     var dock = document.querySelector("[data-dock]");
     var scene = document.querySelector(".hero__scene");
     var docked = null;
+    var flightSettle = null;
+    var flightTimer = 0;
+    var canFly = !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+    function settleState(state) {
+      setPixState(charSvg, state
+        ? { mood: "smile", anim: "wave" }
+        : { mood: "neutral", anim: "idle" });
+    }
+
     function setDocked(state) {
       if (state === docked) return;
       var entering = docked !== null; // 첫 판정은 등장 애니메이션 없이 바로 배치
+      /* First — 아직 비행 중이라면 그 순간의 화면상 위치가 그대로 잡히므로,
+         전환이 겹쳐도 캐릭터는 튀지 않고 지금 있는 자리에서 이어서 갑니다. */
+      var first = entering && canFly ? charBtn.getBoundingClientRect() : null;
       docked = state;
-      box.classList.remove("is-in");
+
       if (state) {
         box.classList.add("helper--docked");
         dock.appendChild(box);
-        setPixState(charSvg, { mood: "smile", anim: "wave" });
       } else {
         box.classList.remove("helper--docked");
         document.body.appendChild(box);
-        setPixState(charSvg, { mood: "neutral", anim: "idle" });
       }
-      if (entering) {
-        requestAnimationFrame(function () { box.classList.add("is-in"); });
+
+      if (!first || !first.width) {
+        box.classList.remove("is-in");
+        settleState(state);
+        if (entering) requestAnimationFrame(function () { box.classList.add("is-in"); });
+        return;
       }
+      flyTo(first, state);
+    }
+
+    function flyTo(first, state) {
+      /* 이전 비행이 끝나기 전에 새 비행이 시작되면 앞의 마무리 예약을 먼저 걷어냅니다 */
+      if (flightSettle) inner.removeEventListener("transitionend", flightSettle);
+      flightSettle = null;
+      window.clearTimeout(flightTimer);
+
+      /* Last — 이전 비행의 잔여 transform을 지운 "정착했을 때"의 좌표를 재야 합니다 */
+      inner.style.transition = "none";
+      inner.style.transform = "none";
+      var last = charBtn.getBoundingClientRect();
+      var frame = inner.getBoundingClientRect();
+      if (!last.width) { settleState(state); return; }
+
+      var dx = first.left - last.left;
+      var dy = first.top - last.top;
+      var scale = first.width / last.width;
+
+      /* Invert — 기준점을 캐릭터의 좌상단에 두면 말풍선까지 함께 실린 채로도
+         캐릭터가 출발점에 정확히 겹칩니다(기준점이 박스 중앙이면 어긋남). */
+      inner.style.transformOrigin =
+        (last.left - frame.left) + "px " + (last.top - frame.top) + "px";
+      inner.style.transform =
+        "translate(" + dx + "px," + dy + "px) scale(" + scale + ")";
+
+      /* 진행 방향으로 살짝 기울고, 걷는 모션으로 갈아탑니다 */
+      charSvg.style.setProperty("--pix-lean", (dx > 0 ? -5 : 5) + "deg");
+      box.classList.add("is-travelling");
+      box.classList.add("is-in");
+      setPixState(charSvg, { mood: "smile", anim: "travel" });
+
+      void inner.offsetWidth; // 출발 위치를 확정시킨 뒤에 트랜지션을 켭니다
+
+      // Play
+      inner.style.transition = "transform var(--dur-travel) var(--ease-in-out)";
+      inner.style.transform = "none";
+
+      function settle(e) {
+        if (e && (e.target !== inner || e.propertyName !== "transform")) return;
+        inner.removeEventListener("transitionend", settle);
+        flightSettle = null;
+        window.clearTimeout(flightTimer);
+        inner.style.transition = "";
+        inner.style.transform = "";
+        inner.style.transformOrigin = "";
+        charSvg.style.removeProperty("--pix-lean");
+        box.classList.remove("is-travelling");
+        settleState(state);
+      }
+      flightSettle = settle;
+      inner.addEventListener("transitionend", settle);
+      /* transitionend가 안 오는 경우(이동 거리 0, 탭 백그라운드 등) 대비 안전망 */
+      flightTimer = window.setTimeout(settle, 1600);
     }
 
     /* 스크롤해서 섹션이 화면 위 40% 지점을 지나면 그 섹션 문구로 자동 전환.

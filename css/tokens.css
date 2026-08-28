@@ -6,6 +6,7 @@
  * studied: no · context: explicit — user compared 5 design-drafts variants across sessions and picked Aero · Hallmark v1.1.0
  * pre-emit critique: P4 H4 E4 S4 R4 V4 · contrast: pass (40–41, 히어로 카드/마퀴 합성 대비 픽셀 샘플링 확인) · slop: pass — heading mark는 유리 구슬(숫자 에이바우 아님), 마퀴에 hover-pause 있음(gate 18)
  * mobile: verified at 320 / 375 / 414 / 768 / 1280
+ * v5.2: 마스코트 입 제거(표정은 눈으로만) · 도킹 전환을 FLIP 비행으로 교체(--dur-travel) · 카드 기본 이미지 assets/images/Aero.png
  */
 
 :root {
@@ -125,6 +126,9 @@
   --dur-micro: 120ms;
   --dur-short: 220ms;
   --dur-long:  420ms;
+  /* 마스코트가 들판 ↔ 우하단을 걸어서 건너가는 시간. 화면을 가로지르는 긴 거리라
+     UI 트랜지션(--dur-long)보다 느려야 "이동"으로 읽힙니다 */
+  --dur-travel: 820ms;
 
   /* ---- z ---- */
   --z-base:     1;

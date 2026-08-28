@@ -3,6 +3,15 @@
     "date": "2026-08-28",
     "macrostructure": "Portfolio Grid + full-bleed onboarding scene",
     "theme": "custom",
+    "theme_axes": "light / neo-grotesque-sans + heavy-display outlier / cool",
+    "vibe": "XP Bliss 들판 위 대형 마퀴, 걸어서 자리를 옮기는 마스코트, Aero 유리",
+    "enrichment": "Tier-B 손제작 SVG 들판 + 사용자 제공 픽셀아트 기본 이미지(assets/images/Aero.png)",
+    "brief": "toktaktok · 마스코트 입 제거(표정을 눈으로만 — .pix--smile이 뜬 눈을 같은 폭·같은 아래끝의 반원 호로 교체) · 히어로↔본문 도킹 전환을 FLIP 비행으로 교체(걷는 모션 .pix--travel) · 썸네일 기본 이미지 지정"
+  },
+  {
+    "date": "2026-08-28",
+    "macrostructure": "Portfolio Grid + full-bleed onboarding scene",
+    "theme": "custom",
     "theme_axes": "light / neo-grotesque-sans + pixel-display outlier / cool",
     "vibe": "XP Bliss 들판 위 픽셀 마퀴, 손 흔드는 마스코트, Aero 유리",
     "enrichment": "Tier-B 손제작 SVG 들판 + Galmuri11 픽셀 마퀴 (외부 이미지·라이브러리 없음)",
