@@ -1,7 +1,8 @@
 /* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill + section links · footer: Ft4 · sections: hero(풀블리드 씬 + 마퀴 + 경력 팝업) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
  * hero enrichment: Tier-B 손제작 SVG 들판(XP Bliss 오마주) + Black Han Sans 대형 마퀴 — 외부 이미지 없음, 폰트는 Google Fonts.
- * mascot: 입 없음 — 표정은 눈으로만(.pix--smile이 뜬 눈을 웃는 눈 호와 맞바꿈). 도킹 전환은 FLIP 비행(.pix--travel 걷는 모션).
+ * mascot: 입 없음 — 표정은 눈으로만(.pix--smile이 뜬 눈을 웃는 눈 호와 맞바꿈).
+ *   도킹 전환은 rAF 비행(.pix--travel 걷는 모션) — 씬은 overflow: clip이라 비행은 body의 fixed 컨텍스트에서 하고 도착 때만 .hero__dock으로 옮김.
  */
 
 /* ---------- base ---------- */
@@ -217,12 +218,16 @@ a:active { color: var(--color-accent); }
 /* WCAG 2.2.2 — 자동으로 도는 콘텐츠는 정지 수단이 있어야 함. 마우스를 올리면 멈춤 */
 .hero__marquee:hover .hero__marquee-track { animation-play-state: paused; }
 
-/* 캐릭터가 서 있는 자리 — 앞동산 능선 위 고정 좌표 (씬 비율 기준) */
+/* 캐릭터가 서 있는 자리 — 앞동산 능선 위 고정 좌표 (씬 비율 기준).
+   씬에서 가장 위(카드 4·네비 5보다 위)에 둡니다: 비행 중에는 캐릭터가 body의
+   fixed 컨텍스트(z-toast)에 있다가 도착하는 순간 이 안으로 들어오는데, 여기가
+   더 아래면 그 순간 카드 뒤로 쑥 들어가 보입니다. 좁은 화면에서 캐릭터·말풍선이
+   카드와 겹칠 때도 반쯤 잘려 보이는 것보다 앞에 서는 편이 낫습니다. */
 .hero__dock {
   position: absolute;
   left: 72%;
   bottom: 9%;
-  z-index: 3;
+  z-index: 6;
 }
 
 /* 소개 카드 — 씬 안, 왼쪽 하단에 얹힌 유리 패널. 캐릭터는 오른쪽에 도킹돼 있어서

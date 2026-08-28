@@ -6,7 +6,8 @@
  * studied: no · context: explicit — user compared 5 design-drafts variants across sessions and picked Aero · Hallmark v1.1.0
  * pre-emit critique: P4 H4 E4 S4 R4 V4 · contrast: pass (40–41, 히어로 카드/마퀴 합성 대비 픽셀 샘플링 확인) · slop: pass — heading mark는 유리 구슬(숫자 에이바우 아님), 마퀴에 hover-pause 있음(gate 18)
  * mobile: verified at 320 / 375 / 414 / 768 / 1280
- * v5.2: 마스코트 입 제거(표정은 눈으로만) · 도킹 전환을 FLIP 비행으로 교체(--dur-travel) · 카드 기본 이미지 assets/images/Aero.png
+ * v5.2: 마스코트 입 제거(표정은 눈으로만) · 도킹 전환을 걸어서 이동하는 비행으로 교체(--dur-travel) · 카드 기본 이미지 assets/images/Aero.png
+ * v5.2.1: 비행 중 캐릭터가 씬 clip/카드에 가려지던 문제 — 비행을 fixed 컨텍스트로 옮기고 .hero__dock을 씬 최상단(z-index 6)으로
  */
 
 :root {

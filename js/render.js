@@ -574,15 +574,19 @@
        복귀해 평소 아이들 모션으로 돌아갑니다.
 
        두 자리를 오갈 때는 순간이동이 아니라 캐릭터가 실제로 그 자리까지 걸어가는
-       것처럼 보여야 합니다. 두 자리는 부모(씬 내부 absolute ↔ body 기준 fixed)도
-       크기도 달라서 CSS 트랜지션만으로는 이을 수 없어, FLIP으로 처리합니다:
-       옮기기 전 캐릭터의 화면 좌표를 재고(First) → DOM을 옮긴 뒤 새 좌표를 재서(Last)
-       그 차이만큼 거꾸로 밀어 둔 다음(Invert) → 0으로 풀며 애니메이션합니다(Play). */
+       것처럼 보여야 합니다. 다만 비행은 언제나 화면 기준 고정(body) 컨텍스트에서
+       하고, 씬 안(.hero__dock)으로는 도착하는 순간에만 옮깁니다. 먼저 옮겨 두면
+       두 군데서 캐릭터가 사라집니다 — .hero__scene은 overflow: clip이라 씬 박스
+       밖을 지나는 구간이 통째로 잘리고(도킹 시작점인 우하단은 대개 씬 아래),
+       .hero__dock은 z-index 3이라 소개 카드(4) 뒤로 지나갑니다.
+
+       착지점(.hero__dock)은 문서 흐름 안에 있어 비행 중 스크롤하면 화면상에서
+       움직입니다. 그래서 CSS 트랜지션 대신 rAF로 매 프레임 착지점을 다시 재서
+       따라갑니다 — 도착 순간에 튀지 않게. */
     var dock = document.querySelector("[data-dock]");
     var scene = document.querySelector(".hero__scene");
     var docked = null;
-    var flightSettle = null;
-    var flightTimer = 0;
+    var flight = null;
     var canFly = !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
     function settleState(state) {
@@ -591,23 +595,55 @@
         : { mood: "neutral", anim: "idle" });
     }
 
+    /* 비행 시간은 css의 --dur-travel 하나만 보고 갑니다 */
+    function travelMs() {
+      var v = getComputedStyle(document.documentElement).getPropertyValue("--dur-travel").trim();
+      var n = parseFloat(v);
+      if (!n) return 820;
+      return /ms$/.test(v) ? n : n * 1000;
+    }
+
+    function cancelFlight() {
+      if (!flight) return;
+      cancelAnimationFrame(flight.raf);
+      flight = null;
+      inner.style.transform = "";
+      inner.style.transformOrigin = "";
+      charSvg.style.removeProperty("--pix-lean");
+      box.classList.remove("is-travelling");
+    }
+
+    function placeAt(state) {
+      box.classList.toggle("helper--docked", !!state);
+      var want = state ? dock : document.body;
+      if (box.parentNode !== want) want.appendChild(box);
+    }
+
+    /* 도킹 자리에서 캐릭터가 놓일 위치를, 최종 부모/클래스로 잠깐 붙여 재고 되돌립니다
+       (같은 프레임 안에서 끝나므로 화면에는 안 보임). 반환값은 .hero__dock 앵커
+       기준 상대 오프셋 — 비행 중 앵커가 스크롤로 움직여도 따라갈 수 있게. */
+    function measureDockSlot() {
+      var parent = box.parentNode, next = box.nextSibling;
+      var wasDocked = box.classList.contains("helper--docked");
+      box.classList.add("helper--docked");
+      dock.appendChild(box);
+      var c = charBtn.getBoundingClientRect(), a = dock.getBoundingClientRect();
+      box.classList.toggle("helper--docked", wasDocked);
+      if (parent) parent.insertBefore(box, next);
+      return { dx: c.left - a.left, dy: c.top - a.top, w: c.width };
+    }
+
     function setDocked(state) {
       if (state === docked) return;
       var entering = docked !== null; // 첫 판정은 등장 애니메이션 없이 바로 배치
-      /* First — 아직 비행 중이라면 그 순간의 화면상 위치가 그대로 잡히므로,
+      /* 아직 비행 중이라면 그 순간의 화면상 위치가 그대로 잡히므로,
          전환이 겹쳐도 캐릭터는 튀지 않고 지금 있는 자리에서 이어서 갑니다. */
       var first = entering && canFly ? charBtn.getBoundingClientRect() : null;
       docked = state;
 
-      if (state) {
-        box.classList.add("helper--docked");
-        dock.appendChild(box);
-      } else {
-        box.classList.remove("helper--docked");
-        document.body.appendChild(box);
-      }
-
       if (!first || !first.width) {
+        cancelFlight();
+        placeAt(state);
         box.classList.remove("is-in");
         settleState(state);
         if (entering) requestAnimationFrame(function () { box.classList.add("is-in"); });
@@ -617,57 +653,59 @@
     }
 
     function flyTo(first, state) {
-      /* 이전 비행이 끝나기 전에 새 비행이 시작되면 앞의 마무리 예약을 먼저 걷어냅니다 */
-      if (flightSettle) inner.removeEventListener("transitionend", flightSettle);
-      flightSettle = null;
-      window.clearTimeout(flightTimer);
+      cancelFlight();
 
-      /* Last — 이전 비행의 잔여 transform을 지운 "정착했을 때"의 좌표를 재야 합니다 */
-      inner.style.transition = "none";
+      // 도킹이면 착지 오프셋을 먼저 재 둡니다(아직 옮기지는 않음)
+      var slot = state ? measureDockSlot() : null;
+      placeAt(false); // 비행은 잘리지 않고 항상 맨 위에 오는 fixed 컨텍스트에서
+
       inner.style.transform = "none";
-      var last = charBtn.getBoundingClientRect();
+      var base = charBtn.getBoundingClientRect();   // 비행 컨텍스트에서의 제자리
       var frame = inner.getBoundingClientRect();
-      if (!last.width) { settleState(state); return; }
+      if (!base.width) { placeAt(state); settleState(state); return; }
 
-      var dx = first.left - last.left;
-      var dy = first.top - last.top;
-      var scale = first.width / last.width;
-
-      /* Invert — 기준점을 캐릭터의 좌상단에 두면 말풍선까지 함께 실린 채로도
-         캐릭터가 출발점에 정확히 겹칩니다(기준점이 박스 중앙이면 어긋남). */
+      /* 기준점을 캐릭터의 좌상단에 두면 말풍선까지 함께 실린 채로도
+         캐릭터가 정확히 원하는 좌표에 놓입니다(기준점이 박스 중앙이면 어긋남). */
       inner.style.transformOrigin =
-        (last.left - frame.left) + "px " + (last.top - frame.top) + "px";
-      inner.style.transform =
-        "translate(" + dx + "px," + dy + "px) scale(" + scale + ")";
+        (base.left - frame.left) + "px " + (base.top - frame.top) + "px";
 
-      /* 진행 방향으로 살짝 기울고, 걷는 모션으로 갈아탑니다 */
-      charSvg.style.setProperty("--pix-lean", (dx > 0 ? -5 : 5) + "deg");
+      function target() {
+        if (!slot) return { left: base.left, top: base.top, w: base.width };
+        var a = dock.getBoundingClientRect();
+        return { left: a.left + slot.dx, top: a.top + slot.dy, w: slot.w };
+      }
+
+      charSvg.style.setProperty("--pix-lean", (target().left < first.left ? -5 : 5) + "deg");
       box.classList.add("is-travelling");
       box.classList.add("is-in");
       setPixState(charSvg, { mood: "smile", anim: "travel" });
 
-      void inner.offsetWidth; // 출발 위치를 확정시킨 뒤에 트랜지션을 켭니다
+      var token = {}, dur = travelMs(), t0 = 0;
 
-      // Play
-      inner.style.transition = "transform var(--dur-travel) var(--ease-in-out)";
-      inner.style.transform = "none";
+      function step(now) {
+        if (!flight || flight.token !== token) return;
+        if (!t0) t0 = now;
+        var p = Math.min(1, (now - t0) / dur);
+        /* --ease-in-out(cubic-bezier(.65, 0, .35, 1))과 같은 곡선 */
+        var e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+        var t = target();
+        var x = first.left + (t.left - first.left) * e - base.left;
+        var y = first.top + (t.top - first.top) * e - base.top;
+        var s = (first.width + (t.w - first.width) * e) / base.width;
+        inner.style.transform =
+          "translate(" + x.toFixed(2) + "px," + y.toFixed(2) + "px) scale(" + s.toFixed(4) + ")";
 
-      function settle(e) {
-        if (e && (e.target !== inner || e.propertyName !== "transform")) return;
-        inner.removeEventListener("transitionend", settle);
-        flightSettle = null;
-        window.clearTimeout(flightTimer);
-        inner.style.transition = "";
+        if (p < 1) { flight.raf = requestAnimationFrame(step); return; }
+        flight = null;
         inner.style.transform = "";
         inner.style.transformOrigin = "";
         charSvg.style.removeProperty("--pix-lean");
         box.classList.remove("is-travelling");
+        placeAt(state);
         settleState(state);
       }
-      flightSettle = settle;
-      inner.addEventListener("transitionend", settle);
-      /* transitionend가 안 오는 경우(이동 거리 0, 탭 백그라운드 등) 대비 안전망 */
-      flightTimer = window.setTimeout(settle, 1600);
+
+      flight = { token: token, raf: requestAnimationFrame(step) };
     }
 
     /* 스크롤해서 섹션이 화면 위 40% 지점을 지나면 그 섹션 문구로 자동 전환.
