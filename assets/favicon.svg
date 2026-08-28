@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 80">
+  <!-- 정적 파비콘 — 페이지 토큰과 같은 오렌지/블루 근사값 사용 -->
+  <rect x="24" y="0" width="8" height="16" fill="#e5551a"/>
+  <rect x="64" y="8" width="8" height="8" fill="#e5551a"/>
+  <rect x="24" y="16" width="48" height="8" fill="#e5551a"/>
+  <rect x="16" y="24" width="64" height="8" fill="#e5551a"/>
+  <rect x="8" y="32" width="80" height="24" fill="#e5551a"/>
+  <rect x="16" y="56" width="64" height="8" fill="#e5551a"/>
+  <rect x="24" y="36" width="16" height="16" fill="#f8f4f1"/>
+  <rect x="56" y="36" width="16" height="16" fill="#f8f4f1"/>
+  <rect x="32" y="40" width="8" height="8" fill="#2e5aa8"/>
+  <rect x="60" y="40" width="8" height="8" fill="#2e5aa8"/>
+  <rect x="40" y="58" width="16" height="4" fill="#3a2a22" opacity="0.55"/>
+  <rect x="24" y="64" width="8" height="8" fill="#e5551a"/>
+  <rect x="64" y="64" width="8" height="8" fill="#e5551a"/>
+  <rect x="16" y="72" width="16" height="8" fill="#e5551a"/>
+  <rect x="64" y="72" width="16" height="8" fill="#e5551a"/>
+</svg>

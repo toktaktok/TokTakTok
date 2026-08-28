@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>toktaktok — 게임 클라이언트 프로그래머</title>
+  <meta name="description" content="게임 클라이언트 프로그래머 포트폴리오 — 프로젝트, 경력, 기술 스택.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body data-page="index">
+
+  <header class="wrap">
+    <nav class="nav" aria-label="주 메뉴"></nav>
+    <section class="hero" aria-label="소개"></section>
+  </header>
+
+  <main class="wrap">
+
+    <section class="section career" id="career" aria-labelledby="career-title">
+      <header class="section__head">
+        <h2 class="section__title" id="career-title">경력</h2>
+      </header>
+      <div data-career></div>
+    </section>
+
+    <section class="section projects" id="projects" aria-labelledby="projects-title">
+      <header class="section__head">
+        <h2 class="section__title" id="projects-title">프로젝트</h2>
+        <p class="section__note">selected work — 최신순</p>
+      </header>
+      <div class="filter" data-filter role="group" aria-label="프로젝트 태그 필터"></div>
+      <div class="grid" data-projects></div>
+    </section>
+
+    <section class="section skills" id="skills" aria-labelledby="skills-title">
+      <header class="section__head">
+        <h2 class="section__title" id="skills-title">기술</h2>
+      </header>
+      <table class="spec">
+        <tbody data-skills></tbody>
+      </table>
+    </section>
+
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <header class="section__head">
+        <h2 class="section__title" id="contact-title">연락</h2>
+      </header>
+      <div data-contact></div>
+    </section>
+
+  </main>
+
+  <footer class="colophon">
+    <div class="wrap"></div>
+  </footer>
+
+  <noscript>
+    <div class="wrap" style="padding-block: var(--space-xl);">
+      <p>이 페이지는 data/ 폴더의 콘텐츠를 자바스크립트로 그립니다. 자바스크립트를 켜 주세요.</p>
+    </div>
+  </noscript>
+
+  <script src="data/profile.js"></script>
+  <script src="data/career.js"></script>
+  <script src="data/skills.js"></script>
+  <script src="data/projects.js"></script>
+  <script src="js/render.js"></script>
+</body>
+</html>
