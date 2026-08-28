@@ -137,27 +137,64 @@ a:active { color: var(--color-accent); }
   color: var(--color-muted);
 }
 
-/* ---------- mascot character (사용자 제공 SVG · stroke 두께는 마크업 속성) ---------- */
+/* ---------- mascot character (사용자 제공 SVG · stroke 두께는 마크업 속성) ----------
+   리그: 팔(좌/우) · 몸통 · 눈. 아이들 모션 3종은 서로 다른 주기를 써서
+   반복이 눈에 띄지 않게 어긋나 있습니다. 눈 추적은 js/render.js. */
 
-.pix { display: block; width: 100%; height: auto; }
+.pix { display: block; width: 100%; height: auto; overflow: visible; }
 .pix__skin { fill: var(--color-accent); stroke: var(--color-char-line); }
-.pix__white { fill: var(--color-char-line); stroke: var(--color-char-line); }
 .pix__eye { fill: var(--color-char-eye); }
 .pix__shine { fill: var(--color-char-shine); }
+
+/* 몸통 — 숨쉬듯 위아래로 뜨면서 살짝 스쿼시/스트레치 */
+.pix__torso {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: pix-breathe 4.2s var(--ease-in-out) infinite;
+}
+
+/* 팔 — 몸통 쪽 끝을 축으로 좌우가 어긋나게 흔들림 */
+.pix__arm { transform-box: fill-box; }
+.pix__arm--r {
+  transform-origin: left center;
+  animation: pix-arm-r 3.6s var(--ease-in-out) infinite;
+}
+.pix__arm--l {
+  transform-origin: right center;
+  animation: pix-arm-l 4.9s var(--ease-in-out) infinite;
+}
+
+/* 눈 — 깜빡임. 추적 중이면 부모(.pix__eyes)가 translate를 담당 */
 .pix__blink {
   transform-box: fill-box;
   transform-origin: center;
-  animation: pix-blink 6s var(--ease-in-out) infinite;
+  animation: pix-blink 6.4s var(--ease-in-out) infinite;
 }
+.pix__eyes { transition: transform var(--dur-micro) linear; }
+.pix__eyes.is-tracking { transition: none; }
+
 .pix--placeholder .pix__skin { fill: var(--color-rule); stroke: var(--color-paper); }
-.pix--placeholder .pix__white { fill: var(--color-paper); stroke: var(--color-paper); }
 .pix--placeholder .pix__eye { fill: var(--color-neutral); }
 .pix--placeholder .pix__shine { fill: var(--color-paper-2); }
+.pix--placeholder .pix__torso,
+.pix--placeholder .pix__arm,
 .pix--placeholder .pix__blink { animation: none; }
 
+@keyframes pix-breathe {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  50%      { transform: translateY(-2px) scale(0.99, 1.018); }
+}
+@keyframes pix-arm-r {
+  0%, 100% { rotate: 0deg; }
+  50%      { rotate: 5deg; }
+}
+@keyframes pix-arm-l {
+  0%, 100% { rotate: 0deg; }
+  50%      { rotate: -4.5deg; }
+}
 @keyframes pix-blink {
-  0%, 91%, 100% { transform: scaleY(1); }
-  93%, 95%      { transform: scaleY(0.08); }
+  0%, 92%, 100% { transform: scaleY(1); }
+  94.5%, 96%    { transform: scaleY(0.08); }
 }
 
 /* ---------- helper · 화면 우하단 도우미 + 말풍선 ---------- */
@@ -225,10 +262,13 @@ a:active { color: var(--color-accent); }
   background: none;
   border: none;
   padding: 0;
-  width: clamp(4.5rem, 8vw, 6.5rem);
+  width: clamp(5.5rem, 10vw, 8rem);
   cursor: pointer;
   filter: drop-shadow(var(--shadow-lift));
-  animation: helper-bob 5s var(--ease-in-out) infinite;
+  transition: scale var(--dur-short) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .helper__char:hover { scale: 1.04; }
 }
 .helper__char:active { transform: translateY(1px); }
 
@@ -237,11 +277,6 @@ a:active { color: var(--color-accent); }
   opacity: 1;
   transform: none;
   transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out);
-}
-
-@keyframes helper-bob {
-  0%, 100% { translate: 0 0; }
-  50%      { translate: 0 -4px; }
 }
 
 @media (max-width: 40rem) {
@@ -378,7 +413,7 @@ a:active { color: var(--color-accent); }
   justify-items: center;
   gap: var(--space-sm);
 }
-.card__placeholder .pix { width: 4.25rem; }
+.card__placeholder .pix { width: 5.5rem; }
 .card__placeholder-label {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
@@ -599,7 +634,7 @@ a:active { color: var(--color-accent); }
   justify-items: start;
   gap: var(--space-md);
 }
-.empty .pix { width: 5rem; }
+.empty .pix { width: 6.5rem; }
 
 /* ---------- entrance · one orchestrated reveal (hero only) ---------- */
 
@@ -642,7 +677,7 @@ a:active { color: var(--color-accent); }
     animation-iteration-count: 1 !important;
     transition-duration: 150ms !important;
   }
-  .pix__blink { animation: none; }
+  .pix__blink, .pix__torso, .pix__arm { animation: none; }
   .reveal { animation: reveal-reduced 150ms linear forwards; }
   @keyframes reveal-reduced { to { opacity: 1; transform: none; } }
 }

@@ -19,22 +19,29 @@
     return document.createDocumentFragment();
   }
 
-  /* 마스코트 캐릭터 — 사용자 제공 SVG(파란 블롭). stroke 두께는 원본 그대로 속성으로 유지 */
+  /* 마스코트 캐릭터 — 사용자 제공 SVG.
+     아이들 모션과 눈 추적을 위해 팔 / 몸통 / 눈을 그룹으로 나눠 리깅했습니다.
+     stroke 두께는 원본 값 그대로 속성으로 유지. */
   var PIX_CHAR =
-    '<rect class="pix__skin" stroke-width="2" x="117.375" y="45.8779" width="41" height="31" rx="15"/>' +
-    '<rect class="pix__skin" stroke-width="2" x="-3.33569" y="61.6856" width="41" height="31" rx="15" transform="rotate(-20.7384 -3.33569 61.6856)"/>' +
-    '<path class="pix__white" stroke-width="4" d="M38.8462 82.5753C48.6193 73.9424 61.5458 73.7795 67.8667 80.9353C74.1874 88.0911 72.4297 100.898 62.6567 109.531C52.8837 118.163 39.9578 118.327 33.6368 111.172C27.3159 104.016 29.0732 91.2082 38.8462 82.5753Z"/>' +
-    '<path class="pix__skin" stroke-width="2" d="M30.0615 5.75391C30.2032 2.88964 32.7198 0.730823 35.5723 1.02734L97.9941 7.51758C115.827 9.37169 129.375 24.4016 129.375 42.3301V54.3203C129.375 75.7169 110.346 92.1059 89.1855 88.9336L57.749 84.2207C39.9639 81.5543 27.0945 65.8429 27.9814 47.8809L30.0615 5.75391Z"/>' +
-    '<g class="pix__blink">' +
-    '<rect class="pix__eye" x="73.375" y="13.8779" width="11" height="29" rx="4"/>' +
-    '<rect class="pix__eye" x="107.375" y="19.8779" width="11" height="31" rx="4"/>' +
-    '<path class="pix__shine" d="M81.7577 16.5187C82.1099 16.5607 82.375 16.8592 82.375 17.2138V27.2431C82.375 28.0139 81.3113 28.2187 81.0251 27.5031L76.8128 16.9723C76.6155 16.4791 77.0179 15.9545 77.5454 16.0173L81.7577 16.5187Z"/>' +
-    '<path class="pix__shine" d="M115.758 22.5187C116.11 22.5607 116.375 22.8592 116.375 23.2138V33.2431C116.375 34.0139 115.311 34.2187 115.025 33.5031L110.813 22.9723C110.615 22.4791 111.018 21.9545 111.545 22.0173L115.758 22.5187Z"/>' +
+    '<g class="pix__arm pix__arm--r">' +
+    '<rect class="pix__skin" stroke-width="2" x="108" y="36.749" width="41" height="31" rx="15"/>' +
     "</g>" +
-    '<path class="pix__white" d="M98.3485 97.7729C97.2586 89.5607 103.032 82.0198 111.245 80.9298L139.497 77.1802C149.078 75.9086 157.876 82.6447 159.147 92.2257L159.345 93.7127C160.507 102.472 154.348 110.516 145.589 111.679L108.91 116.547C104.53 117.128 100.509 114.048 99.9273 109.669L98.3485 97.7729Z"/>';
+    '<g class="pix__arm pix__arm--l">' +
+    '<rect class="pix__skin" stroke-width="2" x="1.28931" y="46.5567" width="41" height="31" rx="15" transform="rotate(-20.7384 1.28931 46.5567)"/>' +
+    "</g>" +
+    '<g class="pix__torso">' +
+    '<path class="pix__skin" stroke-width="2" d="M44 1H90C109.33 1 125 16.67 125 36V43C125 62.33 109.33 78 90 78H62C42.67 78 27 62.33 27 43V18C27 8.61116 34.6112 1 44 1Z"/>' +
+    '<g class="pix__eyes">' +
+    '<g class="pix__blink">' +
+    '<rect class="pix__eye" x="55" y="13.749" width="11" height="29" rx="4"/>' +
+    '<path class="pix__shine" d="M63.3827 16.3898C63.7349 16.4317 64 16.7303 64 17.0849V27.1142C64 27.885 62.9363 28.0898 62.6501 27.3742L58.4378 16.8434C58.2405 16.3502 58.6429 15.8256 59.1704 15.8884L63.3827 16.3898Z"/>' +
+    '<rect class="pix__eye" x="89" y="12.749" width="11" height="31" rx="4"/>' +
+    '<path class="pix__shine" d="M97.3827 15.3898C97.7349 15.4317 98 15.7303 98 16.0849V26.1142C98 26.885 96.9363 27.0898 96.6501 26.3742L92.4378 15.8434C92.2405 15.3502 92.6429 14.8256 93.1704 14.8884L97.3827 15.3898Z"/>' +
+    "</g></g></g>";
 
+  /* viewBox 여백은 stroke + 팔 스윙 + 몸통 스트레치가 잘리지 않을 만큼만 */
   var PIX_SVG =
-    '<svg class="pix" viewBox="-6 -1 168 122" aria-hidden="true">' + PIX_CHAR + "</svg>";
+    '<svg class="pix" viewBox="-4 -5 158 89" aria-hidden="true">' + PIX_CHAR + "</svg>";
 
   function pixNode(kind) {
     var holder = el("div");
@@ -42,6 +49,57 @@
     var svg = holder.firstChild;
     if (kind === "placeholder") svg.classList.add("pix--placeholder");
     return svg;
+  }
+
+  /* 눈이 마우스 포인터를 따라갑니다. 포인터가 멈추면 서서히 정면으로 돌아옵니다.
+     터치 기기나 prefers-reduced-motion 환경에서는 붙이지 않습니다. */
+  function trackEyes(svg) {
+    var eyes = svg.querySelector(".pix__eyes");
+    if (!eyes || !window.matchMedia) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    var NEAR = 48;     // 이 거리(px) 안에서는 눈이 덜 떨리도록 감쇠
+    var MAX_X = 3.4;   // 사용자 좌표 기준 최대 이동량
+    var MAX_Y = 2.2;
+    /* 두 눈 중심(77.5, 28.25)의 viewBox 내 비율 */
+    var CX = (77.5 + 4) / 158;
+    var CY = (28.25 + 5) / 89;
+
+    var aimX = 0, aimY = 0, curX = 0, curY = 0, raf = 0;
+
+    function step() {
+      raf = 0;
+      curX += (aimX - curX) * 0.16;
+      curY += (aimY - curY) * 0.16;
+      eyes.style.transform = "translate(" + curX.toFixed(2) + "px," + curY.toFixed(2) + "px)";
+      if (Math.abs(aimX - curX) > 0.01 || Math.abs(aimY - curY) > 0.01) raf = requestAnimationFrame(step);
+    }
+
+    function nudge() {
+      if (!raf) raf = requestAnimationFrame(step);
+    }
+
+    window.addEventListener("pointermove", function (e) {
+      var r = svg.getBoundingClientRect();
+      if (!r.width) return;
+      var dx = e.clientX - (r.left + r.width * CX);
+      var dy = e.clientY - (r.top + r.height * CY);
+      var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      /* 방향은 언제나 포인터 쪽. 코앞에서만 살짝 줄여 떨림을 막습니다. */
+      var pull = Math.min(1, dist / NEAR);
+      aimX = (dx / dist) * pull * MAX_X;
+      aimY = (dy / dist) * pull * MAX_Y;
+      nudge();
+    }, { passive: true });
+
+    /* 창을 벗어나면 정면으로 */
+    document.addEventListener("pointerleave", function () {
+      aimX = aimY = 0;
+      nudge();
+    });
+
+    eyes.classList.add("is-tracking");
   }
 
   function mediaPlaceholder(label) {
@@ -405,7 +463,9 @@
     var charBtn = el("button", "helper__char");
     charBtn.type = "button";
     charBtn.setAttribute("aria-label", "도우미 — 누르면 다음 안내가 나옵니다");
-    charBtn.appendChild(pixNode("assistant"));
+    var charSvg = pixNode("assistant");
+    charBtn.appendChild(charSvg);
+    trackEyes(charSvg);
 
     box.appendChild(bubble);
     box.appendChild(charBtn);
