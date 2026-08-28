@@ -6,6 +6,7 @@
   <title>toktaktok — 게임 클라이언트 프로그래머</title>
   <meta name="description" content="게임 클라이언트 프로그래머 포트폴리오 — 프로젝트, 경력, 기술 스택.">
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Galmuri11-Bold.woff2" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@latest/dist/web/variable/pretendardvariable-dynamic-subset.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,8 +19,36 @@
 
   <header class="wrap">
     <nav class="nav" aria-label="주 메뉴"></nav>
-    <section class="hero" aria-label="소개"></section>
   </header>
+
+  <!-- 히어로 — 풀블리드 온보딩 씬. 텍스트는 전부 js/render.js가 data/profile.js에서 채웁니다.
+       들판/하늘은 외부 이미지 대신 손으로 그린 SVG+CSS (모바일/데스크톱 대응, 저작권 문제 없음) -->
+  <section class="hero" aria-label="소개">
+    <h1 class="sr-only" data-hero-title></h1>
+    <div class="hero__scene">
+      <div class="hero__marquee" aria-hidden="true" data-marquee></div>
+      <svg class="hero__hills" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="hill-back" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" style="stop-color: var(--scene-hill-back-hi)"/>
+            <stop offset="1" style="stop-color: var(--scene-hill-back-lo)"/>
+          </linearGradient>
+          <linearGradient id="hill-front" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" style="stop-color: var(--scene-hill-hi)"/>
+            <stop offset="0.55" style="stop-color: var(--scene-hill-mid)"/>
+            <stop offset="1" style="stop-color: var(--scene-hill-lo)"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#hill-back)" d="M0 190 C 240 110 520 96 780 132 C 1020 165 1240 150 1440 100 L 1440 420 L 0 420 Z"/>
+        <path fill="url(#hill-front)" d="M0 260 C 260 160 620 150 900 205 C 1140 252 1320 246 1440 215 L 1440 420 L 0 420 Z"/>
+        <path style="fill: var(--scene-hill-gloss)" d="M0 260 C 260 160 620 150 900 205 C 1140 252 1320 246 1440 215 L 1440 245 C 1320 274 1140 280 900 234 C 620 180 260 192 0 288 Z"/>
+      </svg>
+      <div class="hero__dock" data-dock></div>
+    </div>
+    <div class="wrap">
+      <div class="hero__card glass-panel" data-hero-card></div>
+    </div>
+  </section>
 
   <main class="wrap">
 

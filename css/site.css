@@ -1,6 +1,15 @@
-/* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill (was N9) · footer: Ft4 · sections: hero(타이포) → career → projects(filter) → skills(F3) → contact(C3) → colophon · helper: 우하단 도우미+말풍선
+/* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill + section links · footer: Ft4 · sections: hero(풀블리드 씬 + 마퀴 + 경력 팝업) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
+ * hero enrichment: Tier-B 손제작 SVG 들판(XP Bliss 오마주) + Galmuri11 픽셀 마퀴 — 외부 이미지/라이브러리 없음.
  */
+
+/* 갈무리11 Bold — 한글 픽셀 폰트 (OFL 1.1, assets/fonts/GALMURI-LICENSE.txt). 히어로 마퀴 전용 */
+@font-face {
+  font-family: "Galmuri11 Bold";
+  src: url("../assets/fonts/Galmuri11-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
 
 /* ---------- base ---------- */
 
@@ -55,6 +64,16 @@ a:active { color: var(--color-accent); }
 
 .mono { font-family: var(--font-mono); }
 
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- nav · N5 floating glass pill ---------- */
 
 .nav {
@@ -96,6 +115,29 @@ a:active { color: var(--color-accent); }
 }
 .nav__mark:hover { text-decoration: none; color: var(--color-ink); }
 
+/* 가운데 섹션 링크 — 좁은 화면에서는 가로 스크롤(스크롤바 숨김)로 전부 접근 가능 */
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.nav__links::-webkit-scrollbar { display: none; }
+.nav__links a {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.nav__links a:hover { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; }
+
 .nav__cta {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
@@ -123,32 +165,83 @@ a:active { color: var(--color-accent); }
   50%      { box-shadow: 0 0 0 6px var(--status-ring-soft); }
 }
 
-/* ---------- hero · typography-led, left-biased ---------- */
+/* ---------- hero · 풀블리드 온보딩 씬 — 하늘+들판(손제작 SVG), 픽셀 마퀴, 도킹된 캐릭터 ---------- */
 
-.hero {
-  padding-block: var(--space-2xl) var(--space-3xl);
+.hero { margin-top: var(--space-lg); }
+
+.hero__scene {
+  position: relative;
+  height: clamp(24rem, 66vh, 40rem);
+  overflow: clip;
+  /* 하늘 + 구름 두 덩이 — 전부 CSS, 외부 이미지 없음 */
+  background-image:
+    radial-gradient(26rem 8rem at 76% 22%, var(--scene-cloud), transparent 68%),
+    radial-gradient(20rem 6.5rem at 16% 32%, var(--scene-cloud), transparent 68%),
+    linear-gradient(180deg, var(--scene-sky-hi), var(--scene-sky-mid) 52%, var(--scene-sky-lo) 100%);
+}
+
+.hero__hills {
+  position: absolute;
+  inset: auto 0 0 0;
+  width: 100%;
+  height: 56%;
+  display: block;
+  z-index: 2;
+}
+
+/* 마퀴 — 화면 가로를 다 차지하는 롤링 타이포. 실제 h1은 sr-only, 이건 장식(aria-hidden) */
+.hero__marquee {
+  position: absolute;
+  top: clamp(2.5rem, 9vh, 5.5rem);
+  left: 0;
+  right: 0;
+  overflow: clip;
+  z-index: 1;
+  user-select: none;
+}
+.hero__marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  font-family: var(--font-hero);
+  font-weight: 700;
+  font-size: clamp(3rem, 9.5vw, 7rem);
+  line-height: 1.05;
+  color: var(--color-ink);
+  animation: hero-marquee 36s linear infinite;
+}
+.hero__marquee-track > span { padding-right: 0.55em; }
+@keyframes hero-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* 캐릭터가 서 있는 자리 — 앞동산 능선 위 고정 좌표 (씬 비율 기준) */
+.hero__dock {
+  position: absolute;
+  left: 68%;
+  bottom: 7%;
+  z-index: 3;
+}
+
+/* 소개 카드 — 씬 아래에서 들판을 살짝 덮는 유리 패널 */
+.hero__card {
+  position: relative;
+  z-index: 4;
+  max-width: 38rem;
+  margin-top: calc(-1 * var(--space-2xl));
+  backdrop-filter: blur(10px) saturate(1.3);
+  -webkit-backdrop-filter: blur(10px) saturate(1.3);
 }
 
 .hero__kicker {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--color-muted);
-  margin-bottom: var(--space-md);
-}
-
-.hero__title {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--text-display);
-  line-height: 1.12;
-  letter-spacing: -0.02em;
-  overflow-wrap: anywhere;
-  min-width: 0;
+  margin-bottom: var(--space-sm);
 }
 
 .hero__intro {
   max-width: 46ch;
-  margin-top: var(--space-lg);
   color: var(--color-ink-2);
 }
 
@@ -156,20 +249,117 @@ a:active { color: var(--color-accent); }
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2xs) var(--space-md);
-  margin-top: var(--space-xl);
+  margin-top: var(--space-md);
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--color-muted);
 }
 
+/* 경력 팝업을 여는 유리 알약 버튼 */
+.hero__career-btn {
+  appearance: none;
+  cursor: pointer;
+  margin-top: var(--space-lg);
+  padding: var(--space-2xs) var(--space-lg);
+  min-height: 44px;
+  border-radius: var(--radius-pill);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 1px 0 var(--glass-highlight) inset;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  transition: box-shadow var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+}
+.hero__career-btn:hover {
+  color: var(--color-ink);
+  box-shadow: 0 1px 0 var(--glass-highlight-hi) inset, 0 3px 8px var(--glass-shadow-hi);
+}
+.hero__career-btn:active { transform: translateY(1px); }
+
+/* ---------- dialog · 경력 팝업 (네이티브 <dialog>, 유리 패널) ---------- */
+
+.dialog {
+  width: min(42rem, calc(100vw - 2rem));
+  max-height: min(80vh, 44rem);
+  padding: var(--space-xl);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-panel);
+  background:
+    linear-gradient(180deg, var(--glass-hi), var(--glass-lo)),
+    linear-gradient(var(--color-paper-2), var(--color-paper-2));
+  box-shadow: 0 1px 0 var(--glass-highlight) inset, var(--shadow-lift);
+  color: var(--color-ink);
+}
+.dialog::backdrop {
+  background: var(--color-selection);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+.dialog__head h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  letter-spacing: -0.02em;
+}
+.dialog__close {
+  appearance: none;
+  cursor: pointer;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 1px 0 var(--glass-highlight) inset;
+  width: 2.25rem;
+  height: 2.25rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  color: var(--color-ink-2);
+  line-height: 1;
+}
+.dialog__close:hover { color: var(--color-ink); box-shadow: 0 1px 0 var(--glass-highlight-hi) inset, 0 3px 8px var(--glass-shadow-hi); }
+body.dialog-open { overflow: hidden; }
+
 /* ---------- mascot character (사용자 제공 SVG · stroke 두께는 마크업 속성) ----------
-   리그: 팔(좌/우) · 몸통 · 눈. 아이들 모션 3종은 서로 다른 주기를 써서
-   반복이 눈에 띄지 않게 어긋나 있습니다. 눈 추적은 js/render.js. */
+   리그: 팔(좌/우) · 몸통 · 눈 · 입. 아이들 모션 3종은 서로 다른 주기를 써서
+   반복이 눈에 띄지 않게 어긋나 있습니다. 눈 추적은 js/render.js.
+
+   ▸ 표정/동작 모듈 — svg 루트(.pix)에 클래스를 얹어 조합합니다:
+     · 표정(mood):  (기본 무표정) · .pix--smile  입(스마일 곡선)이 나타남
+     · 동작(anim):  (기본 아이들: 숨쉬기+팔 흔들림) · .pix--wave  오른팔 손 흔들기 루프
+     새 표정/동작을 추가할 때도 같은 패턴으로 .pix--<이름> 클래스 하나 = 모듈 하나.
+     JS에서는 render.js의 setPixState(svg, { mood, anim })로 켜고 끕니다. */
 
 .pix { display: block; width: 100%; height: auto; overflow: visible; }
 .pix__skin { fill: var(--color-accent); stroke: var(--color-char-line); }
 .pix__eye { fill: var(--color-char-eye); }
 .pix__shine { fill: var(--color-char-shine); }
+
+/* 입 — 기본은 숨김(무표정). mood 모듈이 켭니다 */
+.pix__mouth {
+  fill: none;
+  stroke: var(--color-char-eye);
+  stroke-width: 4;
+  stroke-linecap: round;
+  display: none;
+}
+.pix--smile .pix__mouth { display: block; }
+
+/* 손 흔들기 — 오른팔의 아이들 모션을 큰 스윙 루프로 교체 */
+.pix--wave .pix__arm--r {
+  transform-origin: left center;
+  animation: pix-wave 1.1s var(--ease-in-out) infinite;
+}
+@keyframes pix-wave {
+  0%, 100% { rotate: -4deg; }
+  50%      { rotate: -30deg; }
+}
 
 /* 몸통 — 숨쉬듯 위아래로 뜨면서 살짝 스쿼시/스트레치 */
 .pix__torso {
@@ -305,6 +495,26 @@ a:active { color: var(--color-accent); }
   transform: none;
   transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out);
 }
+
+/* 들판 도킹 상태 — 히어로 씬의 .hero__dock 안으로 들어가, 언덕 위에 서 있는 것처럼 보임.
+   씬을 스크롤로 벗어나면 render.js가 다시 fixed 우하단(위 기본값)으로 되돌립니다 */
+.helper--docked {
+  position: absolute;
+  left: 0;
+  right: auto;
+  bottom: 0;
+  transform: translateX(-50%);
+  align-items: center;
+  /* 앵커(.hero__dock)가 폭 0이라, shrink-to-fit에 맡기면 말풍선이 세로로 짜부라짐 */
+  width: max-content;
+}
+.helper--docked.is-in { transform: translateX(-50%); }
+.helper--docked .helper__char {
+  width: clamp(6rem, 12vw, 9rem);
+  filter: drop-shadow(var(--shadow-whisper));
+}
+.helper--docked .helper__bubble { max-width: min(56vw, 16rem); }
+.helper--docked .helper__bubble::after { right: 50%; margin-right: -6px; }
 
 @media (max-width: 40rem) {
   .helper__bubble { max-width: min(72vw, 15rem); }
@@ -736,13 +946,20 @@ a:active { color: var(--color-accent); }
 /* ---------- responsive ---------- */
 
 @media (max-width: 60rem) {
-  .hero { padding-block: var(--space-xl) var(--space-2xl); }
   .grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
   .detail__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero__scene { height: clamp(20rem, 56vh, 30rem); }
+  .hero__dock { left: 64%; }
 }
 
 @media (max-width: 40rem) {
   .contact__mail { font-size: clamp(1.3rem, 6.2vw, 2.2rem); }
+  .hero__scene { height: clamp(17rem, 52vh, 24rem); }
+  .hero__marquee { top: var(--space-xl); }
+  .hero__dock { left: 60%; bottom: 6%; }
+  /* 모바일에서는 카드가 씬을 덮지 않게 — 들판 위 캐릭터가 카드에 가려지지 않도록 */
+  .hero__card { margin-top: var(--space-md); padding: var(--space-md); }
+  .dialog { padding: var(--space-lg); }
   .career__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); padding-block: var(--space-md); }
   .career__period { padding-top: 0; }
   .edu__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-3xs); }
@@ -766,7 +983,11 @@ a:active { color: var(--color-accent); }
     animation-iteration-count: 1 !important;
     transition-duration: 150ms !important;
   }
-  .pix__blink, .pix__torso, .pix__arm { animation: none; }
+  .pix__blink, .pix__torso, .pix__arm,
+  .pix--wave .pix__arm--r,
+  .nav__cta::before { animation: none; }
+  /* 마퀴는 정지 상태로 — 트랙 앞부분(헤드라인 1회분)이 정적으로 보임 */
+  .hero__marquee-track { animation: none; }
   .reveal { animation: reveal-reduced 150ms linear forwards; }
   @keyframes reveal-reduced { to { opacity: 1; transform: none; } }
 }

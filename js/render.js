@@ -37,7 +37,24 @@
     '<path class="pix__shine" d="M63.3827 16.3898C63.7349 16.4317 64 16.7303 64 17.0849V27.1142C64 27.885 62.9363 28.0898 62.6501 27.3742L58.4378 16.8434C58.2405 16.3502 58.6429 15.8256 59.1704 15.8884L63.3827 16.3898Z"/>' +
     '<rect class="pix__eye" x="89" y="12.749" width="11" height="31" rx="4"/>' +
     '<path class="pix__shine" d="M97.3827 15.3898C97.7349 15.4317 98 15.7303 98 16.0849V26.1142C98 26.885 96.9363 27.0898 96.6501 26.3742L92.4378 15.8434C92.2405 15.3502 92.6429 14.8256 93.1704 14.8884L97.3827 15.3898Z"/>' +
-    "</g></g></g>";
+    "</g></g>" +
+    '<path class="pix__mouth" d="M67 52 Q77.5 61 88 52"/>' +
+    "</g>";
+
+  /* 표정/동작 모듈 — css/site.css의 .pix--<이름> 클래스와 1:1 대응.
+     mood: "neutral"(기본) | "smile" · anim: "idle"(기본) | "wave".
+     축을 생략(undefined)하면 그 축은 건드리지 않습니다. 새 모듈을 추가하면 아래 배열에도 등록. */
+  var PIX_MOODS = ["smile"];
+  var PIX_ANIMS = ["wave"];
+  function setPixState(svg, state) {
+    if (!svg || !state) return;
+    if (state.mood !== undefined) {
+      PIX_MOODS.forEach(function (m) { svg.classList.toggle("pix--" + m, state.mood === m); });
+    }
+    if (state.anim !== undefined) {
+      PIX_ANIMS.forEach(function (a) { svg.classList.toggle("pix--" + a, state.anim === a); });
+    }
+  }
 
   /* viewBox 여백은 stroke + 팔 스윙 + 몸통 스트레치가 잘리지 않을 만큼만 */
   var PIX_SVG =
@@ -139,6 +156,23 @@
     mark.href = "index.html";
     nav.appendChild(mark);
 
+    /* 가운데 섹션 링크 — 상세 페이지에서는 index.html#… 로 돌아가게.
+       학력·활동은 data/education.js가 비어 있으면 섹션과 함께 링크도 생기지 않음 */
+    var prefix = backLink ? "index.html" : "";
+    var linkBox = el("div", "nav__links");
+    var items = [
+      ["경력", "#career"],
+      ["프로젝트", "#projects"],
+      ["기술", "#skills"],
+    ];
+    if ((P.education || []).length) items.push(["학력·활동", "#education"]);
+    items.forEach(function (it) {
+      var a = el("a", null, it[0]);
+      a.href = prefix + it[1];
+      linkBox.appendChild(a);
+    });
+    nav.appendChild(linkBox);
+
     var cta;
     if (profile.resumeUrl) {
       cta = el("a", "nav__cta", "이력서 →");
@@ -169,37 +203,54 @@
   /* ---------- index ---------- */
 
   function renderHero() {
-    var hero = document.querySelector(".hero");
-    if (!hero) return;
+    var srTitle = document.querySelector("[data-hero-title]");
+    var marquee = document.querySelector("[data-marquee]");
+    var card = document.querySelector("[data-hero-card]");
+    if (!srTitle && !marquee && !card) return;
 
-    var left = el("div");
-    var i = 0;
+    var headline = profile.headline || "";
+    if (srTitle) srTitle.textContent = headline;
 
-    function reveal(node) {
-      node.classList.add("reveal");
-      node.style.setProperty("--i", String(i++));
-      return node;
+    /* 마퀴 — 같은 문구를 8번(= 동일한 절반 2개) 이어붙이고 translateX(-50%) 루프.
+       절반이 서로 동일해야 이음새 없이 무한히 도는 것처럼 보입니다. */
+    if (marquee && headline) {
+      var track = el("div", "hero__marquee-track");
+      for (var r = 0; r < 8; r++) track.appendChild(el("span", null, headline + " /"));
+      marquee.appendChild(track);
     }
 
-    left.appendChild(reveal(el("p", "hero__kicker",
-      (profile.name ? profile.name + " · " : "") + (profile.role || ""))));
+    if (card) {
+      var i = 0;
+      function reveal(node) {
+        node.classList.add("reveal");
+        node.style.setProperty("--i", String(i++));
+        return node;
+      }
 
-    left.appendChild(reveal(el("h1", "hero__title", profile.headline || "")));
+      card.appendChild(reveal(el("p", "hero__kicker",
+        (profile.name ? profile.name + " · " : "") + (profile.role || ""))));
 
-    if (profile.intro) left.appendChild(reveal(el("p", "hero__intro", profile.intro)));
+      if (profile.intro) card.appendChild(reveal(el("p", "hero__intro", profile.intro)));
 
-    if (profile.meta && profile.meta.length) {
-      var meta = el("p", "hero__meta");
-      profile.meta.forEach(function (m) { meta.appendChild(el("span", null, m)); });
-      left.appendChild(reveal(meta));
+      if (profile.meta && profile.meta.length) {
+        var meta = el("p", "hero__meta");
+        profile.meta.forEach(function (m) { meta.appendChild(el("span", null, m)); });
+        card.appendChild(reveal(meta));
+      }
+
+      /* 경력 팝업 버튼 — 경력 데이터가 있을 때만 */
+      if ((P.career || []).length) {
+        var btn = el("button", "hero__career-btn", "경력 한눈에 보기 →");
+        btn.type = "button";
+        btn.addEventListener("click", openCareerDialog);
+        card.appendChild(reveal(btn));
+      }
     }
-
-    hero.appendChild(left);
   }
 
-  function renderCareer() {
-    var list = document.querySelector("[data-career]");
-    if (!list) return;
+  /* 경력 행 — 본문 섹션과 히어로 팝업이 같은 빌더를 공유합니다 */
+  function careerRows() {
+    var out = frag();
     (P.career || []).forEach(function (c) {
       var row = el("div", "career__row");
       row.appendChild(el("p", "career__period", c.period || ""));
@@ -210,8 +261,51 @@
       body.appendChild(head);
       if (c.note) body.appendChild(el("p", "career__note", c.note));
       row.appendChild(body);
-      list.appendChild(row);
+      out.appendChild(row);
     });
+    return out;
+  }
+
+  function renderCareer() {
+    var list = document.querySelector("[data-career]");
+    if (!list) return;
+    list.appendChild(careerRows());
+  }
+
+  /* 경력 팝업 — 네이티브 <dialog> (ESC·포커스 처리는 브라우저가 담당) */
+  var careerDialog = null;
+  function openCareerDialog() {
+    if (!careerDialog) {
+      careerDialog = document.createElement("dialog");
+      careerDialog.className = "dialog";
+
+      var head = el("div", "dialog__head");
+      head.appendChild(el("h2", null, "경력"));
+      var close = el("button", "dialog__close", "×");
+      close.type = "button";
+      close.setAttribute("aria-label", "경력 팝업 닫기");
+      head.appendChild(close);
+      careerDialog.appendChild(head);
+
+      var body = el("div", "dialog__body");
+      body.appendChild(careerRows());
+      careerDialog.appendChild(body);
+      document.body.appendChild(careerDialog);
+
+      close.addEventListener("click", function () { careerDialog.close(); });
+      /* 패널 밖(백드롭) 클릭으로 닫기 — 패널 안 클릭은 좌표로 구분 */
+      careerDialog.addEventListener("click", function (e) {
+        var rect = careerDialog.getBoundingClientRect();
+        if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
+          careerDialog.close();
+        }
+      });
+      careerDialog.addEventListener("close", function () {
+        document.body.classList.remove("dialog-open");
+      });
+    }
+    document.body.classList.add("dialog-open");
+    careerDialog.showModal();
   }
 
   /* data/education.js가 비어 있으면 "학력·활동" 섹션 자체를 페이지에서 뗍니다
@@ -515,37 +609,68 @@
       }
     });
 
+    /* 들판 도킹 — 히어로 씬이 화면에 충분히 남아 있는 동안 캐릭터가 언덕 위에 서서
+       웃으며 손을 흔들고(smile+wave 모듈), 씬을 지나치면 우하단 고정 도우미로
+       복귀해 평소 아이들 모션으로 돌아갑니다. */
+    var dock = document.querySelector("[data-dock]");
+    var scene = document.querySelector(".hero__scene");
+    var docked = null;
+    function setDocked(state) {
+      if (state === docked) return;
+      var entering = docked !== null; // 첫 판정은 등장 애니메이션 없이 바로 배치
+      docked = state;
+      box.classList.remove("is-in");
+      if (state) {
+        box.classList.add("helper--docked");
+        dock.appendChild(box);
+        setPixState(charSvg, { mood: "smile", anim: "wave" });
+      } else {
+        box.classList.remove("helper--docked");
+        document.body.appendChild(box);
+        setPixState(charSvg, { mood: "neutral", anim: "idle" });
+      }
+      if (entering) {
+        requestAnimationFrame(function () { box.classList.add("is-in"); });
+      }
+    }
+
     /* 스크롤해서 섹션이 화면 위 40% 지점을 지나면 그 섹션 문구로 자동 전환.
        사용자가 캐릭터를 눌러 직접 고른 뒤(pinned)에는 건드리지 않습니다.
        IntersectionObserver의 얇은 트리거 밴드는 순간이동성 스크롤(예: 테스트의
        scrollIntoView, 앵커 점프)에서 스냅샷 사이로 건너뛰어 버릴 수 있어서,
        표준적인 scroll + rAF 스로틀 방식으로 매번 실제 위치를 다시 잽니다. */
-    var sections = document.querySelectorAll(".section[id]");
-    if (sections.length) {
-      var sectionList = Array.prototype.slice.call(sections);
-      var shown = null;
-      var raf = 0;
-      function updateSection() {
-        raf = 0;
-        if (pinned) return;
+    var sectionList = Array.prototype.slice.call(document.querySelectorAll(".section[id]"));
+    var shown = null;
+    var raf = 0;
+    function onFrame() {
+      raf = 0;
+      if (dock && scene) {
+        var r = scene.getBoundingClientRect();
+        setDocked(r.bottom > window.innerHeight * 0.45 && r.top < window.innerHeight);
+      }
+      if (!pinned && sectionList.length) {
         var line = window.innerHeight * 0.4;
         var current = null;
         sectionList.forEach(function (s) {
           if (s.getBoundingClientRect().top <= line) current = s;
         });
-        if (!current) return;
-        var msg = sectionMsgs[current.id];
-        if (!msg || current.id === shown) return;
-        shown = current.id;
-        text.innerHTML = msg;
+        if (current) {
+          var msg = sectionMsgs[current.id];
+          if (msg && current.id !== shown) {
+            shown = current.id;
+            text.innerHTML = msg;
+          }
+        }
       }
-      window.addEventListener("scroll", function () {
-        if (!raf) raf = requestAnimationFrame(updateSection);
-      }, { passive: true });
-      updateSection(); // 새로고침이 페이지 중간(앵커)에서 시작되는 경우 대비
     }
+    function nudgeFrame() {
+      if (!raf) raf = requestAnimationFrame(onFrame);
+    }
+    window.addEventListener("scroll", nudgeFrame, { passive: true });
+    window.addEventListener("resize", nudgeFrame, { passive: true });
+    onFrame(); // 새로고침이 페이지 중간(앵커)에서 시작되는 경우 + 초기 도킹 판정
 
-    window.setTimeout(function () { box.classList.add("is-in"); }, 900);
+    window.setTimeout(function () { box.classList.add("is-in"); }, docked !== null ? 350 : 900);
   }
 
   /* ---------- boot ---------- */
