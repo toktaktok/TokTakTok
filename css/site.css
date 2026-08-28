@@ -1,6 +1,6 @@
 /* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill + section links · footer: Ft4 · sections: hero(풀블리드 씬 + 마퀴 + 경력 팝업) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
- * hero enrichment: Tier-B 손제작 SVG 들판(XP Bliss 오마주) + Black Han Sans 대형 마퀴 — 외부 이미지 없음, 폰트는 Google Fonts.
+ * hero enrichment: 사용자 제공 픽셀아트 배경(assets/images/Aero.png, 아래 정렬 + 위쪽은 --scene-sky가 이어받음) + Black Han Sans 대형 마퀴.
  * mascot: 입 없음 — 표정은 눈으로만(.pix--smile이 뜬 눈을 웃는 눈 호와 맞바꿈).
  *   도킹 전환은 rAF 비행(.pix--travel 걷는 모션) — 씬은 overflow: clip이라 비행은 body의 fixed 컨텍스트에서 하고 도착 때만 .hero__dock으로 옮김.
  */
@@ -169,15 +169,32 @@ a:active { color: var(--color-accent); }
   min-height: 32rem;
   max-height: 56rem;
   overflow: clip;
+  /* 씬 아트 위쪽은 이 색이 이어받습니다. 이미지 맨 위 30줄이 순수 하늘색이라
+     같은 값을 쓰면 이음새가 보이지 않습니다. 이미지 로딩 전 배경도 겸함 */
+  background: var(--scene-sky);
+
+  /* 씬 아트가 차지할 높이. 이미지가 2:1이라 가로를 꽉 채우면 높이는 50vw입니다.
+     · 좁은 화면에서 그대로 두면 잔디 밴드(아트 높이의 20%)가 너무 얇아 캐릭터가
+       설 자리가 없으므로 최소 24rem을 보장합니다(그만큼 좌우가 잘림).
+     · 세로로 긴 화면에서 하늘만 휑하게 남지 않도록 55dvh까지는 키웁니다.
+     · 씬보다 커지지 않게 위를 씬 높이로 막습니다. */
+  --art-h: clamp(24rem, max(50vw, 55dvh), min(100dvh, 56rem));
 }
 
+/* 씬 아트 — assets/images/Aero.png (1280x640 픽셀아트).
+   지평선을 늘 바닥에 붙여 두려고 아래를 기준으로 잡습니다. 화면비에 따라 좌우가
+   잘릴 수는 있어도 잔디는 항상 바닥에 남습니다. */
 .hero__scene-art {
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
-  height: 100%;
+  height: var(--art-h);
   display: block;
   z-index: 0;
+  object-fit: cover;
+  object-position: center bottom;
 }
 
 /* 네비 — 씬 맨 위에 떠 있음(호버) */
@@ -226,7 +243,9 @@ a:active { color: var(--color-accent); }
 .hero__dock {
   position: absolute;
   left: 72%;
-  bottom: 9%;
+  /* 잔디 밴드는 아트 높이의 아래 20%. 그 한가운데쯤에 발을 둡니다 —
+     씬 높이(%)가 아니라 아트 높이를 기준으로 해야 화면비가 바뀌어도 잔디 위에 섭니다 */
+  bottom: calc(var(--art-h) * 0.1);
   z-index: 6;
 }
 
@@ -236,7 +255,7 @@ a:active { color: var(--color-accent); }
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 9%;
+  bottom: calc(var(--art-h) * 0.1); /* 캐릭터와 같은 바닥선 */
   z-index: 4;
   pointer-events: none;
 }
@@ -942,6 +961,9 @@ a:active { color: var(--color-accent); }
   .grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
   .detail__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .hero__card { max-width: min(26rem, 56%); }
+  /* 카드가 화면 폭에서 차지하는 비율이 커지므로 캐릭터를 오른쪽으로 더 밀어
+     말풍선이 카드 위로 올라타지 않게 합니다 */
+  .hero__dock { left: 78%; }
 }
 
 @media (max-width: 40rem) {
@@ -950,10 +972,12 @@ a:active { color: var(--color-accent); }
      글자가 잘려 보임) 링크 줄은 숨김 — 섹션은 스크롤로 충분히 닿을 수 있음 */
   .nav__links { display: none; }
   .hero__marquee { top: 8rem; }
-  /* 좁은 화면에서는 카드(전체 폭)와 캐릭터를 세로로 분리 — 캐릭터는 능선 뒤쪽
-     (조금 더 위)에 작게 서 있고, 카드는 그 아래 앞동산~풀밭에 폭 넓게 앉음 */
-  .hero__dock { left: 78%; bottom: 38%; }
-  .hero__card-wrap { bottom: 4%; }
+  /* 좁은 화면에서는 카드(전체 폭)와 캐릭터를 세로로 분리 — 캐릭터는 잔디 위에
+     그대로 두고, 카드는 말풍선까지 피할 만큼 위로 올립니다.
+     캐릭터 자리는 말풍선(폭의 절반)이 오른쪽으로 삐져나가지 않는 선까지만 오른쪽으로 */
+  .hero__dock { left: 70%; }
+  .helper--docked .helper__bubble { max-width: min(50vw, 14rem); }
+  .hero__card-wrap { bottom: calc(var(--art-h) * 0.55); }
   .hero__card { max-width: none; padding: var(--space-md); }
   .career__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); padding-block: var(--space-md); }
   .career__period { padding-top: 0; }
@@ -963,6 +987,14 @@ a:active { color: var(--color-accent); }
   .spec th[scope="row"] { width: 9ch; }
   .detail__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .section__head { padding-block: var(--space-xl) var(--space-lg); }
+}
+
+/* 아주 작은 화면 — 마퀴 + 소개 카드 + (캐릭터 + 말풍선)이 세로로 다 들어가지 않습니다.
+   도킹 상태의 말풍선만 접고 캐릭터는 잔디 위에 그대로 둡니다. 스크롤해서 우하단
+   도우미로 돌아오면 말풍선이 다시 나오므로 인사말이 사라지지는 않습니다. */
+@media (max-width: 40rem) and (max-height: 44rem) {
+  .helper--docked .helper__bubble { display: none; }
+  .hero__card-wrap { bottom: calc(var(--art-h) * 0.3); }
 }
 
 @media (pointer: coarse) {

@@ -132,23 +132,23 @@
     return box;
   }
 
-  /* 썸네일/미디어를 지정하지 않았을 때 쓰는 기본 이미지.
-     이 파일이 없으면 아래 mediaBox의 error 핸들러가 캐릭터 자리 표시로 되돌립니다. */
-  var DEFAULT_MEDIA = "assets/images/Aero.png";
-
-  /* 썸네일/미디어 공통: src가 없으면 기본 이미지, 그마저 로드에 실패하면 자리 표시로 대체 */
+  /* 썸네일/미디어 공통: src가 없거나 로드에 실패하면 자리 표시로 대체 */
   function mediaBox(src, alt, eager) {
     var box = el("div", "card__media");
-    var img = document.createElement("img");
-    img.src = src || DEFAULT_MEDIA;
-    img.alt = alt || "";
-    img.width = 1600;
-    img.height = 1000;
-    if (!eager) img.loading = "lazy";
-    img.addEventListener("error", function () {
-      box.replaceChildren(mediaPlaceholder(src ? "이미지를 찾을 수 없음 — 경로 확인" : "이미지 추가"));
-    });
-    box.appendChild(img);
+    if (src) {
+      var img = document.createElement("img");
+      img.src = src;
+      img.alt = alt || "";
+      img.width = 1600;
+      img.height = 1000;
+      if (!eager) img.loading = "lazy";
+      img.addEventListener("error", function () {
+        box.replaceChildren(mediaPlaceholder("이미지를 찾을 수 없음 — 경로 확인"));
+      });
+      box.appendChild(img);
+    } else {
+      box.appendChild(mediaPlaceholder());
+    }
     return box;
   }
 
