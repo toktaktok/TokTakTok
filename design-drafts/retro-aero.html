@@ -3,30 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>시안 2 · 레트로 (Win98풍) — toktaktok</title>
+<title>시안 · 레트로 Aero Glass — toktaktok</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap">
 <link rel="stylesheet" href="shared.css">
 <style>
   :root {
-    /* Win98 팔레트: 그레이 바탕 + 네이비(기존 블루 포인트) 타이틀바 + 순수 블랙/화이트 */
-    --color-paper:      oklch(91% 0.006 90);
-    --color-paper-2:    oklch(97.5% 0.004 90);
-    --color-rule:       oklch(55% 0.010 90);
-    --color-rule-2:     oklch(78% 0.008 90);
-    --color-muted:      oklch(42% 0.010 90);
-    --color-ink:        oklch(14% 0 0);
-    --color-ink-2:      oklch(28% 0.010 90);
+    /* 라이트 베이스 + 유리(glass) 재질 — 블루 톤은 기존 마스코트와 동일 계열 */
+    --color-paper:      oklch(97% 0.010 240);
+    --color-paper-2:    oklch(99.3% 0.004 240);
+    --color-rule:       oklch(80% 0.030 245);
+    --color-rule-2:     oklch(88% 0.020 245);
+    --color-muted:      oklch(48% 0.020 250);
+    --color-ink:        oklch(22% 0.030 255);
+    --color-ink-2:      oklch(38% 0.025 253);
 
-    --color-accent:     oklch(32% 0.135 258);  /* 타이틀바 네이비 — 기존 마스코트 블루 계열 */
-    --color-accent-2:   var(--color-accent);
-    --color-focus:      var(--color-accent);
-    --color-selection:  var(--color-accent);
-    --color-bevel-dark: oklch(55% 0.010 90);   /* 베벨 음영측 */
-    --color-tip:        oklch(97% 0.040 95);   /* Win98 풍선 도움말의 그 페일 옐로 */
+    --color-accent:     oklch(58% 0.19 252);
+    --color-accent-2:   oklch(48% 0.185 252);
+    --color-focus:      oklch(55% 0.20 252);
+    --color-selection:  oklch(85% 0.08 250 / 0.5);
 
-    --color-char-line:  oklch(98% 0.004 90);
+    --color-char-line:  oklch(99.5% 0.003 80);
     --color-char-eye:   oklch(24% 0.05 55);
     --color-char-shine: oklch(94% 0.007 60);
 
@@ -34,66 +32,85 @@
     --font-body:    "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
     --font-mono:    "IBM Plex Mono", ui-monospace, monospace;
 
-    --shadow-whisper: none;
-    --shadow-lift:    1px 1px 0 var(--color-bevel-dark); /* 블러 없는 1px 오프셋 — 비트맵 아이콘 그림자 느낌 */
+    --shadow-whisper: 0 1px 2px oklch(40% 0.05 250 / 0.08);
+    --shadow-lift:    0 10px 26px oklch(50% 0.12 250 / 0.22);
 
-    --radius-panel: 0px;
-    --radius-bubble: 0px;
+    --radius-panel: 14px;
+    --radius-bubble: 18px;
+
+    /* 유리 그라디언트 — 위쪽 밝은 하이라이트, 중앙 이음선, 아래쪽 톤다운 (Aero 버튼 공식) */
+    --glass-hi:     oklch(99.5% 0.004 240 / 0.92);
+    --glass-mid:    oklch(95%   0.020 245 / 0.55);
+    --glass-seam:   oklch(88%   0.050 250 / 0.55);
+    --glass-lo:     oklch(93%   0.030 248 / 0.55);
+    --glass-border: oklch(75%   0.060 250 / 0.65);
+    --glass: linear-gradient(180deg, var(--glass-hi), var(--glass-mid) 48%, var(--glass-seam) 50%, var(--glass-lo) 100%);
   }
+  html { color-scheme: light; }
 
-  /* ---- Win98 전용 장식 — 베벨, 타이틀바, 풍선 도움말 ---- */
+  /* ---- Aero 전용 장식 — 유리 패널, 글로시 버튼, 하늘색 배경 ---- */
 
-  ::selection { color: var(--color-paper-2); }
-
-  :focus-visible { outline: 1px dotted var(--color-ink) !important; outline-offset: 2px !important; }
+  body {
+    background:
+      radial-gradient(1200px 480px at 12% -12%, oklch(88% 0.06 235 / 0.55), transparent 60%),
+      linear-gradient(180deg, oklch(93% 0.035 238), oklch(97% 0.014 240) 45%, oklch(98.5% 0.006 240) 100%);
+    background-attachment: fixed;
+  }
 
   .nav {
-    background: var(--color-accent);
-    margin-inline: calc(-1 * clamp(1rem, 4vw, 2.5rem));
-    padding-inline: clamp(1rem, 4vw, 2.5rem);
-    border-bottom: none;
+    margin-block: var(--space-md) 0;
+    padding-inline: var(--space-lg);
+    border-radius: 999px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 1px 0 oklch(100% 0 0 / 0.75) inset, var(--shadow-lift);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
   }
-  .nav__mark, .nav__cta { color: var(--color-paper-2); }
-  .nav__mark { font-family: var(--font-mono); letter-spacing: 0.02em; }
-  .nav__mark::before { background: var(--color-paper-2); }
-
-  .card__media, .win-panel {
-    background: var(--color-paper-2);
-    border-width: 2px;
-    border-style: solid;
-  }
-  .card__media { border-color: var(--color-bevel-dark) var(--color-paper-2) var(--color-paper-2) var(--color-bevel-dark); }
-  .win-panel {
-    border-color: var(--color-paper-2) var(--color-bevel-dark) var(--color-bevel-dark) var(--color-paper-2);
-    padding: var(--space-lg);
-  }
+  .nav__mark::before { border-radius: 50%; }
 
   .filter__btn {
-    background: var(--color-paper-2);
-    padding: var(--space-2xs) var(--space-md);
-    border-width: 2px;
-    border-style: solid;
-    border-color: var(--color-paper-2) var(--color-bevel-dark) var(--color-bevel-dark) var(--color-paper-2);
+    padding: var(--space-2xs) var(--space-lg);
+    border-radius: 999px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 1px 0 oklch(100% 0 0 / 0.75) inset;
   }
-  .filter__btn:active,
+  .filter__btn:hover { box-shadow: 0 1px 0 oklch(100% 0 0 / 0.85) inset, 0 3px 8px oklch(45% 0.1 250 / 0.14); }
   .filter__btn[aria-pressed="true"] {
-    border-color: var(--color-bevel-dark) var(--color-paper-2) var(--color-paper-2) var(--color-bevel-dark);
+    background: linear-gradient(180deg, oklch(97% 0.03 250 / 0.95), oklch(90% 0.07 250 / 0.75) 48%, oklch(80% 0.12 250 / 0.75) 50%, oklch(88% 0.08 250 / 0.75) 100%);
+    border-color: var(--color-accent);
+    box-shadow: 0 1px 0 oklch(100% 0 0 / 0.85) inset, 0 0 0 3px oklch(58% 0.19 252 / 0.15);
+  }
+
+  .card__media {
+    border-radius: var(--radius-panel);
+    background: linear-gradient(180deg, var(--glass-hi), var(--glass-lo));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 1px 0 oklch(100% 0 0 / 0.75) inset, 0 6px 18px oklch(45% 0.1 250 / 0.10);
+  }
+
+  .aero-panel {
+    padding: var(--space-lg);
+    border-radius: var(--radius-panel);
+    background: linear-gradient(180deg, var(--glass-hi), var(--glass-lo));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 1px 0 oklch(100% 0 0 / 0.75) inset, 0 6px 18px oklch(45% 0.1 250 / 0.10);
   }
 
   .helper__bubble {
-    background: var(--color-tip);
-    border: 1px solid var(--color-ink);
-    box-shadow: none;
+    background: linear-gradient(180deg, var(--glass-hi), var(--glass-mid) 55%, var(--glass-lo));
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px) saturate(1.3);
+    -webkit-backdrop-filter: blur(10px) saturate(1.3);
+    box-shadow: 0 1px 0 oklch(100% 0 0 / 0.75) inset, var(--shadow-whisper);
   }
-  .helper__bubble::after { background: var(--color-tip); border-color: var(--color-ink); }
-  .helper__char { filter: drop-shadow(var(--shadow-lift)); }
-
-  html { color-scheme: light; }
+  .helper__bubble::after { background: var(--glass-lo); }
 </style>
 </head>
 <body>
 
-<a class="draft-tag" href="index.html">← 시안 목록 · 02 레트로(Win98)</a>
+<a class="draft-tag" href="index.html">← 시안 목록 · 레트로 Aero Glass</a>
 
 <header class="wrap">
   <nav class="nav">
@@ -156,7 +173,7 @@
 
   <section class="section skills" id="skills">
     <header class="section__head"><h2 class="section__title">기술</h2></header>
-    <div class="win-panel">
+    <div class="aero-panel">
       <table class="spec"><tbody>
         <tr><th scope="row">주력</th><td class="spec__items">C++ · Unreal Engine</td><td class="spec__note">실무에서 설계와 구현을 주도할 수 있는 수준.</td></tr>
         <tr><th scope="row">능숙</th><td class="spec__items">C# · Unity · UI 시스템</td><td class="spec__note">실무 사용 경험이 충분한 수준.</td></tr>
@@ -173,14 +190,14 @@
 
 </main>
 
-<footer class="colophon"><div class="wrap"><p>toktaktok — 게임 클라이언트 프로그래머 포트폴리오 시안 02. 그 시절 Win98 톤의 그레이 + 네이비 + 베벨, 구성은 최대한 정돈. Space Grotesk · IBM Plex Sans KR · IBM Plex Mono. © 2026 toktaktok</p></div></footer>
+<footer class="colophon"><div class="wrap"><p>toktaktok — 게임 클라이언트 프로그래머 포트폴리오 시안. 레트로 Aero Glass — 유리 패널, 글로시 버튼, 하늘색 배경. Space Grotesk · IBM Plex Sans KR · IBM Plex Mono. © 2026 toktaktok</p></div></footer>
 
 <script src="shared.js"></script>
 <script>
   initHelper([
-    "레트로 시안이에요 — 베벨 버튼, 네이비 타이틀바, 노란 풍선 도움말까지.",
-    "저는 그때도 지금도 똑같이 움직여요. 마우스를 한번 따라와 보세요.",
-    "탭으로 이동해 보면 포커스 링이 점선으로 바뀐 것도 보일 거예요."
+    "레트로를 Aero Glass로 발전시켜 봤어요 — 밝고 유리처럼 반짝이게.",
+    "네비게이션이 이제 떠 있는 유리 알약 모양이에요.",
+    "저는 여전히 같은 저예요 — 마우스를 따라가고, 숨쉬고, 팔을 흔들죠."
   ]);
 </script>
 </body>

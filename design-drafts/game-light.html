@@ -3,29 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>시안 3 · 게임 HUD — toktaktok</title>
+<title>시안 · 게임 (라이트) — toktaktok</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap">
 <link rel="stylesheet" href="shared.css">
 <style>
   :root {
-    /* 더 어둡고 더 채도 높은 블루 — 글로우가 실제로 보이도록 */
-    --color-paper:      oklch(13% 0.028 258);
-    --color-paper-2:    oklch(18% 0.032 258);
-    --color-rule:       oklch(32% 0.030 258);
-    --color-rule-2:     oklch(26% 0.030 258);
-    --color-muted:      oklch(60% 0.030 258);
-    --color-ink:        oklch(96% 0.012 258);
-    --color-ink-2:      oklch(76% 0.018 258);
+    /* 밝고 채도 높은 블루 + 두꺼운 컬러 아웃라인 + 하드 오프셋 섀도 — 마스코트 자체의
+       "두꺼운 흰 테두리를 두른 스티커" 언어를 카드/버튼/말풍선까지 그대로 확장 */
+    --color-paper:      oklch(97% 0.012 250);
+    --color-paper-2:    oklch(99.5% 0.004 250);
+    --color-rule:       oklch(30% 0.14 252);   /* 두꺼운 컬러 아웃라인 + 하드 섀도 색 */
+    --color-rule-2:     oklch(85% 0.020 250);  /* 표 안쪽 등 얇은 보조선 */
+    --color-muted:      oklch(46% 0.020 250);
+    --color-ink:        oklch(20% 0.040 255);
+    --color-ink-2:      oklch(36% 0.030 253);
 
-    --color-accent:     oklch(74% 0.20 252);
-    --color-accent-2:   var(--color-accent);
-    --color-focus:      oklch(80% 0.20 252);
-    --color-selection:  oklch(74% 0.18 252 / 0.35);
-    --color-status:     oklch(78% 0.19 145);   /* 온라인 표시 점 — 아주 작게, 1곳에만 */
+    --color-accent:     oklch(58% 0.19 252);
+    --color-accent-2:   oklch(48% 0.185 252);
+    --color-accent-ink: oklch(99% 0.004 250);  /* 파란 필 위 흰 텍스트 */
+    --color-focus:      oklch(55% 0.20 252);
+    --color-selection:  oklch(85% 0.09 250 / 0.55);
 
-    --color-char-line:  oklch(98% 0.004 90);
+    --color-char-line:  oklch(99.5% 0.003 80);
     --color-char-eye:   oklch(24% 0.05 55);
     --color-char-shine: oklch(94% 0.007 60);
 
@@ -33,72 +34,99 @@
     --font-body:    "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
     --font-mono:    "IBM Plex Mono", ui-monospace, monospace;
 
-    --shadow-whisper: 0 2px 8px oklch(0% 0 0 / 0.5);
-    --shadow-lift:    0 0 20px oklch(72% 0.20 252 / 0.45); /* 도우미 아래 블루 글로우 */
+    --shadow-whisper: 4px 4px 0 var(--color-rule);
+    --shadow-lift:    4px 4px 0 var(--color-rule);
 
-    --radius-panel: 0px;
-    --radius-bubble: 0px;
-
-    --hud-c: var(--color-accent);
-    --hud-s: 16px; /* 코너 브래킷 길이 */
-    --hud-w: 2px;  /* 코너 브래킷 굵기 */
+    --radius-panel: 16px;
+    --radius-bubble: 18px;
   }
-  html { color-scheme: dark; }
+  html { color-scheme: light; }
 
-  /* ---- HUD 전용 장식 — 코너 브래킷, 태그 라벨, 미터 바 ---- */
+  /* ---- 게임(라이트) 전용 장식 — 스티커 카드, 칩 배지, 티어 미터 ---- */
 
-  /* 4개 모서리에 순수 CSS로 그리는 타겟팅-리티클 스타일 브래킷. 이미지·추가 DOM 없음. */
-  .hud-frame {
-    position: relative;
-    background-repeat: no-repeat;
-    background-image:
-      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
-      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
-      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
-      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c));
-    background-size:
-      var(--hud-w) var(--hud-s), var(--hud-s) var(--hud-w),
-      var(--hud-w) var(--hud-s), var(--hud-s) var(--hud-w),
-      var(--hud-w) var(--hud-s), var(--hud-s) var(--hud-w),
-      var(--hud-w) var(--hud-s), var(--hud-s) var(--hud-w);
-    background-position: top left, top left, top right, top right, bottom left, bottom left, bottom right, bottom right;
-  }
+  body { background: var(--color-paper); }
 
   .hud-tag {
+    display: inline-block;
     font-family: var(--font-mono);
     font-size: var(--text-xs);
-    letter-spacing: 0.14em;
-    color: var(--color-accent);
+    letter-spacing: 0.1em;
+    padding: 2px 10px;
     margin-bottom: var(--space-xs);
+    border: 2px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-paper-2);
+    color: var(--color-accent);
+    box-shadow: 2px 2px 0 var(--color-rule);
   }
 
-  .nav__mark { font-family: var(--font-mono); }
-  .nav__mark::before {
-    border-radius: 50%;
-    background: var(--color-status);
-    box-shadow: 0 0 6px 1px oklch(78% 0.19 145 / 0.7);
+  .nav__mark::before { border-radius: 50%; }
+  .nav__cta {
+    padding: 4px 12px;
+    border: 2px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-paper-2);
+    box-shadow: 2px 2px 0 var(--color-rule);
+    text-decoration: none;
+    transition: transform var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+  }
+  .nav__cta:hover { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--color-rule); }
+
+  .filter__btn {
+    padding: var(--space-2xs) var(--space-lg);
+    border: 2px solid var(--color-rule);
+    border-radius: 999px;
+    background: var(--color-paper-2);
+    box-shadow: 3px 3px 0 var(--color-rule);
+    transition: transform var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+  }
+  .filter__btn:hover { color: var(--color-ink); }
+  .filter__btn:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--color-rule); }
+  .filter__btn[aria-pressed="true"] {
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+    border-color: var(--color-rule);
   }
 
-  .card__media { border: none; padding: var(--space-sm); background: var(--color-paper-2); }
+  .card__media {
+    border: 3px solid var(--color-rule);
+    border-radius: var(--radius-panel);
+    background: var(--color-paper-2);
+    box-shadow: 5px 5px 0 var(--color-rule);
+    transition: transform var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover .card__media { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--color-rule); }
+  }
 
-  .hud-panel { padding: var(--space-lg); background: var(--color-paper-2); }
-  .meter-row { display: grid; gap: var(--space-2xs); padding-block: var(--space-sm); border-top: var(--rule-hair) solid var(--color-rule-2); }
-  .meter-row:first-child { border-top: none; }
-  .meter-row__top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-md); }
+  .game-panel {
+    padding: var(--space-lg);
+    border: 3px solid var(--color-rule);
+    border-radius: var(--radius-panel);
+    background: var(--color-paper-2);
+    box-shadow: 5px 5px 0 var(--color-rule);
+  }
+  .meter-row { display: grid; gap: var(--space-2xs); padding-block: var(--space-sm); border-top: 1px solid var(--color-rule-2); }
+  .meter-row:first-child { border-top: none; padding-top: 0; }
   .meter-row__label { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-muted); letter-spacing: 0.08em; }
   .meter-row__items { font-weight: 700; }
   .meter { display: flex; gap: 4px; margin-top: var(--space-2xs); }
-  .meter__pip { width: 22px; height: 6px; background: var(--color-rule-2); }
-  .meter__pip.is-on { background: var(--color-accent); box-shadow: 0 0 5px 0 oklch(74% 0.20 252 / 0.55); }
+  .meter__pip { width: 22px; height: 8px; border-radius: 3px; background: var(--color-rule-2); }
+  .meter__pip.is-on { background: var(--color-accent); }
   .meter-row__note { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-muted); margin-top: var(--space-md); }
 
-  .helper__bubble { background: var(--color-paper-2); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.01em; }
+  .helper__bubble {
+    border: 3px solid var(--color-rule);
+    background: var(--color-paper-2);
+    box-shadow: 5px 5px 0 var(--color-rule);
+  }
   .helper__bubble::after { display: none; }
+  .helper__char { filter: drop-shadow(4px 4px 0 var(--color-rule)); }
 </style>
 </head>
 <body>
 
-<a class="draft-tag" href="index.html">← 시안 목록 · 03 게임 HUD</a>
+<a class="draft-tag" href="index.html">← 시안 목록 · 게임 (라이트)</a>
 
 <header class="wrap">
   <nav class="nav">
@@ -147,14 +175,14 @@
     </div>
     <div class="grid">
       <article class="card card--wide">
-        <a aria-hidden="true" tabindex="-1"><div class="card__media hud-frame"><div class="card__placeholder"><div data-mascot-placeholder></div><p class="card__placeholder-label">이미지 추가</p></div></div></a>
+        <a aria-hidden="true" tabindex="-1"><div class="card__media"><div class="card__placeholder"><div data-mascot-placeholder></div><p class="card__placeholder-label">이미지 추가</p></div></div></a>
         <h3 class="card__title"><a href="#">미니맵 시스템 개편 (작성 예시)</a></h3>
         <p class="card__meta">2023.01 — 2024.06  ·  Unreal Engine 5  ·  UI · 최적화</p>
         <p class="card__summary">이 항목은 작성 형식을 보여 주는 예시입니다. 카드에는 이렇게 프로젝트를 한 문장으로 요약합니다.</p>
         <a class="card__link" href="#">자세히 →</a>
       </article>
       <article class="card">
-        <a aria-hidden="true" tabindex="-1"><div class="card__media hud-frame"><div class="card__placeholder"><div data-mascot-placeholder></div><p class="card__placeholder-label">이미지 추가</p></div></div></a>
+        <a aria-hidden="true" tabindex="-1"><div class="card__media"><div class="card__placeholder"><div data-mascot-placeholder></div><p class="card__placeholder-label">이미지 추가</p></div></div></a>
         <h3 class="card__title"><a href="#">두 번째 프로젝트 제목 입력</a></h3>
         <p class="card__meta">2021.05 — 2022.12  ·  엔진 입력  ·  게임플레이</p>
         <p class="card__summary">카드에 보일 한 줄 요약 입력. (샘플 카드)</p>
@@ -168,23 +196,23 @@
       <p class="hud-tag">[ SKILLS ]</p>
       <h2 class="section__title">기술</h2>
     </header>
-    <div class="hud-panel hud-frame">
+    <div class="game-panel">
       <div class="meter-row">
-        <div class="meter-row__top"><p class="meter-row__label">주력</p></div>
+        <p class="meter-row__label">주력</p>
         <p class="meter-row__items">C++ · Unreal Engine</p>
         <div class="meter" aria-hidden="true">
           <span class="meter__pip is-on"></span><span class="meter__pip is-on"></span><span class="meter__pip is-on"></span><span class="meter__pip is-on"></span>
         </div>
       </div>
       <div class="meter-row">
-        <div class="meter-row__top"><p class="meter-row__label">능숙</p></div>
+        <p class="meter-row__label">능숙</p>
         <p class="meter-row__items">C# · Unity · UI 시스템</p>
         <div class="meter" aria-hidden="true">
           <span class="meter__pip is-on"></span><span class="meter__pip is-on"></span><span class="meter__pip is-on"></span><span class="meter__pip"></span>
         </div>
       </div>
       <div class="meter-row">
-        <div class="meter-row__top"><p class="meter-row__label">경험</p></div>
+        <p class="meter-row__label">경험</p>
         <p class="meter-row__items">Python · Jenkins</p>
         <div class="meter" aria-hidden="true">
           <span class="meter__pip is-on"></span><span class="meter__pip is-on"></span><span class="meter__pip"></span><span class="meter__pip"></span>
@@ -205,14 +233,14 @@
 
 </main>
 
-<footer class="colophon"><div class="wrap"><p>toktaktok — 게임 클라이언트 프로그래머 포트폴리오 시안 03. 다크 HUD — 코너 브래킷, 티어 미터, 글로우 액센트. Space Grotesk · IBM Plex Sans KR · IBM Plex Mono. © 2026 toktaktok</p></div></footer>
+<footer class="colophon"><div class="wrap"><p>toktaktok — 게임 클라이언트 프로그래머 포트폴리오 시안. 게임(라이트) — 두꺼운 컬러 아웃라인 + 하드 오프셋 섀도의 스티커 카드. Space Grotesk · IBM Plex Sans KR · IBM Plex Mono. © 2026 toktaktok</p></div></footer>
 
 <script src="shared.js"></script>
 <script>
   initHelper([
-    "게임 HUD 시안이에요 — 코너 브래킷과 글로우를 썼어요.",
-    "기술 섹션은 표 대신 티어 미터바로 바꿔봤어요.",
-    "저는 여전히 같은 저예요 — 마우스를 따라가고, 숨쉬고, 팔을 흔들죠."
+    "게임 느낌을 라이트 모드로 다시 만들어 봤어요 — 두꺼운 테두리 스티커 카드예요.",
+    "저를 보면 알겠지만, 이 테두리는 원래 제 몸에 있던 흰 선에서 가져온 거예요.",
+    "카드에 마우스를 올리면 그림자 쪽으로 살짝 눌려요 — 눌러 보세요."
   ]);
 </script>
 </body>
