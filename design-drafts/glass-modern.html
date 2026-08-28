@@ -86,8 +86,43 @@
   }
   .hero__title { font-weight: 800; }
 
-  /* 헤딩 앞 사각 마커 제거 — 굵은 웨이트만으로 위계를 표현 */
-  .section__title::before { content: none; }
+  /* 히어로 킥커를 알약 칩으로 — 네비/필터와 같은 "유리 알약" 리듬을 앞에서부터 예고 */
+  .hero__kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+    padding: 0.4em 0.9em 0.4em 0.7em;
+    border-radius: 999px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(14px) saturate(1.5);
+    -webkit-backdrop-filter: blur(14px) saturate(1.5);
+    box-shadow: var(--shadow-whisper);
+    color: var(--color-ink-2);
+  }
+  .hero__kicker::before {
+    content: "";
+    width: 0.5em; height: 0.5em; border-radius: 50%; flex: none;
+    background: var(--color-accent);
+  }
+
+  /* 사각 마커 대신 에디토리얼 번호 — 헤딩 위계를 굵기 하나로만 때우지 않고,
+     콘텐츠 성격(순서)이 있는 장식으로 채움 */
+  main { counter-reset: section; }
+  .section__title::before {
+    counter-increment: section;
+    content: counter(section, decimal-leading-zero) " —";
+    display: inline-block;
+    width: auto;
+    height: auto;
+    margin-right: 0.45em;
+    background: none;
+    font-family: var(--font-mono);
+    font-size: 0.5em;
+    font-weight: 500;
+    color: var(--color-accent);
+    vertical-align: 0.12em;
+  }
 
   .filter__btn {
     padding: var(--space-2xs) var(--space-lg);
@@ -112,7 +147,14 @@
     backdrop-filter: blur(18px) saturate(1.5);
     -webkit-backdrop-filter: blur(18px) saturate(1.5);
     box-shadow: 0 14px 34px oklch(30% 0.03 75 / 0.09);
+    transition: box-shadow var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out);
   }
+  /* 유리가 따뜻한 빛을 받는 느낌 — 카드에 호버하면 오렌지 헤일로가 은은하게 번짐 */
+  .card:hover .card__media {
+    box-shadow: 0 18px 40px oklch(30% 0.03 75 / 0.1), 0 0 0 1px oklch(70% 0.15 46 / 0.16), 0 0 34px oklch(66% 0.15 46 / 0.22);
+    transform: translateY(-2px);
+  }
+  @media (prefers-reduced-motion: reduce) { .card:hover .card__media { transform: none; } }
 
   .glass-panel {
     padding: var(--space-lg);
@@ -223,7 +265,9 @@
   initHelper([
     "액센트를 오렌지로 되돌렸어요 — 원래 이 사이트 컨셉이 오렌지였잖아요.",
     "파란색은 이제 진짜 저한테만 있어요. 링크도 포커스 링도 다 오렌지예요.",
-    "헤딩 앞 네모는 여전히 없어요. 폰트는 Pretendard, 저는 여전히 같은 저고요."
+    "헤딩 앞 네모 대신 01, 02 같은 번호를 붙여봤어요 — 장식 말고 순서니까요.",
+    "카드에 마우스 올리면 살짝 떠오르면서 오렌지 빛이 은은하게 번져요.",
+    "폰트는 Pretendard, 저는 여전히 같은 저고요."
   ]);
 </script>
 </body>

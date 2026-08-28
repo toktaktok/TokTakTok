@@ -24,6 +24,10 @@
     --color-focus:      oklch(55% 0.20 252);
     --color-selection:  oklch(85% 0.08 250 / 0.5);
 
+    /* 초록 포인트 — 그 시절 메신저 "온라인" 표시 느낌. 파란 유리 크롬은 그대로 두고
+       연락 상태 점 + 선택된 필터에만 한정해서 씀 */
+    --color-status:     oklch(72% 0.17 145);
+
     --color-char-line:  oklch(99.5% 0.003 80);
     --color-char-eye:   oklch(24% 0.05 55);
     --color-char-shine: oklch(94% 0.007 60);
@@ -69,6 +73,19 @@
   }
   .nav__mark::before { border-radius: 50%; }
 
+  /* 연락 버튼 옆 "온라인" 상태 점 — Aero 시대 메신저 프레즌스 표시 오마주 */
+  .nav__status {
+    width: 0.5em; height: 0.5em; margin-right: 0.5em; border-radius: 50%; flex: none;
+    background: var(--color-status);
+    box-shadow: 0 0 0 3px oklch(72% 0.17 145 / 0.22);
+    animation: aero-status-pulse 2.6s var(--ease-in-out) infinite;
+  }
+  @keyframes aero-status-pulse {
+    0%, 100% { box-shadow: 0 0 0 3px oklch(72% 0.17 145 / 0.22); }
+    50%      { box-shadow: 0 0 0 6px oklch(72% 0.17 145 / 0.10); }
+  }
+  @media (prefers-reduced-motion: reduce) { .nav__status { animation: none; } }
+
   .filter__btn {
     padding: var(--space-2xs) var(--space-lg);
     border-radius: 999px;
@@ -77,10 +94,11 @@
     box-shadow: 0 1px 0 oklch(100% 0 0 / 0.75) inset;
   }
   .filter__btn:hover { box-shadow: 0 1px 0 oklch(100% 0 0 / 0.85) inset, 0 3px 8px oklch(45% 0.1 250 / 0.14); }
+  /* 선택된 필터만 초록 유리로 — 파란 크롬(구조) vs 초록(선택 상태) 구분 */
   .filter__btn[aria-pressed="true"] {
-    background: linear-gradient(180deg, oklch(97% 0.03 250 / 0.95), oklch(90% 0.07 250 / 0.75) 48%, oklch(80% 0.12 250 / 0.75) 50%, oklch(88% 0.08 250 / 0.75) 100%);
-    border-color: var(--color-accent);
-    box-shadow: 0 1px 0 oklch(100% 0 0 / 0.85) inset, 0 0 0 3px oklch(58% 0.19 252 / 0.15);
+    background: linear-gradient(180deg, oklch(97% 0.03 145 / 0.95), oklch(90% 0.08 145 / 0.75) 48%, oklch(78% 0.14 145 / 0.75) 50%, oklch(87% 0.09 145 / 0.75) 100%);
+    border-color: var(--color-status);
+    box-shadow: 0 1px 0 oklch(100% 0 0 / 0.85) inset, 0 0 0 3px oklch(72% 0.17 145 / 0.18);
   }
 
   .card__media {
@@ -115,7 +133,7 @@
 <header class="wrap">
   <nav class="nav">
     <a class="nav__mark" href="#">toktaktok</a>
-    <a class="nav__cta" href="#contact">연락 →</a>
+    <a class="nav__cta" href="#contact"><span class="nav__status" aria-hidden="true"></span>연락 →</a>
   </nav>
   <section class="hero">
     <p class="hero__kicker reveal" style="--i:0">이름 입력 · 게임 클라이언트 프로그래머</p>
@@ -190,13 +208,14 @@
 
 </main>
 
-<footer class="colophon"><div class="wrap"><p>toktaktok — 게임 클라이언트 프로그래머 포트폴리오 시안. 레트로 Aero Glass — 유리 패널, 글로시 버튼, 하늘색 배경. Space Grotesk · IBM Plex Sans KR · IBM Plex Mono. © 2026 toktaktok</p></div></footer>
+<footer class="colophon"><div class="wrap"><p>toktaktok — 게임 클라이언트 프로그래머 포트폴리오 시안. 레트로 Aero Glass — 유리 패널, 글로시 버튼, 하늘색 배경, 초록 프레즌스 포인트. Space Grotesk · IBM Plex Sans KR · IBM Plex Mono. © 2026 toktaktok</p></div></footer>
 
 <script src="shared.js"></script>
 <script>
   initHelper([
     "레트로를 Aero Glass로 발전시켜 봤어요 — 밝고 유리처럼 반짝이게.",
     "네비게이션이 이제 떠 있는 유리 알약 모양이에요.",
+    "연락 버튼 옆 초록 점, 그 시절 메신저 온라인 표시 같지 않아요?",
     "저는 여전히 같은 저예요 — 마우스를 따라가고, 숨쉬고, 팔을 흔들죠."
   ]);
 </script>
