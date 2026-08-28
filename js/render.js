@@ -447,6 +447,7 @@
   function renderAssistant() {
     var conf = profile.assistant || {};
     var msgs = conf.messages || [];
+    var sectionMsgs = conf.sectionMessages || {};
     if (conf.enabled === false || !msgs.length) return;
 
     var box = el("div", "helper");
@@ -456,7 +457,10 @@
     var closeBtn = el("button", "helper__close", "×");
     closeBtn.type = "button";
     closeBtn.setAttribute("aria-label", "말풍선 닫기");
-    var text = el("p", null, msgs[0]);
+    /* innerHTML: sectionMessages/messages는 data/profile.js(직접 편집하는 파일)에서만
+       오므로 링크(<a>) 사용을 위해 안전하게 그대로 씁니다. */
+    var text = el("p");
+    text.innerHTML = msgs[0];
     bubble.appendChild(closeBtn);
     bubble.appendChild(text);
 
@@ -472,6 +476,7 @@
     document.body.appendChild(box);
 
     var idx = 0;
+    var pinned = false; // 캐릭터를 눌러 수동으로 넘기면 true — 이후 스크롤 자동전환 중단
     closeBtn.addEventListener("click", function () {
       box.classList.add("is-quiet");
     });
@@ -479,10 +484,41 @@
       if (box.classList.contains("is-quiet")) {
         box.classList.remove("is-quiet");
       } else {
+        pinned = true;
         idx = (idx + 1) % msgs.length;
-        text.textContent = msgs[idx];
+        text.innerHTML = msgs[idx];
       }
     });
+
+    /* 스크롤해서 섹션이 화면 위 40% 지점을 지나면 그 섹션 문구로 자동 전환.
+       사용자가 캐릭터를 눌러 직접 고른 뒤(pinned)에는 건드리지 않습니다.
+       IntersectionObserver의 얇은 트리거 밴드는 순간이동성 스크롤(예: 테스트의
+       scrollIntoView, 앵커 점프)에서 스냅샷 사이로 건너뛰어 버릴 수 있어서,
+       표준적인 scroll + rAF 스로틀 방식으로 매번 실제 위치를 다시 잽니다. */
+    var sections = document.querySelectorAll(".section[id]");
+    if (sections.length) {
+      var sectionList = Array.prototype.slice.call(sections);
+      var shown = null;
+      var raf = 0;
+      function updateSection() {
+        raf = 0;
+        if (pinned) return;
+        var line = window.innerHeight * 0.4;
+        var current = null;
+        sectionList.forEach(function (s) {
+          if (s.getBoundingClientRect().top <= line) current = s;
+        });
+        if (!current) return;
+        var msg = sectionMsgs[current.id];
+        if (!msg || current.id === shown) return;
+        shown = current.id;
+        text.innerHTML = msg;
+      }
+      window.addEventListener("scroll", function () {
+        if (!raf) raf = requestAnimationFrame(updateSection);
+      }, { passive: true });
+      updateSection(); // 새로고침이 페이지 중간(앵커)에서 시작되는 경우 대비
+    }
 
     window.setTimeout(function () { box.classList.add("is-in"); }, 900);
   }

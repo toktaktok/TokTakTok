@@ -30,8 +30,13 @@ HTML은 건드릴 필요 없습니다. `data/*.js`의 값만 바꾸면 됩니다
 - **수치 없는 성과**: `metrics`의 `value`는 `"—"` 로 두세요. 지어내지 않기.
 - **이력서**: PDF를 `assets/`에 넣고 `data/profile.js`의 `resumeUrl`에 경로를
   적으면 상단 우측 버튼이 이력서 링크로 바뀝니다.
-- **도우미 말풍선**: 우하단 캐릭터의 문구는 `data/profile.js`의
-  `assistant.messages` 배열입니다. `enabled: false`로 끌 수 있습니다.
+- **도우미 말풍선**: 우하단 캐릭터의 기본 문구는 `data/profile.js`의
+  `assistant.messages` 배열이고, 캐릭터를 누를 때마다 순서대로 바뀝니다.
+  `assistant.sectionMessages`에 `career`/`projects`/`skills`/`contact` 키로
+  문구를 넣으면, 스크롤해서 그 섹션이 화면에 들어올 때 자동으로 그 문구가 뜹니다
+  (한 번이라도 캐릭터를 눌러 수동으로 넘기면 그 뒤로는 스크롤이 덮어쓰지 않음).
+  두 곳 다 `<a href="...">` 같은 HTML을 그대로 써서 링크를 넣을 수 있습니다.
+  `enabled: false`로 도우미 전체를 끌 수 있습니다.
 
 ## 로컬 미리보기
 
