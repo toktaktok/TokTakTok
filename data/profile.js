@@ -51,6 +51,7 @@ window.PORTFOLIO.profile = {
       career: "이 회사들에서 게임 클라이언트를 만들었어요.",
       projects: "마음에 드는 프로젝트가 있으면 카드를 눌러서 더 보세요.",
       skills: "표에 적힌 숙련도는 전부 실무 기준으로 적어 주세요 — 지어내지 않기!",
+      education: "학력·교육·소모임도 짧게 적어 뒀어요.",
       // 이메일 주소는 위 email 값과 맞춰 주세요.
       contact: '이메일로 편하게 연락 주세요 — <a href="mailto:toktaktok2938@gmail.com">메일 보내기</a>',
     },

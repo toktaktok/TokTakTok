@@ -6,7 +6,7 @@
 ## 구조
 
 ```
-index.html          메인 페이지 (소개 → 경력 → 프로젝트 → 기술 → 연락)
+index.html          메인 페이지 (소개 → 경력 → 프로젝트 → 기술 → 학력·활동 → 연락)
 project.html        프로젝트 상세 (project.html?id=<슬러그>)
 css/tokens.css      디자인 토큰 (색·타이포·간격) — 테마를 바꾸려면 여기
 css/site.css        레이아웃과 컴포넌트 스타일
@@ -14,6 +14,7 @@ js/render.js        data/ 를 읽어 페이지를 그리는 렌더러
 data/profile.js     이름·직함·헤드라인·연락처·이력서 경로
 data/career.js      경력 행
 data/skills.js      기술 스택 표
+data/education.js   학력·교육·소모임 (비우면 그 섹션 자체가 안 보임)
 data/projects.js    프로젝트 카드 + 상세 (문제→접근→결과 형식)
 assets/images/      프로젝트 이미지·GIF를 여기에
 assets/favicon.svg  파비콘 (마스코트 캐릭터)
@@ -28,6 +29,9 @@ HTML은 건드릴 필요 없습니다. `data/*.js`의 값만 바꾸면 됩니다
   넣고 `thumb` / `media[].src`에 경로를 적으세요. 경로를 비워 두면 캐릭터
   자리 표시가 나옵니다.
 - **수치 없는 성과**: `metrics`의 `value`는 `"—"` 로 두세요. 지어내지 않기.
+- **학력·활동**: `data/education.js` 배열에 `{ period, label, title, note }`
+  형태로 행 추가. `label`은 "학력"/"교육"/"소모임"처럼 짧은 분류표입니다.
+  배열을 비우면 "학력·활동" 섹션이 페이지에서 통째로 사라집니다.
 - **이력서**: PDF를 `assets/`에 넣고 `data/profile.js`의 `resumeUrl`에 경로를
   적으면 상단 우측 버튼이 이력서 링크로 바뀝니다.
 - **도우미 말풍선**: 우하단 캐릭터의 기본 문구는 `data/profile.js`의

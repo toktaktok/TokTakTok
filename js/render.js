@@ -214,6 +214,31 @@
     });
   }
 
+  /* data/education.js가 비어 있으면 "학력·활동" 섹션 자체를 페이지에서 뗍니다
+     (빈 헤딩만 남는 것보다 아예 없는 편이 나아서). */
+  function renderEducation() {
+    var section = document.querySelector(".section.education");
+    if (!section) return;
+    var items = P.education || [];
+    if (!items.length) { section.remove(); return; }
+    var wrap = section.querySelector("[data-education]");
+    if (!wrap) return;
+    var panel = el("div", "glass-panel");
+    items.forEach(function (e) {
+      var row = el("div", "edu__row");
+      row.appendChild(el("p", "edu__period", e.period || ""));
+      var body = el("div");
+      var head = el("p");
+      if (e.label) head.appendChild(el("span", "edu__label", e.label));
+      head.appendChild(el("span", "edu__title", e.title || ""));
+      body.appendChild(head);
+      if (e.note) body.appendChild(el("p", "edu__note", e.note));
+      row.appendChild(body);
+      panel.appendChild(row);
+    });
+    wrap.appendChild(panel);
+  }
+
   function projectCard(p, wide) {
     var card = el("article", "card" + (wide ? " card--wide" : ""));
     card.dataset.tags = (p.tags || []).join("|");
@@ -534,6 +559,7 @@
     renderCareer();
     renderProjects();
     renderSkills();
+    renderEducation();
     renderContact();
   }
   renderColophon();

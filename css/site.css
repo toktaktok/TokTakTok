@@ -498,6 +498,19 @@ a:active { color: var(--color-accent); }
 .grid.is-fading .card { opacity: 0; }
 .grid .card { transition: opacity 150ms var(--ease-out); }
 
+/* ---------- glass-panel · 재사용 가능한 유리 박스 (기술 표, 학력·활동에서 씀) ---------- */
+
+/* border-collapse: collapse인 <table>은 자기 자신의 padding이 사실상 반영되지
+   않는 게 대부분 브라우저의 실제 동작이라(가장자리에 셀이 그대로 붙어버림),
+   패딩이 필요한 콘텐츠는 이 wrapper div에 넣고 테이블/리스트는 안쪽에 둡니다. */
+.glass-panel {
+  padding: var(--space-lg);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, var(--glass-hi), var(--glass-lo));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 1px 0 var(--glass-highlight) inset, 0 6px 18px var(--glass-shadow);
+}
+
 /* ---------- skills · F3 tabular spec sheet ---------- */
 
 .skills { padding-bottom: var(--space-2xl); }
@@ -506,13 +519,6 @@ a:active { color: var(--color-accent); }
   width: 100%;
   border-collapse: collapse;
   font-size: var(--text-sm);
-  /* 오른쪽/왼쪽은 비대칭: 셀들이 이미 padding-right로 오른쪽 간격을 만들고 있어서
-     테이블 자체는 왼쪽·위·아래만 채움 (오른쪽에 이중으로 안 겹치게) */
-  padding: var(--space-lg) 0 var(--space-lg) var(--space-lg);
-  border-radius: var(--radius-panel);
-  background: linear-gradient(180deg, var(--glass-hi), var(--glass-lo));
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 1px 0 var(--glass-highlight) inset, 0 6px 18px var(--glass-shadow);
 }
 .spec th, .spec td {
   text-align: left;
@@ -521,6 +527,8 @@ a:active { color: var(--color-accent); }
   border-top: var(--rule-hair) solid var(--color-rule-2);
   font-weight: 400;
 }
+.spec tr:first-child th, .spec tr:first-child td { border-top: none; }
+.spec th:last-child, .spec td:last-child { padding-right: 0; }
 .spec th[scope="row"] {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
@@ -531,6 +539,34 @@ a:active { color: var(--color-accent); }
 .spec__items { font-weight: 700; }
 .spec__level { color: var(--color-ink-2); white-space: nowrap; width: 10ch; }
 .spec__note { color: var(--color-muted); }
+
+/* ---------- education · 학력·교육·소모임 (연락 앞의 작은 칸, career보다 한 단계 낮은 톤) ---------- */
+
+.education { padding-bottom: var(--space-2xl); }
+
+.edu__row {
+  display: grid;
+  grid-template-columns: 9ch minmax(0, 1fr);
+  gap: var(--space-md);
+  padding-block: var(--space-sm);
+}
+.edu__row + .edu__row { border-top: var(--rule-hair) solid var(--color-rule-2); }
+
+.edu__period {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.15em;
+}
+.edu__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-accent-2);
+  margin-right: var(--space-xs);
+}
+.edu__title { font-size: var(--text-sm); font-weight: 700; }
+.edu__note { color: var(--color-muted); font-size: var(--text-xs); margin-top: var(--space-3xs); }
 
 /* ---------- contact · C3 typographic links ---------- */
 
@@ -709,6 +745,8 @@ a:active { color: var(--color-accent); }
   .contact__mail { font-size: clamp(1.3rem, 6.2vw, 2.2rem); }
   .career__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); padding-block: var(--space-md); }
   .career__period { padding-top: 0; }
+  .edu__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-3xs); }
+  .edu__period { padding-top: 0; }
   .spec__note { display: none; }
   .spec th[scope="row"] { width: 9ch; }
   .detail__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
