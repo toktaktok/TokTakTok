@@ -16,7 +16,7 @@ data/career.js      경력 행
 data/skills.js      기술 스택 표
 data/projects.js    프로젝트 카드 + 상세 (문제→접근→결과 형식)
 assets/images/      프로젝트 이미지·GIF를 여기에
-assets/favicon.svg  파비콘 (픽셀 캐릭터)
+assets/favicon.svg  파비콘 (마스코트 캐릭터)
 ```
 
 ## 콘텐츠 수정

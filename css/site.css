@@ -32,7 +32,7 @@ ul, ol { padding: 0; list-style: none; }
 img { max-width: 100%; height: auto; display: block; }
 
 a {
-  color: var(--color-ink);
+  color: var(--color-accent-2);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
@@ -40,7 +40,7 @@ a {
   transition: text-decoration-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
 }
 a:hover { text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; }
-a:active { color: var(--color-accent-2); }
+a:active { color: var(--color-accent); }
 
 :focus-visible {
   outline: 2px solid var(--color-focus);
@@ -67,6 +67,7 @@ a:active { color: var(--color-accent-2); }
 }
 
 .nav__mark {
+  color: var(--color-ink);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: var(--text-md);
@@ -142,25 +143,35 @@ a:active { color: var(--color-accent-2); }
 
 .hero__art {
   justify-self: end;
-  width: min(100%, 15rem);
+  width: min(100%, 26rem);
+  border: var(--rule-hair) solid var(--color-rule-2);
 }
+.hero__art svg { display: block; width: 100%; height: auto; }
 
-/* ---------- pixel character ---------- */
+/* ---------- mascot character (사용자 제공 SVG 기반) ---------- */
 
 .pix { display: block; width: 100%; height: auto; }
-.pix__body { fill: var(--color-accent); }
-.pix__eye-white { fill: var(--color-paper); }
-.pix__pupil { fill: var(--color-accent-2); }
-.pix__mouth { fill: var(--color-accent-ink); opacity: 0.55; }
-.pix__blink { transform-origin: center 44px; animation: pix-blink 6s var(--ease-in-out) infinite; }
-.pix--placeholder .pix__body { fill: var(--color-rule); }
-.pix--placeholder .pix__pupil { fill: var(--color-neutral); }
-.pix--placeholder .pix__mouth { fill: var(--color-neutral); }
+.pix__bg { fill: var(--color-accent-2); }
+.pix__burst-w { fill: var(--color-paper); opacity: 0.9; }
+.pix__burst-y { fill: var(--color-accent-3); opacity: 0.9; }
+.pix__skin { fill: var(--color-accent); stroke: var(--color-char-line); stroke-width: 4; }
+.pix__white { fill: var(--color-char-line); stroke: var(--color-char-line); stroke-width: 4; }
+.pix__eye { fill: var(--color-char-eye); }
+.pix__shine { fill: var(--color-char-shine); }
+.pix__blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pix-blink 6s var(--ease-in-out) infinite;
+}
+.pix--placeholder .pix__skin { fill: var(--color-rule); stroke: var(--color-paper); }
+.pix--placeholder .pix__white { fill: var(--color-paper); stroke: var(--color-paper); }
+.pix--placeholder .pix__eye { fill: var(--color-neutral); }
+.pix--placeholder .pix__shine { fill: var(--color-paper-2); }
 .pix--placeholder .pix__blink { animation: none; }
 
 @keyframes pix-blink {
   0%, 91%, 100% { transform: scaleY(1); }
-  93%, 95%      { transform: scaleY(0.1); }
+  93%, 95%      { transform: scaleY(0.08); }
 }
 
 /* ---------- sections · S2 hanging heads, varied rhythm ---------- */
@@ -177,6 +188,14 @@ a:active { color: var(--color-accent-2); }
   line-height: 1.15;
   overflow-wrap: anywhere;
   min-width: 0;
+}
+.section__title::before {
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  margin-right: 0.35em;
+  background: var(--color-accent);
 }
 
 .section__note {
@@ -281,7 +300,7 @@ a:active { color: var(--color-accent-2); }
   justify-items: center;
   gap: var(--space-sm);
 }
-.card__placeholder .pix { width: 3.5rem; }
+.card__placeholder .pix { width: 4.25rem; }
 .card__placeholder-label {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
@@ -297,7 +316,7 @@ a:active { color: var(--color-accent-2); }
   letter-spacing: -0.01em;
   margin-top: var(--space-2xs);
 }
-.card__title a { text-decoration: none; }
+.card__title a { color: var(--color-ink); text-decoration: none; }
 .card__title a:hover { text-decoration: underline; text-decoration-color: var(--color-accent); text-decoration-thickness: 2px; }
 
 .card__meta {
@@ -318,7 +337,7 @@ a:active { color: var(--color-accent-2); }
   display: inline-flex;
   align-items: center;
 }
-.card__link:hover { color: var(--color-accent-2); text-decoration-color: var(--color-accent-2); }
+.card__link:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
 
 .grid.is-fading .card { opacity: 0; }
 .grid .card { transition: opacity 150ms var(--ease-out); }
@@ -355,6 +374,7 @@ a:active { color: var(--color-accent-2); }
 .contact { padding-bottom: var(--space-4xl); }
 
 .contact__mail {
+  color: var(--color-accent-2);
   text-underline-offset: 0.12em;
   font-family: var(--font-display);
   font-weight: 700;
@@ -399,7 +419,7 @@ a:active { color: var(--color-accent-2); }
 .detail__back {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
-  color: var(--color-muted);
+  color: var(--color-ink-2);
   white-space: nowrap;
   min-height: 44px;
   display: inline-flex;
@@ -501,7 +521,7 @@ a:active { color: var(--color-accent-2); }
   justify-items: start;
   gap: var(--space-md);
 }
-.empty .pix { width: 4rem; }
+.empty .pix { width: 5rem; }
 
 /* ---------- entrance · one orchestrated reveal (hero only) ---------- */
 
@@ -521,7 +541,7 @@ a:active { color: var(--color-accent-2); }
     gap: var(--space-xl);
     padding-block: var(--space-xl) var(--space-2xl);
   }
-  .hero__art { justify-self: start; width: min(38%, 9rem); order: -1; }
+  .hero__art { justify-self: start; width: min(82%, 20rem); order: -1; }
   .grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
   .detail__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

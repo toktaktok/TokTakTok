@@ -19,47 +19,48 @@
     return document.createDocumentFragment();
   }
 
-  /* 픽셀 캐릭터 — 손으로 그린 SVG(우리 코드라서 innerHTML 사용) */
-  var PIX_SVG =
-    '<svg class="pix" viewBox="0 0 96 80" role="img" aria-label="픽셀 캐릭터">' +
-    /* antennae — 좌우 높이가 다른 비대칭 */
-    '<rect class="pix__body" x="24" y="0" width="8" height="16"/>' +
-    '<rect class="pix__body" x="64" y="8" width="8" height="8"/>' +
-    /* body — 계단형 픽셀 실루엣 */
-    '<rect class="pix__body" x="24" y="16" width="48" height="8"/>' +
-    '<rect class="pix__body" x="16" y="24" width="64" height="8"/>' +
-    '<rect class="pix__body" x="8"  y="32" width="80" height="24"/>' +
-    '<rect class="pix__body" x="16" y="56" width="64" height="8"/>' +
-    /* eyes — 깜빡임 그룹 */
+  /* 마스코트 캐릭터 — 사용자 제공 SVG 기반(우리 코드라서 innerHTML 사용) */
+  var PIX_CHAR =
+    '<path class="pix__skin" d="M518.128 330.932C500.521 337.144 482.95 330.505 478.265 317.228C473.581 303.952 483.094 287.755 500.702 281.542C518.309 275.33 535.881 281.97 540.565 295.247C545.249 308.523 535.735 324.72 518.128 330.932Z"/>' +
+    '<path class="pix__white" d="M535.817 337.201C553.255 321.797 576.812 321.145 588.58 334.468C600.349 347.791 596.794 371.087 579.356 386.49C561.918 401.894 538.361 402.546 526.593 389.223C514.824 375.9 518.379 352.604 535.817 337.201Z"/>' +
+    '<path class="pix__skin" d="M605 200C654.726 200 695 239.867 695 289C695 338.133 654.726 378 605 378C555.274 378 515 338.133 515 289C515 239.867 555.274 200 605 200Z"/>' +
+    '<path class="pix__white" d="M678.953 330.289C705.91 320.616 733.32 330.552 740.785 351.353C748.249 372.153 733.412 397.251 706.455 406.925C679.498 416.599 652.088 406.662 644.623 385.861C637.159 365.06 651.997 339.963 678.953 330.289Z"/>' +
     '<g class="pix__blink">' +
-    '<rect class="pix__eye-white" x="24" y="36" width="16" height="16"/>' +
-    '<rect class="pix__eye-white" x="56" y="36" width="16" height="16"/>' +
-    '<rect class="pix__pupil" x="32" y="40" width="8" height="8"/>' +
-    '<rect class="pix__pupil" x="60" y="40" width="8" height="8"/>' +
+    '<path class="pix__eye" d="M617 254C617 270.569 612.667 284 604 284C595.333 284 591 270.569 591 254C591 237.431 595.333 224 604 224C612.667 224 617 237.431 617 254Z"/>' +
+    '<path class="pix__eye" d="M659 254C659 270.569 654.667 284 646 284C637.333 284 633 270.569 633 254C633 237.431 637.333 224 646 224C654.667 224 659 237.431 659 254Z"/>' +
+    '<path class="pix__shine" d="M613 243.5C613 250.404 610.5 256 605.5 256C600.5 256 598 250.404 598 243.5C598 236.596 600.5 231 605.5 231C610.5 231 613 236.596 613 243.5Z"/>' +
+    '<path class="pix__shine" d="M654 243.5C654 250.404 651.333 256 646 256C640.667 256 638 250.404 638 243.5C638 236.596 640.667 231 646 231C651.333 231 654 236.596 654 243.5Z"/>' +
     "</g>" +
-    /* mouth */
-    '<rect class="pix__mouth" x="40" y="58" width="16" height="4"/>' +
-    /* legs */
-    '<rect class="pix__body" x="24" y="64" width="8" height="8"/>' +
-    '<rect class="pix__body" x="64" y="64" width="8" height="8"/>' +
-    '<rect class="pix__body" x="16" y="72" width="16" height="8"/>' +
-    '<rect class="pix__body" x="64" y="72" width="16" height="8"/>' +
+    '<path class="pix__skin" d="M719.024 301.643C697.582 303.616 679.692 291.229 678.191 274.918C676.69 258.606 692.019 243.162 713.46 241.189C734.902 239.215 752.793 251.603 754.294 267.915C755.795 284.226 740.465 299.67 719.024 301.643Z"/>';
+
+  /* 히어로 패널 — 블루 배경 + 옐로/화이트 버스트 + 캐릭터 (원본 레퍼런스 구성) */
+  var PIX_HERO =
+    '<svg class="pix" viewBox="0 0 420 330" role="img" aria-label="마스코트 캐릭터 — 파란 패널 위 오렌지 캐릭터와 노란 버스트">' +
+    '<rect class="pix__bg" x="0" y="0" width="420" height="330"/>' +
+    '<polygon class="pix__burst-w" points="328.8,125.0 273.1,171.9 346.9,225.3 248.2,212.4 294.7,335.7 209.1,223.3 163.4,380.5 175.8,214.0 41.2,305.5 148.6,190.8 20.5,172.2 137.6,149.4 86.3,76.8 162.6,107.3 176.2,37.5 212.8,99.3 276.4,39.5 249.2,130.6"/>' +
+    '<polygon class="pix__burst-y" points="375.9,188.5 253.1,191.9 301.4,269.8 231.2,227.0 212.3,283.4 186.0,233.8 136.0,261.4 153.0,202.6 67.5,200.3 154.5,161.8 51.3,89.6 176.8,136.9 132.4,-4.4 203.7,125.6 256.6,1.3 236.9,126.8 325.9,89.7 267.4,153.7"/>' +
+    '<g transform="translate(-436.8 -151.7) scale(1.05)">' + PIX_CHAR + "</g>" +
     "</svg>";
 
-  function pixNode(placeholder) {
+  var PIX_PLAIN =
+    '<svg class="pix" viewBox="472 194 288 221" role="img" aria-label="마스코트 캐릭터">' + PIX_CHAR + "</svg>";
+
+  function pixNode(kind) {
     var holder = el("div");
-    holder.innerHTML = PIX_SVG;
+    holder.innerHTML = kind === "hero" ? PIX_HERO : PIX_PLAIN;
     var svg = holder.firstChild;
-    if (placeholder) {
+    if (kind === "placeholder") {
       svg.classList.add("pix--placeholder");
       svg.setAttribute("aria-hidden", "true");
+      svg.removeAttribute("role");
+      svg.removeAttribute("aria-label");
     }
     return svg;
   }
 
   function mediaPlaceholder(label) {
     var box = el("div", "card__placeholder");
-    box.appendChild(pixNode(true));
+    box.appendChild(pixNode("placeholder"));
     box.appendChild(el("p", "card__placeholder-label", label || "이미지 추가"));
     return box;
   }
@@ -150,7 +151,7 @@
     }
 
     var art = el("div", "hero__art");
-    art.appendChild(pixNode(false));
+    art.appendChild(pixNode("hero"));
     art.classList.add("reveal");
     art.style.setProperty("--i", String(i++));
 
@@ -313,7 +314,7 @@
 
     if (!p) {
       var empty = el("div", "empty");
-      empty.appendChild(pixNode(true));
+      empty.appendChild(pixNode("placeholder"));
       empty.appendChild(el("h1", "detail__title", "프로젝트를 찾을 수 없습니다"));
       var back = el("a", "detail__back", "← 프로젝트 목록으로");
       back.href = "index.html#projects";

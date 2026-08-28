@@ -1,5 +1,5 @@
-/* Hallmark · macrostructure: Portfolio Grid · H9 illustration knobs: build=Tier-B hand-SVG, animation=blink-loop, scale=small-accent
- * theme: custom · vibe: "절제된 게임 감성, 오렌지 시그널, 픽셀 캐릭터" · paper: oklch(97% 0.008 45) · accent: oklch(62% 0.19 42)
+/* Hallmark · macrostructure: Portfolio Grid · H9 illustration knobs: build=Tier-B hand-SVG (사용자 제공 캐릭터), animation=blink-loop, scale=hero-panel
+ * theme: custom v2 · vibe: "비비드 오렌지 마스코트, 블루 패널, 옐로 버스트" · paper: oklch(97% 0.008 45) · accent: oklch(70% 0.175 55)
  * display: Space Grotesk · body: IBM Plex Sans KR · outlier: IBM Plex Mono (meta register)
  * axes: light / grotesk-sans / warm · nav: N9 edge-aligned · footer: Ft4 dense-colophon
  * studied: no · context: inferred · Hallmark v1.1.0
@@ -18,11 +18,17 @@
   --color-neutral:    oklch(56% 0.012 45);
   --color-ink:        oklch(21% 0.014 45);
   --color-ink-2:      oklch(34% 0.014 45);
-  --color-accent:     oklch(62% 0.19 42);   /* signal orange — active states, underlines, character body */
-  --color-accent-2:   oklch(46% 0.13 250);  /* sub blue — character eyes, micro-action arrows */
+  --color-accent:     oklch(70% 0.175 55);  /* vivid orange (#FD800D 근사) — 마스코트 몸통, 액티브 상태, 마커 */
+  --color-accent-2:   oklch(53% 0.20 264);  /* vivid blue (#385CEB 근사) — 링크, 히어로 패널 */
+  --color-accent-3:   oklch(84% 0.15 85);   /* warm yellow (#FDB60D 근사) — 히어로 버스트 전용 */
   --color-accent-ink: oklch(21% 0.014 45);  /* text over accent fills (accent L > 50) */
-  --color-focus:      oklch(54% 0.21 42);
-  --color-selection:  oklch(88% 0.06 42);
+  --color-focus:      oklch(57% 0.19 50);
+  --color-selection:  oklch(91% 0.06 80);
+
+  /* 마스코트 캐릭터 전용 */
+  --color-char-line:  oklch(99.5% 0.003 80); /* 외곽선·발 — 웜 화이트 */
+  --color-char-eye:   oklch(40% 0.06 55);    /* 눈 — 브라운 */
+  --color-char-shine: oklch(94% 0.008 60);   /* 눈 하이라이트 */
 
   /* ---- type · Space Grotesk display / IBM Plex Sans KR body / IBM Plex Mono meta ---- */
   --font-display: "Space Grotesk", "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
