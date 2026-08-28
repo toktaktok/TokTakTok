@@ -1,9 +1,10 @@
-/* Hallmark · macrostructure: Portfolio Grid + full-bleed onboarding scene · theme: custom v5 (Aero Glass + Bliss 들판 히어로)
- * vibe: "XP Bliss 들판 위 픽셀 마퀴, 손 흔드는 마스코트, Aero 유리" · paper: oklch(97% 0.010 240) · accent: oklch(58% 0.19 252)
- * display: Pretendard Variable · body: Pretendard Variable · outlier: IBM Plex Mono (meta register) + Galmuri11 Bold (히어로 마퀴 한 곳 전용)
- * axes: light / neo-grotesque-sans / cool · nav: N5 floating pill (was N9 edge-aligned) · footer: Ft4 dense-colophon (unchanged)
+/* Hallmark · macrostructure: Portfolio Grid + full-bleed onboarding scene · theme: custom v5.1 (Aero Glass + Bliss 들판 히어로)
+ * vibe: "XP Bliss 들판 위 대형 디스플레이 마퀴, 손 흔드는 마스코트, Aero 유리" · paper: oklch(97% 0.010 240) · accent: oklch(58% 0.19 252)
+ * display: Pretendard Variable · body: Pretendard Variable · outlier: IBM Plex Mono (meta register, index.html 전용) + Black Han Sans (히어로 마퀴 한 곳 전용, index.html 전용)
+ *   ↳ v5.0에서는 갈무리11(픽셀 폰트)이었으나 대형 사이즈에서 가독성이 떨어져 Black Han Sans로 교체(v5.1) — 개성은 유지하되 픽셀 그리드 없는 굵은 디스플레이 산세리프
+ * axes: light / neo-grotesque-sans + heavy-display outlier / cool · nav: N5 floating pill (was N9 edge-aligned) · footer: Ft4 dense-colophon (unchanged)
  * studied: no · context: explicit — user compared 5 design-drafts variants across sessions and picked Aero · Hallmark v1.1.0
- * pre-emit critique: P4 H4 E4 S4 R4 V4 · contrast: pass · slop: pass — heading mark reskinned as a glass bead (not a numbered eyebrow: anti-patterns.md bans decorative section numbering by default)
+ * pre-emit critique: P4 H4 E4 S4 R4 V4 · contrast: pass (40–41, 히어로 카드/마퀴 합성 대비 픽셀 샘플링 확인) · slop: pass — heading mark는 유리 구슬(숫자 에이바우 아님), 마퀴에 hover-pause 있음(gate 18)
  * mobile: verified at 320 / 375 / 414 / 768 / 1280
  */
 
@@ -39,9 +40,11 @@
   --font-display: "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
   --font-body:    "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
   --font-mono:    "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
-  /* 히어로 마퀴 전용 아웃라이어 — 한글 픽셀 폰트(갈무리11 Bold, OFL, assets/fonts/에 셀프호스팅).
-     픽셀 마스코트와 톤이 맞는 유일한 "개성" 순간. 이 한 곳(히어로 대형 타이포)에서만 씁니다. */
-  --font-hero:    "Galmuri11 Bold", "Pretendard Variable", Pretendard, sans-serif;
+  /* 히어로 마퀴 전용 아웃라이어 — Black Han Sans (Google Fonts, index.html에서만 로드).
+     처음엔 픽셀 폰트(갈무리11)를 썼지만 대형 사이즈에서 획이 깨져 가독성이 떨어져서 교체.
+     한글 지원되는 매우 굵은 디스플레이 산세리프로, 개성은 유지하면서 큰 글자에서도 또렷합니다.
+     이 한 곳(히어로 마퀴)에서만 씁니다 — 아웃라이어 규율(최대 2슬롯) 안. */
+  --font-hero:    "Black Han Sans", "Pretendard Variable", Pretendard, sans-serif;
 
   /* 1.25 major-third scale on a 16px base */
   --text-xs:   0.8rem;
