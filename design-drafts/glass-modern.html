@@ -12,21 +12,24 @@
 <link rel="stylesheet" href="shared.css">
 <style>
   :root {
-    /* 라이트 + 프로스티드 글래스 — Aero(광택·이음선)와 달리 매트하고 은은한 2020년대식 유리 */
-    --color-paper:      oklch(97% 0.008 250);
-    --color-paper-2:    oklch(99.4% 0.003 250);
-    --color-rule:       oklch(82% 0.020 250);
-    --color-rule-2:     oklch(90% 0.015 250);
-    --color-muted:      oklch(48% 0.020 252);
-    --color-ink:        oklch(20% 0.020 258);
-    --color-ink-2:      oklch(37% 0.020 255);
+    /* 라이트 + 프로스티드 글래스 — Aero(광택·이음선)와 달리 매트하고 은은한 2020년대식 유리.
+       사이트 액센트는 웜그레이 뉴트럴로, 브랜드 블루는 캐릭터(--color-character) 전용으로 분리
+       — "다 파랗다"는 인상을 줄이고, 캐릭터의 파란색이 유일한 포인트가 되도록 */
+    --color-paper:      oklch(97% 0.006 75);
+    --color-paper-2:    oklch(99.4% 0.003 75);
+    --color-rule:       oklch(82% 0.010 75);
+    --color-rule-2:     oklch(90% 0.008 75);
+    --color-muted:      oklch(48% 0.010 75);
+    --color-ink:        oklch(20% 0.012 75);
+    --color-ink-2:      oklch(37% 0.012 75);
 
-    --color-accent:      oklch(58% 0.19 252);
-    --color-accent-2:    oklch(48% 0.185 252);
-    --color-accent-ink:  oklch(99% 0.004 250);
-    --color-focus:       oklch(55% 0.20 252);
-    --color-selection:   oklch(85% 0.07 250 / 0.5);
+    --color-accent:      oklch(30% 0.014 70);   /* 웜그레이 그래파이트 — 링크·액티브 상태 */
+    --color-accent-2:    oklch(24% 0.012 70);
+    --color-accent-ink:  oklch(99% 0.003 80);
+    --color-focus:       oklch(58% 0.19 252);   /* 포커스 링만 캐릭터 블루 — 키보드 내비게이션에서 브랜드가 살짝 드러남 */
+    --color-selection:   oklch(88% 0.014 75 / 0.6);
 
+    --color-character:  oklch(58% 0.19 252);    /* 캐릭터 몸통 전용 — 사이트 액센트와 분리된 고정 블루 */
     --color-char-line:  oklch(99.5% 0.003 80);
     --color-char-eye:   oklch(24% 0.05 55);
     --color-char-shine: oklch(94% 0.007 60);
@@ -36,25 +39,25 @@
     --font-body:    "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
     --font-mono:    "IBM Plex Mono", ui-monospace, monospace; /* 날짜·메타 전용 아주 작은 outlier */
 
-    --shadow-whisper: 0 1px 2px oklch(40% 0.05 250 / 0.06);
-    --shadow-lift:    0 24px 60px oklch(50% 0.14 250 / 0.16);
+    --shadow-whisper: 0 1px 2px oklch(30% 0.02 75 / 0.07);
+    --shadow-lift:    0 24px 60px oklch(30% 0.03 75 / 0.14);
 
     --radius-panel: 20px;
     --radius-bubble: 22px;
 
-    --glass:        oklch(99% 0.004 250 / 0.55);
+    --glass:        oklch(99% 0.003 75 / 0.55);
     --glass-border: oklch(100% 0 0 / 0.45);
   }
   html { color-scheme: light; }
 
-  /* ---- 모던 글래스 전용 장식 — 매트 프로스트, 단일톤 블루 워시, 그레인 ---- */
+  /* ---- 모던 글래스 전용 장식 — 매트 프로스트, 웜그레이 워시, 그레인 ---- */
 
   body {
     position: relative;
     background-color: var(--color-paper);
     background-image:
-      radial-gradient(760px 520px at 84% -8%, oklch(72% 0.14 252 / 0.32), transparent 65%),
-      radial-gradient(640px 480px at 4% 30%, oklch(78% 0.10 252 / 0.24), transparent 60%);
+      radial-gradient(760px 520px at 84% -8%, oklch(94% 0.014 75 / 0.55), transparent 65%),
+      radial-gradient(640px 480px at 4% 30%, oklch(90% 0.012 75 / 0.45), transparent 60%);
     background-attachment: fixed;
   }
   /* 아주 옅은 그레인 — 유리 표면에 미세한 질감을 줌(불투명도 0.04, 순수 CSS/SVG) */
@@ -80,9 +83,12 @@
     backdrop-filter: blur(22px) saturate(1.7);
     -webkit-backdrop-filter: blur(22px) saturate(1.7);
   }
-  .nav__mark::before { border-radius: 50%; }
+  .nav__mark::before { border-radius: 50%; background: var(--color-character); }
 
   .hero__title { font-weight: 800; }
+
+  /* 헤딩 앞 사각 마커 제거 — 굵은 웨이트만으로 위계를 표현 */
+  .section__title::before { content: none; }
 
   .filter__btn {
     padding: var(--space-2xs) var(--space-lg);
@@ -93,7 +99,7 @@
     -webkit-backdrop-filter: blur(14px) saturate(1.5);
     transition: background var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
   }
-  .filter__btn:hover { background: oklch(99% 0.004 250 / 0.75); }
+  .filter__btn:hover { background: oklch(99% 0.003 75 / 0.75); }
   .filter__btn[aria-pressed="true"] {
     background: var(--color-accent);
     color: var(--color-accent-ink);
@@ -106,7 +112,7 @@
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(18px) saturate(1.5);
     -webkit-backdrop-filter: blur(18px) saturate(1.5);
-    box-shadow: 0 14px 34px oklch(45% 0.1 250 / 0.10);
+    box-shadow: 0 14px 34px oklch(30% 0.03 75 / 0.09);
   }
 
   .glass-panel {
@@ -116,7 +122,7 @@
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(18px) saturate(1.5);
     -webkit-backdrop-filter: blur(18px) saturate(1.5);
-    box-shadow: 0 14px 34px oklch(45% 0.1 250 / 0.10);
+    box-shadow: 0 14px 34px oklch(30% 0.03 75 / 0.09);
   }
 
   .helper__bubble {
@@ -211,14 +217,14 @@
 
 </main>
 
-<footer class="colophon"><div class="wrap"><p>toktaktok — 게임 클라이언트 프로그래머 포트폴리오 시안. 모던 글래스 — 매트 프로스트, 단일톤 블루 워시, 그레인. Pretendard Variable · IBM Plex Mono. © 2026 toktaktok</p></div></footer>
+<footer class="colophon"><div class="wrap"><p>toktaktok — 게임 클라이언트 프로그래머 포트폴리오 시안. 모던 글래스 — 매트 프로스트, 웜그레이 뉴트럴, 그레인. 파란색은 캐릭터에만. Pretendard Variable · IBM Plex Mono. © 2026 toktaktok</p></div></footer>
 
 <script src="shared.js"></script>
 <script>
   initHelper([
-    "이번엔 모던 글래스예요 — Aero보다 훨씬 매트하고 은은해요.",
-    "폰트도 바꿨어요. Plex Sans 대신 Pretendard를 쓰고 있어요.",
-    "저는 여전히 같은 저예요 — 마우스를 따라가고, 숨쉬고, 팔을 흔들죠."
+    "이번엔 웜그레이 뉴트럴이에요 — 파란색은 이제 저한테만 남아 있어요.",
+    "헤딩 앞에 있던 네모도 뺐어요. 굵은 폰트 웨이트만으로 강조해요.",
+    "폰트는 Pretendard예요. 저는 여전히 같은 저고요 — 마우스를 따라가고, 숨쉬고, 팔을 흔들죠."
   ]);
 </script>
 </body>

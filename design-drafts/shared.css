@@ -134,7 +134,9 @@ a:active { color: var(--color-accent); }
 /* ---------- mascot rig (모든 시안 공통 동작) ---------- */
 
 .pix { display: block; width: 100%; height: auto; overflow: visible; }
-.pix__skin { fill: var(--color-accent); stroke: var(--color-char-line); }
+/* --color-character가 정의되어 있으면(캐릭터 색을 사이트 액센트와 분리한 시안) 그걸 쓰고,
+   없으면 이전처럼 --color-accent를 그대로 씀 — 기존 시안(Aero 등)은 동작 변화 없음 */
+.pix__skin { fill: var(--color-character, var(--color-accent)); stroke: var(--color-char-line); }
 .pix__eye { fill: var(--color-char-eye); }
 .pix__shine { fill: var(--color-char-shine); }
 
