@@ -157,38 +157,45 @@ a:active { color: var(--color-accent); }
   50%      { box-shadow: 0 0 0 6px var(--status-ring-soft); }
 }
 
-/* ---------- hero · 풀블리드 온보딩 씬 — 하늘+들판(손제작 SVG), 픽셀 마퀴, 도킹된 캐릭터 ---------- */
+/* ---------- hero · 풀스크린 씬 — 8비트 픽셀아트 하늘/들판, 네비·마퀴·캐릭터·카드가 전부 그 위에 얹힘 ---------- */
 
-.hero { margin-top: var(--space-lg); }
+.hero { position: relative; }
 
 .hero__scene {
   position: relative;
-  height: clamp(24rem, 66vh, 40rem);
+  height: 100dvh;
+  min-height: 32rem;
+  max-height: 56rem;
   overflow: clip;
-  /* 하늘 + 구름 두 덩이 — 전부 CSS, 외부 이미지 없음 */
-  background-image:
-    radial-gradient(26rem 8rem at 76% 22%, var(--scene-cloud), transparent 68%),
-    radial-gradient(20rem 6.5rem at 16% 32%, var(--scene-cloud), transparent 68%),
-    linear-gradient(180deg, var(--scene-sky-hi), var(--scene-sky-mid) 52%, var(--scene-sky-lo) 100%);
 }
 
-.hero__hills {
+.hero__scene-art {
   position: absolute;
-  inset: auto 0 0 0;
+  inset: 0;
   width: 100%;
-  height: 56%;
+  height: 100%;
   display: block;
-  z-index: 2;
+  z-index: 0;
 }
 
-/* 마퀴 — 화면 가로를 다 차지하는 롤링 타이포. 실제 h1은 sr-only, 이건 장식(aria-hidden) */
+/* 네비 — 씬 맨 위에 떠 있음(호버) */
+.hero__nav-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+}
+
+/* 마퀴 — 화면 가로를 다 차지하는 롤링 타이포. 실제 h1은 sr-only, 이건 장식(aria-hidden).
+   네비 아래, 하늘 영역 안에 오도록 배치 */
 .hero__marquee {
   position: absolute;
-  top: clamp(2.5rem, 9vh, 5.5rem);
+  top: clamp(7rem, 20vh, 11rem);
   left: 0;
   right: 0;
   overflow: clip;
-  z-index: 1;
+  z-index: 2;
   user-select: none;
 }
 .hero__marquee-track {
@@ -212,18 +219,24 @@ a:active { color: var(--color-accent); }
 /* 캐릭터가 서 있는 자리 — 앞동산 능선 위 고정 좌표 (씬 비율 기준) */
 .hero__dock {
   position: absolute;
-  left: 68%;
-  bottom: 7%;
+  left: 72%;
+  bottom: 9%;
   z-index: 3;
 }
 
-/* 소개 카드 — 들판 이미지 위로 실제로 올라앉는 유리 패널(왼쪽 하단부와 겹침).
-   캐릭터는 오른쪽(.hero__dock, left:68%)에 도킹돼 있어서 카드와 자리가 안 부딪힘 */
-.hero__card {
-  position: relative;
+/* 소개 카드 — 씬 안, 왼쪽 하단에 얹힌 유리 패널. 캐릭터는 오른쪽에 도킹돼 있어서
+   자리가 안 부딪힘. wrap으로 감싸되 빈 공간은 클릭을 막지 않게(포인터 이벤트는 카드에만) */
+.hero__card-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9%;
   z-index: 4;
-  max-width: 38rem;
-  margin-top: -11rem;
+  pointer-events: none;
+}
+.hero__card {
+  pointer-events: auto;
+  max-width: 30rem;
   backdrop-filter: blur(10px) saturate(1.3);
   -webkit-backdrop-filter: blur(10px) saturate(1.3);
 }
@@ -236,7 +249,7 @@ a:active { color: var(--color-accent); }
 }
 
 .hero__intro {
-  max-width: 46ch;
+  max-width: 42ch;
   color: var(--color-ink-2);
 }
 
@@ -249,79 +262,6 @@ a:active { color: var(--color-accent); }
   font-size: var(--text-sm);
   color: var(--color-muted);
 }
-
-/* 경력 팝업을 여는 유리 알약 버튼 */
-.hero__career-btn {
-  appearance: none;
-  cursor: pointer;
-  white-space: nowrap;
-  margin-top: var(--space-lg);
-  padding: var(--space-2xs) var(--space-lg);
-  min-height: 44px;
-  border-radius: var(--radius-pill);
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  box-shadow: 0 1px 0 var(--glass-highlight) inset;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--color-ink-2);
-  transition: box-shadow var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
-}
-.hero__career-btn:hover {
-  color: var(--color-ink);
-  box-shadow: 0 1px 0 var(--glass-highlight-hi) inset, 0 3px 8px var(--glass-shadow-hi);
-}
-.hero__career-btn:active { transform: translateY(1px); }
-
-/* ---------- dialog · 경력 팝업 (네이티브 <dialog>, 유리 패널) ---------- */
-
-.dialog {
-  width: min(42rem, calc(100vw - 2rem));
-  max-height: min(80vh, 44rem);
-  padding: var(--space-xl);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-panel);
-  background:
-    linear-gradient(180deg, var(--glass-hi), var(--glass-lo)),
-    linear-gradient(var(--color-paper-2), var(--color-paper-2));
-  box-shadow: 0 1px 0 var(--glass-highlight) inset, var(--shadow-lift);
-  color: var(--color-ink);
-}
-.dialog::backdrop {
-  background: var(--color-selection);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
-.dialog__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-md);
-  margin-bottom: var(--space-md);
-}
-.dialog__head h2 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: var(--text-lg);
-  letter-spacing: -0.02em;
-}
-.dialog__close {
-  appearance: none;
-  cursor: pointer;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-pill);
-  box-shadow: 0 1px 0 var(--glass-highlight) inset;
-  width: 2.25rem;
-  height: 2.25rem;
-  font-family: var(--font-mono);
-  font-size: var(--text-base);
-  color: var(--color-ink-2);
-  line-height: 1;
-}
-.dialog__close:hover { color: var(--color-ink); box-shadow: 0 1px 0 var(--glass-highlight-hi) inset, 0 3px 8px var(--glass-shadow-hi); }
-.dialog__close:active { transform: translateY(1px); }
-body.dialog-open { overflow: hidden; }
 
 /* ---------- mascot character (사용자 제공 SVG · stroke 두께는 마크업 속성) ----------
    리그: 팔(좌/우) · 몸통 · 눈 · 입. 아이들 모션 3종은 서로 다른 주기를 써서
@@ -945,21 +885,20 @@ body.dialog-open { overflow: hidden; }
 @media (max-width: 60rem) {
   .grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
   .detail__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hero__scene { height: clamp(20rem, 56vh, 30rem); }
-  .hero__dock { left: 74%; }
-  /* 카드도 좁혀서 도킹된 캐릭터/말풍선과 자리가 안 겹치게 */
-  .hero__card { max-width: min(28rem, 58%); margin-top: -8rem; }
+  .hero__card { max-width: min(26rem, 56%); }
 }
 
 @media (max-width: 40rem) {
   .contact__mail { font-size: clamp(1.3rem, 6.2vw, 2.2rem); }
-  .hero__scene { height: clamp(17rem, 52vh, 24rem); }
-  .hero__marquee { top: var(--space-xl); }
-  .hero__dock { left: 78%; bottom: 6%; }
-  /* 모바일에서는 카드를 좁혀서 오른쪽에 캐릭터 자리를 남겨 둡니다(도킹 위치도 더 오른쪽으로) —
-     겹치긴 하되 서로 가리지 않게 */
-  .hero__card { max-width: 70%; margin-top: -3rem; padding: var(--space-md); }
-  .dialog { padding: var(--space-lg); }
+  /* 좁은 화면에서는 네비 알약에 4개 링크까지 넣을 자리가 없어서(스크롤해도 중간에
+     글자가 잘려 보임) 링크 줄은 숨김 — 섹션은 스크롤로 충분히 닿을 수 있음 */
+  .nav__links { display: none; }
+  .hero__marquee { top: 8rem; }
+  /* 좁은 화면에서는 카드(전체 폭)와 캐릭터를 세로로 분리 — 캐릭터는 능선 뒤쪽
+     (조금 더 위)에 작게 서 있고, 카드는 그 아래 앞동산~풀밭에 폭 넓게 앉음 */
+  .hero__dock { left: 78%; bottom: 38%; }
+  .hero__card-wrap { bottom: 4%; }
+  .hero__card { max-width: none; padding: var(--space-md); }
   .career__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); padding-block: var(--space-md); }
   .career__period { padding-top: 0; }
   .edu__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-3xs); }

@@ -87,19 +87,19 @@
   --glass-shadow:       oklch(45% 0.1 250 / 0.10); /* 앰비언트 그림자 틴트 — 평상시 */
   --glass-shadow-hi:    oklch(45% 0.1 250 / 0.14); /* 〃 — hover */
 
-  /* ---- scene · 히어로 온보딩 들판 (XP Bliss 오마주를 손으로 그린 SVG/CSS) ----
-     일러스트 전용 미니 팔레트 — UI 컴포넌트에는 쓰지 않습니다. 초록 들판은 파란
-     캐릭터와 색이 대비되도록 status 초록(145)과 같은 계열로 맞춤 */
-  --scene-sky-hi:        oklch(80% 0.085 245);   /* 하늘 위쪽 — 맑은 에어로 블루 */
-  --scene-sky-mid:       oklch(88% 0.055 240);
-  --scene-sky-lo:        oklch(94% 0.025 220);   /* 지평선 부근 — 뿌옇게 */
-  --scene-cloud:         oklch(99% 0.005 240 / 0.85);
-  --scene-hill-back-hi:  oklch(82% 0.14 135);    /* 뒷동산 — 밝은 연두 */
-  --scene-hill-back-lo:  oklch(72% 0.15 140);
-  --scene-hill-hi:       oklch(76% 0.185 132);   /* 앞동산 — 쨍한 블리스 그린 */
-  --scene-hill-mid:      oklch(64% 0.17 140);
-  --scene-hill-lo:       oklch(52% 0.14 145);
-  --scene-hill-gloss:    oklch(96% 0.05 130 / 0.28); /* 능선의 에어로 광택 */
+  /* ---- scene · 히어로 풀스크린 씬 — 8비트 픽셀아트 실루엣(직각 스텝 + 블록 구름/꽃).
+     레퍼런스 이미지의 스타일(쨍한 플랫 컬러, 각진 실루엣)만 추출해 직접 그린 것 — 원본
+     이미지를 그대로 쓰지 않음. 일러스트 전용 미니 팔레트, UI 컴포넌트에는 안 씀.
+     하늘은 캐릭터(hue 252)와 구분되도록 조금 더 시안 쪽(hue 235)으로 */
+  --scene-sky-hi:        oklch(70% 0.15 235);   /* 하늘 위쪽 — 쨍한 픽셀아트 블루 */
+  --scene-sky-mid:       oklch(76% 0.13 233);
+  --scene-sky-lo:        oklch(84% 0.09 228);   /* 지평선 밴드 */
+  --scene-cloud:         oklch(99% 0.005 240 / 0.95);
+  --scene-hill-back-hi:  oklch(82% 0.14 135);   /* 뒷동산 — 밝은 연두, 플랫 */
+  --scene-hill-hi:       oklch(64% 0.16 138);   /* 앞동산 — 진한 그린, 플랫 */
+  --scene-tree:          oklch(44% 0.10 145);   /* 능선 위 덤불 */
+  --scene-flower-1:      oklch(97% 0.01 90);    /* 꽃 — 흰색 계열 */
+  --scene-flower-2:      oklch(90% 0.12 95);    /* 꽃 — 옅은 노랑 */
 
   /* ---- status · 초록 유리(파란 크롬과 분리된 유일한 보조색) ---- */
   --status-hi:    oklch(97% 0.03 145 / 0.95);

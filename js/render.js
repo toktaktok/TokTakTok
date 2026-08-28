@@ -15,10 +15,6 @@
     return node;
   }
 
-  function frag() {
-    return document.createDocumentFragment();
-  }
-
   /* 마스코트 캐릭터 — 사용자 제공 SVG.
      아이들 모션과 눈 추적을 위해 팔 / 몸통 / 눈을 그룹으로 나눠 리깅했습니다.
      stroke 두께는 원본 값 그대로 속성으로 유지. */
@@ -237,20 +233,12 @@
         profile.meta.forEach(function (m) { meta.appendChild(el("span", null, m)); });
         card.appendChild(reveal(meta));
       }
-
-      /* 경력 팝업 버튼 — 경력 데이터가 있을 때만 */
-      if ((P.career || []).length) {
-        var btn = el("button", "hero__career-btn", "경력 한눈에 보기 →");
-        btn.type = "button";
-        btn.addEventListener("click", openCareerDialog);
-        card.appendChild(reveal(btn));
-      }
     }
   }
 
-  /* 경력 행 — 본문 섹션과 히어로 팝업이 같은 빌더를 공유합니다 */
-  function careerRows() {
-    var out = frag();
+  function renderCareer() {
+    var list = document.querySelector("[data-career]");
+    if (!list) return;
     (P.career || []).forEach(function (c) {
       var row = el("div", "career__row");
       row.appendChild(el("p", "career__period", c.period || ""));
@@ -261,51 +249,8 @@
       body.appendChild(head);
       if (c.note) body.appendChild(el("p", "career__note", c.note));
       row.appendChild(body);
-      out.appendChild(row);
+      list.appendChild(row);
     });
-    return out;
-  }
-
-  function renderCareer() {
-    var list = document.querySelector("[data-career]");
-    if (!list) return;
-    list.appendChild(careerRows());
-  }
-
-  /* 경력 팝업 — 네이티브 <dialog> (ESC·포커스 처리는 브라우저가 담당) */
-  var careerDialog = null;
-  function openCareerDialog() {
-    if (!careerDialog) {
-      careerDialog = document.createElement("dialog");
-      careerDialog.className = "dialog";
-
-      var head = el("div", "dialog__head");
-      head.appendChild(el("h2", null, "경력"));
-      var close = el("button", "dialog__close", "×");
-      close.type = "button";
-      close.setAttribute("aria-label", "경력 팝업 닫기");
-      head.appendChild(close);
-      careerDialog.appendChild(head);
-
-      var body = el("div", "dialog__body");
-      body.appendChild(careerRows());
-      careerDialog.appendChild(body);
-      document.body.appendChild(careerDialog);
-
-      close.addEventListener("click", function () { careerDialog.close(); });
-      /* 패널 밖(백드롭) 클릭으로 닫기 — 패널 안 클릭은 좌표로 구분 */
-      careerDialog.addEventListener("click", function (e) {
-        var rect = careerDialog.getBoundingClientRect();
-        if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
-          careerDialog.close();
-        }
-      });
-      careerDialog.addEventListener("close", function () {
-        document.body.classList.remove("dialog-open");
-      });
-    }
-    document.body.classList.add("dialog-open");
-    careerDialog.showModal();
   }
 
   /* data/education.js가 비어 있으면 "학력·활동" 섹션 자체를 페이지에서 뗍니다
