@@ -17,15 +17,15 @@ data/skills.js      기술 스택 표
 data/education.js   학력·교육·소모임 (비우면 그 섹션 자체가 안 보임)
 data/projects.js    프로젝트 카드 + 상세 (문제→접근→결과 형식)
 assets/images/      프로젝트 이미지·GIF를 여기에
-assets/fonts/       갈무리11 Bold (히어로 마퀴용 한글 픽셀 폰트, OFL) 셀프호스팅
 assets/favicon.svg  파비콘 (마스코트 캐릭터)
 ```
 
 ## 첫 화면 (온보딩 씬)
 
 - **마퀴 타이포** — `data/profile.js`의 `headline`이 화면 가로를 가득 채우는
-  롤링 텍스트로 흐릅니다. 폰트는 픽셀 마스코트와 톤을 맞춘 한글 픽셀 폰트
-  **갈무리11 Bold**(OFL, `assets/fonts/`에 셀프호스팅 — CDN 의존 없음).
+  롤링 텍스트로 흐릅니다. 폰트는 **Black Han Sans**(Google Fonts,
+  `index.html`에서만 로드) — 처음엔 한글 픽셀 폰트(갈무리11)를 셀프호스팅
+  했었지만 대형 사이즈에서 픽셀 그리드 때문에 가독성이 떨어져 교체했습니다.
   실제 `<h1>`은 스크린리더용으로 따로 있고 마퀴는 장식(aria-hidden)입니다.
 - **들판 배경** — XP Bliss를 오마주한 하늘+언덕. 외부 이미지가 아니라
   손으로 그린 SVG+CSS라서 모바일/데스크톱 어디서나 선명하고, 색은
