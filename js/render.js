@@ -675,10 +675,26 @@
         return { left: a.left + slot.dx, top: a.top + slot.dy, w: slot.w };
       }
 
+      /* 진행도 e(0=출발, 1=도착)에 해당하는 위치로 옮겨 놓습니다 */
+      function applyAt(e) {
+        var t = target();
+        var x = first.left + (t.left - first.left) * e - base.left;
+        var y = first.top + (t.top - first.top) * e - base.top;
+        var s = (first.width + (t.w - first.width) * e) / base.width;
+        inner.style.transform =
+          "translate(" + x.toFixed(2) + "px," + y.toFixed(2) + "px) scale(" + s.toFixed(4) + ")";
+      }
+
       charSvg.style.setProperty("--pix-lean", (target().left < first.left ? -5 : 5) + "deg");
       box.classList.add("is-travelling");
       box.classList.add("is-in");
       setPixState(charSvg, { mood: "smile", anim: "travel" });
+
+      /* 출발 위치를 지금 당장(동기적으로) 찍어 둡니다. setDocked는 이미 rAF 콜백
+         안에서 불리므로 아래 requestAnimationFrame(step)은 다음 프레임에야 돕니다.
+         그 사이 이번 프레임이 transform 없이 그려지면 캐릭터가 한 프레임 동안
+         도착지(우하단)에 찍혔다가 되돌아오는 것처럼 튑니다. */
+      applyAt(0);
 
       var token = {}, dur = travelMs(), t0 = 0;
 
@@ -688,12 +704,7 @@
         var p = Math.min(1, (now - t0) / dur);
         /* --ease-in-out(cubic-bezier(.65, 0, .35, 1))과 같은 곡선 */
         var e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
-        var t = target();
-        var x = first.left + (t.left - first.left) * e - base.left;
-        var y = first.top + (t.top - first.top) * e - base.top;
-        var s = (first.width + (t.w - first.width) * e) / base.width;
-        inner.style.transform =
-          "translate(" + x.toFixed(2) + "px," + y.toFixed(2) + "px) scale(" + s.toFixed(4) + ")";
+        applyAt(e);
 
         if (p < 1) { flight.raf = requestAnimationFrame(step); return; }
         flight = null;

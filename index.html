@@ -16,6 +16,12 @@
 </head>
 <body data-page="index">
 
+  <!-- 상단바 — 스크롤을 내려도 계속 따라오도록 화면에 고정. 히어로 씬 안에 두면
+       .hero__scene의 overflow: clip에 걸려 씬을 벗어나는 순간 잘려서, 씬 밖에 둡니다. -->
+  <div class="nav-bar wrap">
+    <nav class="nav" aria-label="주 메뉴"></nav>
+  </div>
+
   <!-- 히어로 — 화면을 꽉 채우는 풀스크린 씬. 네비/카드/캐릭터가 전부 이 씬 위에 얹힙니다.
        텍스트는 전부 js/render.js가 data/profile.js에서 채웁니다.
        씬 아트는 assets/images/Aero.png (1280x640 픽셀아트, 지평선은 위에서 약 80% 지점).
@@ -26,9 +32,6 @@
       <img class="hero__scene-art" src="assets/images/Aero.png" alt=""
            width="1280" height="640" fetchpriority="high" decoding="async">
 
-      <div class="hero__nav-wrap wrap">
-        <nav class="nav" aria-label="주 메뉴"></nav>
-      </div>
       <div class="hero__marquee" aria-hidden="true" data-marquee></div>
       <div class="hero__dock" data-dock></div>
       <div class="hero__card-wrap wrap">

@@ -1,4 +1,4 @@
-/* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill + section links · footer: Ft4 · sections: hero(풀블리드 씬 + 마퀴 + 경력 팝업) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
+/* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill (화면 최상단 고정, 씬 밖 — 씬의 overflow: clip에 안 걸리게) + section links · footer: Ft4 · sections: hero(풀블리드 씬 + 마퀴 + 경력 팝업) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
  * hero enrichment: 사용자 제공 픽셀아트 배경(assets/images/Aero.png, 아래 정렬 + 위쪽은 --scene-sky가 이어받음) + Black Han Sans 대형 마퀴.
  * mascot: 입 없음 — 표정은 눈으로만(.pix--smile이 뜬 눈을 웃는 눈 호와 맞바꿈).
@@ -70,12 +70,26 @@ a:active { color: var(--color-accent); }
 
 /* ---------- nav · N5 floating glass pill ---------- */
 
+/* 화면 최상단에 고정 — 스크롤을 내려도 계속 따라옵니다. 알약 바깥의 빈 자리가
+   아래 콘텐츠 클릭을 막지 않도록 포인터 이벤트는 알약에만 살려 둡니다. */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-sticky);
+  pointer-events: none;
+}
+.nav-bar .nav { pointer-events: auto; }
+
 .nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-lg);
-  padding-block: var(--space-lg);
+  /* 알약 두께는 링크의 터치 타깃(min-height 44px)이 결정합니다.
+     상하 패딩은 그 위에 얹는 여백만 — 얇게 */
+  padding-block: var(--space-xs);
   padding-inline: var(--space-lg);
   margin-block: var(--space-md) 0;
   border-radius: var(--radius-pill);
@@ -195,15 +209,6 @@ a:active { color: var(--color-accent); }
   z-index: 0;
   object-fit: cover;
   object-position: center bottom;
-}
-
-/* 네비 — 씬 맨 위에 떠 있음(호버) */
-.hero__nav-wrap {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 5;
 }
 
 /* 마퀴 — 화면 가로를 다 차지하는 롤링 타이포. 실제 h1은 sr-only, 이건 장식(aria-hidden).
@@ -540,6 +545,9 @@ a:active { color: var(--color-accent); }
 
 .section { border-top: var(--rule-hair) solid var(--color-rule); }
 
+/* 앵커(#career 등)로 이동할 때 섹션 제목이 고정 상단바 밑에 깔리지 않게 */
+.section[id] { scroll-margin-top: var(--nav-h); }
+
 .section__head { padding-block: var(--space-2xl) var(--space-xl); }
 
 .section__title {
@@ -835,7 +843,8 @@ a:active { color: var(--color-accent); }
 
 /* ---------- project detail page ---------- */
 
-.detail { padding-block: var(--space-2xl) var(--space-3xl); }
+/* 상단바가 고정이라, 상세 페이지 본문은 그 높이만큼 아래에서 시작합니다 */
+.detail { padding-block: calc(var(--nav-h) + var(--space-lg)) var(--space-3xl); }
 
 .detail__back {
   font-family: var(--font-mono);
