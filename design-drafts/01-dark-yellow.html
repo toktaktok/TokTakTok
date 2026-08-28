@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>시안 1 · 다크 + 옐로 — toktaktok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+  :root {
+    /* 다크 베이스 + 블루(기존 포인트 유지) + 옐로(신규 서브 포인트) */
+    --color-paper:      oklch(18% 0.020 258);
+    --color-paper-2:    oklch(23% 0.022 258);
+    --color-rule:       oklch(34% 0.020 258);
+    --color-rule-2:     oklch(29% 0.020 258);
+    --color-muted:      oklch(62% 0.020 258);
+    --color-ink:        oklch(95% 0.010 258);
+    --color-ink-2:      oklch(78% 0.012 258);
+
+    --color-accent:     oklch(68% 0.17 252);   /* 블루 — 마커·언더라인·필터 액티브 */
+    --color-accent-2:   oklch(85% 0.16 95);    /* 옐로 — 링크 기본색, 큰 이메일 */
+    --color-focus:      oklch(85% 0.18 95);    /* 옐로 포커스 링 — 다크 배경에서 잘 보임 */
+    --color-selection:  oklch(85% 0.14 95 / 0.35);
+
+    --color-char-line:  oklch(98% 0.004 90);
+    --color-char-eye:   oklch(24% 0.05 55);
+    --color-char-shine: oklch(94% 0.007 60);
+
+    --font-display: "Space Grotesk", "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
+    --font-body:    "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
+    --font-mono:    "IBM Plex Mono", ui-monospace, monospace;
+
+    --shadow-whisper: 0 1px 2px oklch(0% 0 0 / 0.4);
+    --shadow-lift:    0 4px 16px oklch(60% 0.19 252 / 0.38); /* 도우미 캐릭터 아래 은은한 블루 글로우 */
+
+    --radius-panel: 6px;
+    --radius-bubble: 14px 14px 2px 14px;
+  }
+  html { color-scheme: dark; }
+</style>
+</head>
+<body>
+
+<a class="draft-tag" href="index.html">← 시안 목록 · 01 다크+옐로</a>
+
+<header class="wrap">
+  <nav class="nav">
+    <a class="nav__mark" href="#">toktaktok</a>
+    <a class="nav__cta" href="#contact">연락 →</a>
+  </nav>
+  <section class="hero">
+    <p class="hero__kicker reveal" style="--i:0">이름 입력 · 게임 클라이언트 프로그래머</p>
+    <h1 class="hero__title reveal" style="--i:1">게임의 화면 안쪽을 만듭니다.</h1>
+    <p class="hero__intro reveal" style="--i:2">UI 시스템, 게임플레이, 성능 최적화를 다루는 클라이언트 프로그래머입니다. 이 문단은 자리 표시 문장입니다.</p>
+    <p class="hero__meta reveal" style="--i:3"><span>경력 N년 — 연차 입력</span><span>위치 입력</span></p>
+  </section>
+</header>
+
+<main class="wrap">
+
+  <section class="section career" id="career">
+    <header class="section__head"><h2 class="section__title">경력</h2></header>
+    <div class="career__row">
+      <p class="career__period">2024.01 — 현재</p>
+      <div>
+        <p><span class="career__org">회사명 입력</span><span class="career__role"> — 게임 클라이언트 프로그래머</span></p>
+        <p class="career__note">담당 프로젝트와 역할을 한 줄로. (샘플 행)</p>
+      </div>
+    </div>
+    <div class="career__row">
+      <p class="career__period">2020.03 —<br>2023.12</p>
+      <div><p><span class="career__org">이전 회사명 입력</span><span class="career__role"> — 클라이언트 프로그래머</span></p></div>
+    </div>
+  </section>
+
+  <section class="section projects" id="projects">
+    <header class="section__head">
+      <h2 class="section__title">프로젝트</h2>
+      <p class="section__note">selected work — 최신순</p>
+    </header>
+    <div class="filter">
+      <button class="filter__btn" type="button" aria-pressed="true">전체</button>
+      <button class="filter__btn" type="button">UI</button>
+      <button class="filter__btn" type="button">최적화</button>
+      <button class="filter__btn" type="button">게임플레이</button>
+    </div>
+    <div class="grid">
+      <article class="card card--wide">
+        <a aria-hidden="true" tabindex="-1"><div class="card__media"><div class="card__placeholder"><div data-mascot-placeholder></div><p class="card__placeholder-label">이미지 추가</p></div></div></a>
+        <h3 class="card__title"><a href="#">미니맵 시스템 개편 (작성 예시)</a></h3>
+        <p class="card__meta">2023.01 — 2024.06  ·  Unreal Engine 5  ·  UI · 최적화</p>
+        <p class="card__summary">이 항목은 작성 형식을 보여 주는 예시입니다. 카드에는 이렇게 프로젝트를 한 문장으로 요약합니다.</p>
+        <a class="card__link" href="#">자세히 →</a>
+      </article>
+      <article class="card">
+        <a aria-hidden="true" tabindex="-1"><div class="card__media"><div class="card__placeholder"><div data-mascot-placeholder></div><p class="card__placeholder-label">이미지 추가</p></div></div></a>
+        <h3 class="card__title"><a href="#">두 번째 프로젝트 제목 입력</a></h3>
+        <p class="card__meta">2021.05 — 2022.12  ·  엔진 입력  ·  게임플레이</p>
+        <p class="card__summary">카드에 보일 한 줄 요약 입력. (샘플 카드)</p>
+        <a class="card__link" href="#">자세히 →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="section skills" id="skills">
+    <header class="section__head"><h2 class="section__title">기술</h2></header>
+    <table class="spec"><tbody>
+      <tr><th scope="row">주력</th><td class="spec__items">C++ · Unreal Engine</td><td class="spec__note">실무에서 설계와 구현을 주도할 수 있는 수준.</td></tr>
+      <tr><th scope="row">능숙</th><td class="spec__items">C# · Unity · UI 시스템</td><td class="spec__note">실무 사용 경험이 충분한 수준.</td></tr>
+      <tr><th scope="row">경험</th><td class="spec__items">Python · Jenkins</td><td class="spec__note">사용해 본 수준.</td></tr>
+    </tbody></table>
+  </section>
+
+  <section class="section contact" id="contact">
+    <header class="section__head"><h2 class="section__title">연락</h2></header>
+    <a class="contact__mail" href="mailto:toktaktok2938@gmail.com">toktaktok2938@gmail.com</a>
+    <p class="contact__links"><a href="https://github.com/toktaktok" rel="noreferrer">github ↗</a></p>
+  </section>
+
+</main>
+
+<footer class="colophon"><div class="wrap"><p>toktaktok — 게임 클라이언트 프로그래머 포트폴리오 시안 01. 다크 베이스 + 블루(기존 포인트) + 옐로(서브 포인트). Space Grotesk · IBM Plex Sans KR · IBM Plex Mono. © 2026 toktaktok</p></div></footer>
+
+<script src="shared.js"></script>
+<script>
+  initHelper([
+    "다크 모드 시안이에요 — 블루는 그대로, 옐로를 서브 포인트로 더했어요.",
+    "링크는 기본이 노란색, 호버하면 파란색으로 바뀌어요.",
+    "저는 원래처럼 우하단에서 마우스를 따라 눈을 움직여요."
+  ]);
+</script>
+</body>
+</html>

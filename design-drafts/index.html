@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>디자인 시안 — toktaktok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+  :root {
+    --paper: #f1ebe7; --ink: #221a14; --muted: #6b5d52; --rule: #ddd2c8; --accent: #007aff;
+    --font-d: "Space Grotesk", "IBM Plex Sans KR", sans-serif;
+    --font-b: "IBM Plex Sans KR", sans-serif;
+    --font-m: "IBM Plex Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--paper); color: var(--ink); font-family: var(--font-b);
+    line-height: 1.6; padding: clamp(1.25rem, 5vw, 3rem);
+  }
+  h1 { font-family: var(--font-d); font-weight: 700; font-size: clamp(1.6rem, 4vw, 2.4rem); letter-spacing: -0.02em; margin: 0 0 0.4em; }
+  p.lede { color: var(--muted); max-width: 60ch; margin: 0 0 2rem; }
+  ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; max-width: 40rem; }
+  a.item {
+    display: block; padding: 1.1rem 1.25rem; border: 1px solid var(--rule); text-decoration: none; color: var(--ink);
+    transition: border-color 120ms ease-out, transform 120ms ease-out;
+  }
+  a.item:hover { border-color: var(--accent); transform: translateX(2px); }
+  a.item .n { font-family: var(--font-m); font-size: 0.8rem; color: var(--accent); display: block; margin-bottom: 0.3em; }
+  a.item .t { font-family: var(--font-d); font-weight: 700; font-size: 1.15rem; display: block; }
+  a.item .d { color: var(--muted); font-size: 0.9rem; margin-top: 0.3em; display: block; }
+  footer { margin-top: 2.5rem; font-family: var(--font-m); font-size: 0.78rem; color: var(--muted); }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+  <h1>디자인 시안 3종</h1>
+  <p class="lede">같은 컨셉(파란 마스코트 · 게임 클라이언트 프로그래머 포트폴리오 · 동일 콘텐츠 구조)을 유지하고 스킨만 다르게 만든 비교용 시안입니다. 실제 서비스 페이지에는 영향 없습니다.</p>
+  <ul>
+    <li><a class="item" href="01-dark-yellow.html"><span class="n">01</span><span class="t">다크 + 옐로</span><span class="d">다크 모드 베이스, 블루는 유지하고 옐로를 서브 포인트로 추가</span></a></li>
+    <li><a class="item" href="02-retro-dos.html"><span class="n">02</span><span class="t">레트로 (Win98풍)</span><span class="d">그 시절 윈도우 느낌의 베벨·타이틀바·풍선 도움말, 구성은 정돈되게</span></a></li>
+    <li><a class="item" href="03-game-hud.html"><span class="n">03</span><span class="t">게임 HUD</span><span class="d">코너 브래킷, 글로우 액센트, 티어 미터바로 더 게임스럽게</span></a></li>
+  </ul>
+  <footer><a href="../index.html">← 실제 사이트로 돌아가기</a></footer>
+</body>
+</html>

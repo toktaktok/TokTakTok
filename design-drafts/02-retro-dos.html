@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>시안 2 · 레트로 (Win98풍) — toktaktok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+  :root {
+    /* Win98 팔레트: 그레이 바탕 + 네이비(기존 블루 포인트) 타이틀바 + 순수 블랙/화이트 */
+    --color-paper:      oklch(91% 0.006 90);
+    --color-paper-2:    oklch(97.5% 0.004 90);
+    --color-rule:       oklch(55% 0.010 90);
+    --color-rule-2:     oklch(78% 0.008 90);
+    --color-muted:      oklch(42% 0.010 90);
+    --color-ink:        oklch(14% 0 0);
+    --color-ink-2:      oklch(28% 0.010 90);
+
+    --color-accent:     oklch(32% 0.135 258);  /* 타이틀바 네이비 — 기존 마스코트 블루 계열 */
+    --color-accent-2:   var(--color-accent);
+    --color-focus:      var(--color-accent);
+    --color-selection:  var(--color-accent);
+    --color-bevel-dark: oklch(55% 0.010 90);   /* 베벨 음영측 */
+    --color-tip:        oklch(97% 0.040 95);   /* Win98 풍선 도움말의 그 페일 옐로 */
+
+    --color-char-line:  oklch(98% 0.004 90);
+    --color-char-eye:   oklch(24% 0.05 55);
+    --color-char-shine: oklch(94% 0.007 60);
+
+    --font-display: "Space Grotesk", "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
+    --font-body:    "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
+    --font-mono:    "IBM Plex Mono", ui-monospace, monospace;
+
+    --shadow-whisper: none;
+    --shadow-lift:    1px 1px 0 var(--color-bevel-dark); /* 블러 없는 1px 오프셋 — 비트맵 아이콘 그림자 느낌 */
+
+    --radius-panel: 0px;
+    --radius-bubble: 0px;
+  }
+
+  /* ---- Win98 전용 장식 — 베벨, 타이틀바, 풍선 도움말 ---- */
+
+  ::selection { color: var(--color-paper-2); }
+
+  :focus-visible { outline: 1px dotted var(--color-ink) !important; outline-offset: 2px !important; }
+
+  .nav {
+    background: var(--color-accent);
+    margin-inline: calc(-1 * clamp(1rem, 4vw, 2.5rem));
+    padding-inline: clamp(1rem, 4vw, 2.5rem);
+    border-bottom: none;
+  }
+  .nav__mark, .nav__cta { color: var(--color-paper-2); }
+  .nav__mark { font-family: var(--font-mono); letter-spacing: 0.02em; }
+  .nav__mark::before { background: var(--color-paper-2); }
+
+  .card__media, .win-panel {
+    background: var(--color-paper-2);
+    border-width: 2px;
+    border-style: solid;
+  }
+  .card__media { border-color: var(--color-bevel-dark) var(--color-paper-2) var(--color-paper-2) var(--color-bevel-dark); }
+  .win-panel {
+    border-color: var(--color-paper-2) var(--color-bevel-dark) var(--color-bevel-dark) var(--color-paper-2);
+    padding: var(--space-lg);
+  }
+
+  .filter__btn {
+    background: var(--color-paper-2);
+    padding: var(--space-2xs) var(--space-md);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--color-paper-2) var(--color-bevel-dark) var(--color-bevel-dark) var(--color-paper-2);
+  }
+  .filter__btn:active,
+  .filter__btn[aria-pressed="true"] {
+    border-color: var(--color-bevel-dark) var(--color-paper-2) var(--color-paper-2) var(--color-bevel-dark);
+  }
+
+  .helper__bubble {
+    background: var(--color-tip);
+    border: 1px solid var(--color-ink);
+    box-shadow: none;
+  }
+  .helper__bubble::after { background: var(--color-tip); border-color: var(--color-ink); }
+  .helper__char { filter: drop-shadow(var(--shadow-lift)); }
+
+  html { color-scheme: light; }
+</style>
+</head>
+<body>
+
+<a class="draft-tag" href="index.html">← 시안 목록 · 02 레트로(Win98)</a>
+
+<header class="wrap">
+  <nav class="nav">
+    <a class="nav__mark" href="#">toktaktok</a>
+    <a class="nav__cta" href="#contact">연락 →</a>
+  </nav>
+  <section class="hero">
+    <p class="hero__kicker reveal" style="--i:0">이름 입력 · 게임 클라이언트 프로그래머</p>
+    <h1 class="hero__title reveal" style="--i:1">게임의 화면 안쪽을 만듭니다.</h1>
+    <p class="hero__intro reveal" style="--i:2">UI 시스템, 게임플레이, 성능 최적화를 다루는 클라이언트 프로그래머입니다. 이 문단은 자리 표시 문장입니다.</p>
+    <p class="hero__meta reveal" style="--i:3"><span>경력 N년 — 연차 입력</span><span>위치 입력</span></p>
+  </section>
+</header>
+
+<main class="wrap">
+
+  <section class="section career" id="career">
+    <header class="section__head"><h2 class="section__title">경력</h2></header>
+    <div class="career__row">
+      <p class="career__period">2024.01 — 현재</p>
+      <div>
+        <p><span class="career__org">회사명 입력</span><span class="career__role"> — 게임 클라이언트 프로그래머</span></p>
+        <p class="career__note">담당 프로젝트와 역할을 한 줄로. (샘플 행)</p>
+      </div>
+    </div>
+    <div class="career__row">
+      <p class="career__period">2020.03 —<br>2023.12</p>
+      <div><p><span class="career__org">이전 회사명 입력</span><span class="career__role"> — 클라이언트 프로그래머</span></p></div>
+    </div>
+  </section>
+
+  <section class="section projects" id="projects">
+    <header class="section__head">
+      <h2 class="section__title">프로젝트</h2>
+      <p class="section__note">selected work — 최신순</p>
+    </header>
+    <div class="filter">
+      <button class="filter__btn" type="button" aria-pressed="true">전체</button>
+      <button class="filter__btn" type="button">UI</button>
+      <button class="filter__btn" type="button">최적화</button>
+      <button class="filter__btn" type="button">게임플레이</button>
+    </div>
+    <div class="grid">
+      <article class="card card--wide">
+        <a aria-hidden="true" tabindex="-1"><div class="card__media"><div class="card__placeholder"><div data-mascot-placeholder></div><p class="card__placeholder-label">이미지 추가</p></div></div></a>
+        <h3 class="card__title"><a href="#">미니맵 시스템 개편 (작성 예시)</a></h3>
+        <p class="card__meta">2023.01 — 2024.06  ·  Unreal Engine 5  ·  UI · 최적화</p>
+        <p class="card__summary">이 항목은 작성 형식을 보여 주는 예시입니다. 카드에는 이렇게 프로젝트를 한 문장으로 요약합니다.</p>
+        <a class="card__link" href="#">자세히 →</a>
+      </article>
+      <article class="card">
+        <a aria-hidden="true" tabindex="-1"><div class="card__media"><div class="card__placeholder"><div data-mascot-placeholder></div><p class="card__placeholder-label">이미지 추가</p></div></div></a>
+        <h3 class="card__title"><a href="#">두 번째 프로젝트 제목 입력</a></h3>
+        <p class="card__meta">2021.05 — 2022.12  ·  엔진 입력  ·  게임플레이</p>
+        <p class="card__summary">카드에 보일 한 줄 요약 입력. (샘플 카드)</p>
+        <a class="card__link" href="#">자세히 →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="section skills" id="skills">
+    <header class="section__head"><h2 class="section__title">기술</h2></header>
+    <div class="win-panel">
+      <table class="spec"><tbody>
+        <tr><th scope="row">주력</th><td class="spec__items">C++ · Unreal Engine</td><td class="spec__note">실무에서 설계와 구현을 주도할 수 있는 수준.</td></tr>
+        <tr><th scope="row">능숙</th><td class="spec__items">C# · Unity · UI 시스템</td><td class="spec__note">실무 사용 경험이 충분한 수준.</td></tr>
+        <tr><th scope="row">경험</th><td class="spec__items">Python · Jenkins</td><td class="spec__note">사용해 본 수준.</td></tr>
+      </tbody></table>
+    </div>
+  </section>
+
+  <section class="section contact" id="contact">
+    <header class="section__head"><h2 class="section__title">연락</h2></header>
+    <a class="contact__mail" href="mailto:toktaktok2938@gmail.com">toktaktok2938@gmail.com</a>
+    <p class="contact__links"><a href="https://github.com/toktaktok" rel="noreferrer">github ↗</a></p>
+  </section>
+
+</main>
+
+<footer class="colophon"><div class="wrap"><p>toktaktok — 게임 클라이언트 프로그래머 포트폴리오 시안 02. 그 시절 Win98 톤의 그레이 + 네이비 + 베벨, 구성은 최대한 정돈. Space Grotesk · IBM Plex Sans KR · IBM Plex Mono. © 2026 toktaktok</p></div></footer>
+
+<script src="shared.js"></script>
+<script>
+  initHelper([
+    "레트로 시안이에요 — 베벨 버튼, 네이비 타이틀바, 노란 풍선 도움말까지.",
+    "저는 그때도 지금도 똑같이 움직여요. 마우스를 한번 따라와 보세요.",
+    "탭으로 이동해 보면 포커스 링이 점선으로 바뀐 것도 보일 거예요."
+  ]);
+</script>
+</body>
+</html>

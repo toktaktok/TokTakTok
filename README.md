@@ -46,6 +46,18 @@ python3 -m http.server 8000
 2. Source: *Deploy from a branch*, Branch: `main` / `/ (root)` 선택
 3. 몇 분 뒤 `https://toktaktok.github.io/TokTakTok/` 에서 확인
 
+## 디자인 시안
+
+`design-drafts/`에 컨셉 비교용 시안 3종이 있습니다 (실제 사이트와 무관, 배포된
+Pages URL + `/design-drafts/`로 폰에서도 바로 확인 가능):
+
+- **01 다크 + 옐로** — 다크 모드 베이스, 기존 블루는 유지하고 옐로를 서브 포인트로 추가
+- **02 레트로 (Win98풍)** — 베벨 버튼·네이비 타이틀바·풍선 도움말, 구성 요소는 정돈된 채로
+- **03 게임 HUD** — 코너 브래킷, 글로우 액센트, 티어 미터바로 더 게임스럽게
+
+마음에 드는 방향이 정해지면 그 팔레트/장식을 `css/tokens.css` · `css/site.css`에
+반영해 본 사이트에 적용합니다.
+
 ## 디자인
 
 [nutlope/hallmark](https://github.com/nutlope/hallmark) 스킬 규칙으로 제작

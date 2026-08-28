@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>시안 3 · 게임 HUD — toktaktok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+  :root {
+    /* 더 어둡고 더 채도 높은 블루 — 글로우가 실제로 보이도록 */
+    --color-paper:      oklch(13% 0.028 258);
+    --color-paper-2:    oklch(18% 0.032 258);
+    --color-rule:       oklch(32% 0.030 258);
+    --color-rule-2:     oklch(26% 0.030 258);
+    --color-muted:      oklch(60% 0.030 258);
+    --color-ink:        oklch(96% 0.012 258);
+    --color-ink-2:      oklch(76% 0.018 258);
+
+    --color-accent:     oklch(74% 0.20 252);
+    --color-accent-2:   var(--color-accent);
+    --color-focus:      oklch(80% 0.20 252);
+    --color-selection:  oklch(74% 0.18 252 / 0.35);
+    --color-status:     oklch(78% 0.19 145);   /* 온라인 표시 점 — 아주 작게, 1곳에만 */
+
+    --color-char-line:  oklch(98% 0.004 90);
+    --color-char-eye:   oklch(24% 0.05 55);
+    --color-char-shine: oklch(94% 0.007 60);
+
+    --font-display: "Space Grotesk", "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
+    --font-body:    "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
+    --font-mono:    "IBM Plex Mono", ui-monospace, monospace;
+
+    --shadow-whisper: 0 2px 8px oklch(0% 0 0 / 0.5);
+    --shadow-lift:    0 0 20px oklch(72% 0.20 252 / 0.45); /* 도우미 아래 블루 글로우 */
+
+    --radius-panel: 0px;
+    --radius-bubble: 0px;
+
+    --hud-c: var(--color-accent);
+    --hud-s: 16px; /* 코너 브래킷 길이 */
+    --hud-w: 2px;  /* 코너 브래킷 굵기 */
+  }
+  html { color-scheme: dark; }
+
+  /* ---- HUD 전용 장식 — 코너 브래킷, 태그 라벨, 미터 바 ---- */
+
+  /* 4개 모서리에 순수 CSS로 그리는 타겟팅-리티클 스타일 브래킷. 이미지·추가 DOM 없음. */
+  .hud-frame {
+    position: relative;
+    background-repeat: no-repeat;
+    background-image:
+      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
+      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
+      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c)),
+      linear-gradient(var(--hud-c), var(--hud-c)), linear-gradient(var(--hud-c), var(--hud-c));
+    background-size:
+      var(--hud-w) var(--hud-s), var(--hud-s) var(--hud-w),
+      var(--hud-w) var(--hud-s), var(--hud-s) var(--hud-w),
+      var(--hud-w) var(--hud-s), var(--hud-s) var(--hud-w),
+      var(--hud-w) var(--hud-s), var(--hud-s) var(--hud-w);
+    background-position: top left, top left, top right, top right, bottom left, bottom left, bottom right, bottom right;
+  }
+
+  .hud-tag {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
+    margin-bottom: var(--space-xs);
+  }
+
+  .nav__mark { font-family: var(--font-mono); }
+  .nav__mark::before {
+    border-radius: 50%;
+    background: var(--color-status);
+    box-shadow: 0 0 6px 1px oklch(78% 0.19 145 / 0.7);
+  }
+
+  .card__media { border: none; padding: var(--space-sm); background: var(--color-paper-2); }
+
+  .hud-panel { padding: var(--space-lg); background: var(--color-paper-2); }
+  .meter-row { display: grid; gap: var(--space-2xs); padding-block: var(--space-sm); border-top: var(--rule-hair) solid var(--color-rule-2); }
+  .meter-row:first-child { border-top: none; }
+  .meter-row__top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-md); }
+  .meter-row__label { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-muted); letter-spacing: 0.08em; }
+  .meter-row__items { font-weight: 700; }
+  .meter { display: flex; gap: 4px; margin-top: var(--space-2xs); }
+  .meter__pip { width: 22px; height: 6px; background: var(--color-rule-2); }
+  .meter__pip.is-on { background: var(--color-accent); box-shadow: 0 0 5px 0 oklch(74% 0.20 252 / 0.55); }
+  .meter-row__note { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-muted); margin-top: var(--space-md); }
+
+  .helper__bubble { background: var(--color-paper-2); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.01em; }
+  .helper__bubble::after { display: none; }
+</style>
+</head>
+<body>
+
+<a class="draft-tag" href="index.html">← 시안 목록 · 03 게임 HUD</a>
+
+<header class="wrap">
+  <nav class="nav">
+    <a class="nav__mark" href="#">toktaktok</a>
+    <a class="nav__cta" href="#contact">연락 →</a>
+  </nav>
+  <section class="hero">
+    <p class="hero__kicker reveal" style="--i:0">이름 입력 · 게임 클라이언트 프로그래머</p>
+    <h1 class="hero__title reveal" style="--i:1">게임의 화면 안쪽을 만듭니다.</h1>
+    <p class="hero__intro reveal" style="--i:2">UI 시스템, 게임플레이, 성능 최적화를 다루는 클라이언트 프로그래머입니다. 이 문단은 자리 표시 문장입니다.</p>
+    <p class="hero__meta reveal" style="--i:3"><span>경력 N년 — 연차 입력</span><span>위치 입력</span></p>
+  </section>
+</header>
+
+<main class="wrap">
+
+  <section class="section career" id="career">
+    <header class="section__head">
+      <p class="hud-tag">[ CAREER ]</p>
+      <h2 class="section__title">경력</h2>
+    </header>
+    <div class="career__row">
+      <p class="career__period">2024.01 — 현재</p>
+      <div>
+        <p><span class="career__org">회사명 입력</span><span class="career__role"> — 게임 클라이언트 프로그래머</span></p>
+        <p class="career__note">담당 프로젝트와 역할을 한 줄로. (샘플 행)</p>
+      </div>
+    </div>
+    <div class="career__row">
+      <p class="career__period">2020.03 —<br>2023.12</p>
+      <div><p><span class="career__org">이전 회사명 입력</span><span class="career__role"> — 클라이언트 프로그래머</span></p></div>
+    </div>
+  </section>
+
+  <section class="section projects" id="projects">
+    <header class="section__head">
+      <p class="hud-tag">[ PROJECTS ]</p>
+      <h2 class="section__title">프로젝트</h2>
+      <p class="section__note">selected work — 최신순</p>
+    </header>
+    <div class="filter">
+      <button class="filter__btn" type="button" aria-pressed="true">전체</button>
+      <button class="filter__btn" type="button">UI</button>
+      <button class="filter__btn" type="button">최적화</button>
+      <button class="filter__btn" type="button">게임플레이</button>
+    </div>
+    <div class="grid">
+      <article class="card card--wide">
+        <a aria-hidden="true" tabindex="-1"><div class="card__media hud-frame"><div class="card__placeholder"><div data-mascot-placeholder></div><p class="card__placeholder-label">이미지 추가</p></div></div></a>
+        <h3 class="card__title"><a href="#">미니맵 시스템 개편 (작성 예시)</a></h3>
+        <p class="card__meta">2023.01 — 2024.06  ·  Unreal Engine 5  ·  UI · 최적화</p>
+        <p class="card__summary">이 항목은 작성 형식을 보여 주는 예시입니다. 카드에는 이렇게 프로젝트를 한 문장으로 요약합니다.</p>
+        <a class="card__link" href="#">자세히 →</a>
+      </article>
+      <article class="card">
+        <a aria-hidden="true" tabindex="-1"><div class="card__media hud-frame"><div class="card__placeholder"><div data-mascot-placeholder></div><p class="card__placeholder-label">이미지 추가</p></div></div></a>
+        <h3 class="card__title"><a href="#">두 번째 프로젝트 제목 입력</a></h3>
+        <p class="card__meta">2021.05 — 2022.12  ·  엔진 입력  ·  게임플레이</p>
+        <p class="card__summary">카드에 보일 한 줄 요약 입력. (샘플 카드)</p>
+        <a class="card__link" href="#">자세히 →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="section skills" id="skills">
+    <header class="section__head">
+      <p class="hud-tag">[ SKILLS ]</p>
+      <h2 class="section__title">기술</h2>
+    </header>
+    <div class="hud-panel hud-frame">
+      <div class="meter-row">
+        <div class="meter-row__top"><p class="meter-row__label">주력</p></div>
+        <p class="meter-row__items">C++ · Unreal Engine</p>
+        <div class="meter" aria-hidden="true">
+          <span class="meter__pip is-on"></span><span class="meter__pip is-on"></span><span class="meter__pip is-on"></span><span class="meter__pip is-on"></span>
+        </div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-row__top"><p class="meter-row__label">능숙</p></div>
+        <p class="meter-row__items">C# · Unity · UI 시스템</p>
+        <div class="meter" aria-hidden="true">
+          <span class="meter__pip is-on"></span><span class="meter__pip is-on"></span><span class="meter__pip is-on"></span><span class="meter__pip"></span>
+        </div>
+      </div>
+      <div class="meter-row">
+        <div class="meter-row__top"><p class="meter-row__label">경험</p></div>
+        <p class="meter-row__items">Python · Jenkins</p>
+        <div class="meter" aria-hidden="true">
+          <span class="meter__pip is-on"></span><span class="meter__pip is-on"></span><span class="meter__pip"></span><span class="meter__pip"></span>
+        </div>
+      </div>
+      <p class="meter-row__note">막대는 정확한 수치가 아니라 자기평가 구간(주력·능숙·경험)을 시각적으로 표시한 것입니다.</p>
+    </div>
+  </section>
+
+  <section class="section contact" id="contact">
+    <header class="section__head">
+      <p class="hud-tag">[ CONTACT ]</p>
+      <h2 class="section__title">연락</h2>
+    </header>
+    <a class="contact__mail" href="mailto:toktaktok2938@gmail.com">toktaktok2938@gmail.com</a>
+    <p class="contact__links"><a href="https://github.com/toktaktok" rel="noreferrer">github ↗</a></p>
+  </section>
+
+</main>
+
+<footer class="colophon"><div class="wrap"><p>toktaktok — 게임 클라이언트 프로그래머 포트폴리오 시안 03. 다크 HUD — 코너 브래킷, 티어 미터, 글로우 액센트. Space Grotesk · IBM Plex Sans KR · IBM Plex Mono. © 2026 toktaktok</p></div></footer>
+
+<script src="shared.js"></script>
+<script>
+  initHelper([
+    "게임 HUD 시안이에요 — 코너 브래킷과 글로우를 썼어요.",
+    "기술 섹션은 표 대신 티어 미터바로 바꿔봤어요.",
+    "저는 여전히 같은 저예요 — 마우스를 따라가고, 숨쉬고, 팔을 흔들죠."
+  ]);
+</script>
+</body>
+</html>
