@@ -159,7 +159,7 @@
         "p",
         null,
         (profile.handle || "") + " — " + (profile.role || "") + " 포트폴리오. " +
-          "Space Grotesk · IBM Plex Sans KR · IBM Plex Mono로 조판. " +
+          "Pretendard Variable · IBM Plex Mono로 조판. " +
           "정적 HTML, GitHub Pages 배포. 마지막 수정 " + (profile.updated || "—") + ". " +
           "© " + year + " " + (profile.handle || "")
       )

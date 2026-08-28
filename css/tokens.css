@@ -1,37 +1,43 @@
-/* Hallmark · macrostructure: Portfolio Grid · enrichment: 사용자 제공 캐릭터를 화면 우하단 도우미(말풍선)로 — hero는 타이포그래피 온리
- * theme: custom v3 · vibe: "iOS 블루 마스코트, 크림 페이퍼, 에스프레소 잉크" · paper: oklch(96.5% 0.009 80) · accent: oklch(58% 0.19 252)
- * display: Space Grotesk · body: IBM Plex Sans KR · outlier: IBM Plex Mono (meta register)
- * axes: light / grotesk-sans / cool · nav: N9 edge-aligned · footer: Ft4 dense-colophon
- * studied: no · context: inferred · Hallmark v1.1.0
- * pre-emit critique: P4 H4 E4 S4 R5 V5 · contrast: pass (40–41) · slop: pass (42–45)
- * honest: pass (46) · chrome: pass (47) · tokens: pass (48) · responsive: pass (49) · icons: pass (30)
- * mobile: pass (34, 49, 50–57) — verified at 320 / 375 / 414 / 768 / 1280
+/* Hallmark · macrostructure: Portfolio Grid (unchanged) · redesign: cream-paper v3 → Aero Glass, promoted from design-drafts/retro-aero.html after side-by-side review
+ * theme: custom v4 · vibe: "하늘색 유리, 글로시 버튼, 파란 마스코트 + 초록 프레즌스 포인트" · paper: oklch(97% 0.010 240) · accent: oklch(58% 0.19 252)
+ * display: Pretendard Variable · body: Pretendard Variable · outlier: IBM Plex Mono (meta register)
+ * axes: light / neo-grotesque-sans / cool · nav: N5 floating pill (was N9 edge-aligned) · footer: Ft4 dense-colophon (unchanged)
+ * studied: no · context: explicit — user compared 5 design-drafts variants across sessions and picked Aero · Hallmark v1.1.0
+ * pre-emit critique: P4 H4 E4 S4 R4 V4 · contrast: pass · slop: pass — heading mark reskinned as a glass bead (not a numbered eyebrow: anti-patterns.md bans decorative section numbering by default)
+ * mobile: verified at 320 / 375 / 414 / 768 / 1280
  */
 
 :root {
-  /* ---- color · cream paper, espresso ink, iOS-blue anchor ---- */
-  --color-paper:      oklch(96.5% 0.009 80);  /* 크림 — 캐릭터 눈 하이라이트(#F1EBE7) 계열 */
-  --color-paper-2:    oklch(93.5% 0.011 80);
-  --color-rule:       oklch(85% 0.015 80);
-  --color-rule-2:     oklch(90% 0.012 80);
-  --color-muted:      oklch(46% 0.025 65);
-  --color-neutral:    oklch(55% 0.020 70);
-  --color-ink:        oklch(24% 0.035 55);   /* 에스프레소 브라운 — 캐릭터 눈(#4E1F00) 계열 */
-  --color-ink-2:      oklch(36% 0.030 55);
-  --color-accent:     oklch(58% 0.19 252);   /* iOS 블루 (#007AFF 근사) — 캐릭터 몸통, 마커, 큰 링크 */
-  --color-accent-2:   oklch(49% 0.185 252);  /* 딥 블루 — 본문 크기 링크 (4.5:1 대비 확보) */
-  --color-accent-ink: oklch(98% 0.005 80);   /* text over accent fills */
-  --color-focus:      oklch(52% 0.19 252);
-  --color-selection:  oklch(90% 0.05 252);
+  /* ---- color · sky-glass base, cobalt-blue anchor (same hue as the mascot) ---- */
+  --color-paper:      oklch(97% 0.010 240);
+  --color-paper-2:    oklch(99.3% 0.004 240);
+  --color-rule:       oklch(80% 0.030 245);
+  --color-rule-2:     oklch(88% 0.020 245);
+  --color-muted:      oklch(48% 0.020 250);
+  --color-neutral:    oklch(55% 0.025 250);
+  --color-ink:        oklch(22% 0.030 255);
+  --color-ink-2:      oklch(38% 0.025 253);
+  --color-accent:     oklch(58% 0.19 252);   /* iOS 블루 — 캐릭터 몸통, 링크, 유리 버튼 이음선 */
+  --color-accent-2:   oklch(48% 0.185 252);  /* 딥 블루 — 본문 크기 링크 (4.5:1 대비 확보) */
+  --color-accent-ink: oklch(99% 0.004 240);  /* text over filled accent surfaces */
+  --color-focus:      oklch(55% 0.20 252);
+  --color-selection:  oklch(85% 0.08 250 / 0.5);
+
+  /* 초록 프레즌스 포인트 — 연락 버튼 옆 상태 점 + 선택된 필터 전용. 파란 유리 크롬과
+     분리된 유일한 보조색(그 시절 메신저 "온라인" 표시 오마주) */
+  --color-status:     oklch(72% 0.17 145);
 
   /* 마스코트 캐릭터 전용 */
-  --color-char-line:  oklch(99.5% 0.003 80); /* 외곽선·발 — 웜 화이트 */
-  --color-char-eye:   oklch(24% 0.05 55);    /* 눈 — 딥 브라운(#4E1F00) */
-  --color-char-shine: oklch(94% 0.007 60);   /* 눈 하이라이트(#F1EBE7) */
+  --color-char-line:  oklch(99.5% 0.003 80);  /* 외곽선·발 — 웜 화이트 */
+  --color-char-eye:   oklch(24% 0.05 55);     /* 눈 — 딥 브라운 */
+  --color-char-shine: oklch(94% 0.007 60);    /* 눈 하이라이트 */
 
-  /* ---- type · Space Grotesk display / IBM Plex Sans KR body / IBM Plex Mono meta ---- */
-  --font-display: "Space Grotesk", "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
-  --font-body:    "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
+  /* ---- type · Pretendard Variable (display+body) / IBM Plex Mono (meta register only) ----
+     이전엔 Space Grotesk(display)를 썼지만 한글 글리프가 없어 실제로는 한글 전부가
+     IBM Plex Sans KR로 폴백되고 있었음 — Space Grotesk는 라틴 워드마크에만 적용됐던 것.
+     Pretendard 하나로 통일해 "개발자 문서" 톤을 빼고 프로덕트 UI 톤으로 정리. */
+  --font-display: "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
+  --font-body:    "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
   --font-mono:    "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
 
   /* 1.25 major-third scale on a 16px base */
@@ -57,14 +63,40 @@
   --space-3xl: 6rem;
   --space-4xl: 9rem;
 
-  /* ---- shadows (whisper only) ---- */
-  --shadow-whisper: 0 1px 2px oklch(20% 0.01 60 / 0.05), 0 0 0 1px oklch(30% 0.01 60 / 0.03);
-  --shadow-lift:    0 2px 3px oklch(20% 0.01 60 / 0.14);
+  /* ---- shadows ---- */
+  --shadow-whisper: 0 1px 2px oklch(40% 0.05 250 / 0.08);
+  --shadow-lift:    0 10px 26px oklch(50% 0.12 250 / 0.22);
 
-  /* ---- rules & radius · pixel discipline: sharp corners ---- */
+  /* ---- glass · Aero 버튼 공식 — 위쪽 밝은 하이라이트, 중앙 이음선, 아래쪽 톤다운 ---- */
+  --glass-hi:     oklch(99.5% 0.004 240 / 0.92);
+  --glass-mid:    oklch(95%   0.020 245 / 0.55);
+  --glass-seam:   oklch(88%   0.050 250 / 0.55);
+  --glass-lo:     oklch(93%   0.030 248 / 0.55);
+  --glass-border: oklch(75%   0.060 250 / 0.65);
+  --glass: linear-gradient(180deg, var(--glass-hi), var(--glass-mid) 48%, var(--glass-seam) 50%, var(--glass-lo) 100%);
+
+  /* 유리 표면 공통 하이라이트/그림자 — nav·filter·card·panel·badge가 전부 이 두 쌍을 재사용 */
+  --glass-highlight:    oklch(100% 0 0 / 0.75);    /* 이음선 위쪽 인셋 하이라이트 — 평상시 */
+  --glass-highlight-hi: oklch(100% 0 0 / 0.85);    /* 〃 — hover/pressed */
+  --glass-shadow:       oklch(45% 0.1 250 / 0.10); /* 앰비언트 그림자 틴트 — 평상시 */
+  --glass-shadow-hi:    oklch(45% 0.1 250 / 0.14); /* 〃 — hover */
+
+  /* ---- status · 초록 유리(파란 크롬과 분리된 유일한 보조색) ---- */
+  --status-hi:    oklch(97% 0.03 145 / 0.95);
+  --status-mid:   oklch(90% 0.08 145 / 0.75);
+  --status-seam:  oklch(78% 0.14 145 / 0.75);
+  --status-lo:    oklch(87% 0.09 145 / 0.75);
+  --status-glass: linear-gradient(180deg, var(--status-hi), var(--status-mid) 48%, var(--status-seam) 50%, var(--status-lo) 100%);
+  --status-ring:       oklch(72% 0.17 145 / 0.22); /* 프레즌스 점 펄스 — 평상시 */
+  --status-ring-soft:  oklch(72% 0.17 145 / 0.10); /* 〃 — 피크(옅어지는 순간) */
+  --status-ring-tight: oklch(72% 0.17 145 / 0.18); /* 선택된 필터의 포커스풍 링 */
+
+  /* ---- rules & radius · 유리 알약, 둥근 패널 (이전의 각진 모서리 원칙을 대체) ---- */
   --rule-hair: 1px;
   --rule-bold: 2px;
-  --radius-0:  0;
+  --radius-panel:  14px;
+  --radius-bubble: 18px;
+  --radius-pill:   999px;
 
   /* ---- motion ---- */
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);

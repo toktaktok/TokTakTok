@@ -1,3 +1,4 @@
 [
+  { "date": "2026-08-28", "macrostructure": "Portfolio Grid", "theme": "custom", "theme_axes": "light / neo-grotesque-sans / cool", "vibe": "하늘색 Aero 유리, 글로시 버튼, 파란 마스코트 + 초록 프레즌스 포인트", "enrichment": "H9 custom illustration (Tier-B SVG, unchanged)", "brief": "toktaktok · design-drafts/retro-aero.html을 정식 디자인으로 승격 — Space Grotesk+Plex Sans KR → Pretendard 전환, 사각 헤딩 마커를 같은 레시피의 유리 구슬로 교체(숫자 에이바우 미사용), 초록 프레즌스 포인트 추가" },
   { "date": "2026-08-25", "macrostructure": "Portfolio Grid", "theme": "custom", "theme_axes": "light / grotesk-sans / warm", "vibe": "절제된 게임 감성, 오렌지 시그널, 픽셀 캐릭터", "enrichment": "H9 custom illustration (Tier-B SVG)", "brief": "toktaktok · 게임 클라이언트 프로그래머 포트폴리오 셸" }
 ]

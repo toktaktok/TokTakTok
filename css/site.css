@@ -1,4 +1,4 @@
-/* Hallmark · macrostructure: Portfolio Grid · nav: N9 · footer: Ft4 · sections: hero(타이포) → career → projects(filter) → skills(F3) → contact(C3) → colophon · helper: 우하단 도우미+말풍선
+/* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill (was N9) · footer: Ft4 · sections: hero(타이포) → career → projects(filter) → skills(F3) → contact(C3) → colophon · helper: 우하단 도우미+말풍선
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
  */
 
@@ -55,7 +55,7 @@ a:active { color: var(--color-accent); }
 
 .mono { font-family: var(--font-mono); }
 
-/* ---------- nav · N9 edge-aligned minimal ---------- */
+/* ---------- nav · N5 floating glass pill ---------- */
 
 .nav {
   display: flex;
@@ -63,7 +63,14 @@ a:active { color: var(--color-accent); }
   justify-content: space-between;
   gap: var(--space-lg);
   padding-block: var(--space-lg);
-  border-bottom: var(--rule-hair) solid var(--color-rule);
+  padding-inline: var(--space-lg);
+  margin-block: var(--space-md) 0;
+  border-radius: var(--radius-pill);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 1px 0 var(--glass-highlight) inset, var(--shadow-lift);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
 }
 
 .nav__mark {
@@ -83,6 +90,7 @@ a:active { color: var(--color-accent); }
   content: "";
   width: 0.5em;
   height: 0.5em;
+  border-radius: 50%;
   background: var(--color-accent);
   flex: none;
 }
@@ -95,7 +103,24 @@ a:active { color: var(--color-accent); }
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
+  gap: 0.5em;
   min-height: 44px;
+}
+/* 연락(또는 이력서) 버튼 옆 "온라인" 상태 점 — Aero 시대 메신저 프레즌스 표시 오마주.
+   파란 유리 크롬 안에서 유일하게 초록을 쓰는 지점 */
+.nav__cta::before {
+  content: "";
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  flex: none;
+  background: var(--color-status);
+  box-shadow: 0 0 0 3px var(--status-ring);
+  animation: nav-status-pulse 2.6s var(--ease-in-out) infinite;
+}
+@keyframes nav-status-pulse {
+  0%, 100% { box-shadow: 0 0 0 3px var(--status-ring); }
+  50%      { box-shadow: 0 0 0 6px var(--status-ring-soft); }
 }
 
 /* ---------- hero · typography-led, left-biased ---------- */
@@ -215,12 +240,14 @@ a:active { color: var(--color-accent); }
   pointer-events: auto;
   position: relative;
   max-width: 17rem;
-  background: var(--color-paper);
-  border: var(--rule-hair) solid var(--color-rule);
-  border-radius: 12px;
+  background: linear-gradient(180deg, var(--glass-hi), var(--glass-mid) 55%, var(--glass-lo));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-bubble);
   border-bottom-right-radius: 2px;
   padding: var(--space-sm) var(--space-lg) var(--space-sm) var(--space-md);
-  box-shadow: var(--shadow-whisper);
+  backdrop-filter: blur(10px) saturate(1.3);
+  -webkit-backdrop-filter: blur(10px) saturate(1.3);
+  box-shadow: 0 1px 0 var(--glass-highlight) inset, var(--shadow-whisper);
   font-size: var(--text-sm);
   color: var(--color-ink-2);
   line-height: 1.55;
@@ -232,9 +259,9 @@ a:active { color: var(--color-accent); }
   bottom: -7px;
   width: 12px;
   height: 12px;
-  background: var(--color-paper);
-  border-right: var(--rule-hair) solid var(--color-rule);
-  border-bottom: var(--rule-hair) solid var(--color-rule);
+  background: var(--glass-lo);
+  border-right: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
   transform: rotate(45deg);
 }
 .helper.is-quiet .helper__bubble { display: none; }
@@ -302,13 +329,20 @@ a:active { color: var(--color-accent); }
   overflow-wrap: anywhere;
   min-width: 0;
 }
+/* 헤딩 앞 마커 — 플랫 사각형 대신 유리 구슬(Aero 버튼과 같은 광택 레시피).
+   숫자 에이바우를 달지 않음: 경력/프로젝트/기술/연락은 순서가 있는 챕터가 아니라
+   카테고리라서, 장식용 "01 · 라벨" 번호는 hallmark anti-patterns의 기본 금지 대상. */
 .section__title::before {
   content: "";
   display: inline-block;
-  width: 0.4em;
-  height: 0.4em;
-  margin-right: 0.35em;
-  background: var(--color-accent);
+  width: 0.62em;
+  height: 0.62em;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 1px 0 var(--glass-highlight) inset, 0 2px 5px var(--glass-shadow-hi);
+  vertical-align: -0.05em;
 }
 
 .section__note {
@@ -359,22 +393,29 @@ a:active { color: var(--color-accent); }
 .filter__btn {
   appearance: none;
   white-space: nowrap;
-  background: none;
-  border: none;
-  padding: 0;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: var(--space-2xs) var(--space-lg);
   min-height: 44px;
+  border-radius: var(--radius-pill);
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--color-muted);
   cursor: pointer;
-  border-bottom: var(--rule-bold) solid transparent;
-  transition: color var(--dur-micro) var(--ease-out);
+  box-shadow: 0 1px 0 var(--glass-highlight) inset;
+  transition: color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
 }
-.filter__btn:hover { color: var(--color-ink); }
+.filter__btn:hover {
+  color: var(--color-ink);
+  box-shadow: 0 1px 0 var(--glass-highlight-hi) inset, 0 3px 8px var(--glass-shadow-hi);
+}
 .filter__btn:active { transform: translateY(1px); }
+/* 선택된 필터만 초록 유리로 — 파란 크롬(구조)과 초록(선택 상태)을 구분 */
 .filter__btn[aria-pressed="true"] {
   color: var(--color-ink);
-  border-bottom-color: var(--color-accent);
+  background: var(--status-glass);
+  border-color: var(--color-status);
+  box-shadow: 0 1px 0 var(--glass-highlight-hi) inset, 0 0 0 3px var(--status-ring-tight);
 }
 
 .grid {
@@ -392,8 +433,10 @@ a:active { color: var(--color-accent); }
 .card__media {
   display: block;
   aspect-ratio: 16 / 10;
-  background: var(--color-paper-2);
-  border: var(--rule-hair) solid var(--color-rule-2);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, var(--glass-hi), var(--glass-lo));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 1px 0 var(--glass-highlight) inset, 0 6px 18px var(--glass-shadow);
   overflow: hidden;
 }
 .card__media img {
@@ -463,6 +506,13 @@ a:active { color: var(--color-accent); }
   width: 100%;
   border-collapse: collapse;
   font-size: var(--text-sm);
+  /* 오른쪽/왼쪽은 비대칭: 셀들이 이미 padding-right로 오른쪽 간격을 만들고 있어서
+     테이블 자체는 왼쪽·위·아래만 채움 (오른쪽에 이중으로 안 겹치게) */
+  padding: var(--space-lg) 0 var(--space-lg) var(--space-lg);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, var(--glass-hi), var(--glass-lo));
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 1px 0 var(--glass-highlight) inset, 0 6px 18px var(--glass-shadow);
 }
 .spec th, .spec td {
   text-align: left;
@@ -601,6 +651,7 @@ a:active { color: var(--color-accent); }
   top: 0.62em;
   width: 6px;
   height: 6px;
+  border-radius: 50%;
   background: var(--color-rule);
 }
 

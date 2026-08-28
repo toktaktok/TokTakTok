@@ -46,41 +46,30 @@ python3 -m http.server 8000
 2. Source: *Deploy from a branch*, Branch: `main` / `/ (root)` 선택
 3. 몇 분 뒤 `https://toktaktok.github.io/TokTakTok/` 에서 확인
 
-## 디자인 시안
-
-`design-drafts/`에 컨셉 비교용 시안이 있습니다 (실제 사이트와 무관, 배포된
-Pages URL + `/design-drafts/`로 폰에서도 바로 확인 가능). 메인 페이지 좌하단의
-`🎨 시안` 버튼으로도 들어갈 수 있습니다 — **임시 백도어**이며 `index.html`의
-`TEMP DRAFT BACKDOOR` 주석 사이 블록만 지우면 제거됩니다.
-
-전부 라이트 모드:
-
-- **레트로 · Aero Glass** — 떠 있는 유리 알약 네비게이션, 글로시 버튼, 은은한 하늘색 배경.
-  파란 유리 크롬은 그대로 두고, 그 시절 메신저 "온라인" 표시를 오마주한 초록
-  프레즌스 점을 연락 버튼 옆에(펄스 애니메이션), 선택된 필터 버튼도 초록 유리로
-  — 구조는 파랑, 선택 상태는 초록으로 읽히는 포인트 컬러를 추가했습니다.
-- **모던 글래스** — Aero보다 매트한 2020년대식 프로스티드 글래스, Pretendard 폰트
-  (Plex Sans 대신 — "개발자 문서" 느낌을 빼기 위함). 사이트 액센트는 원래
-  컨셉이던 웜 오렌지(테라코타)로, 브랜드 블루는 캐릭터 전용(`--color-character`,
-  `css/tokens.css`의 `--color-accent`와 분리)으로 남겨서 오렌지(사이트) ·
-  블루(캐릭터) 두 색이 또렷이 나뉩니다. 처음엔 액센트를 웜그레이 뉴트럴로
-  뺐었는데 개성이 없어져서 오렌지로 되돌렸고, 헤딩 앞 사각 마커 대신 01/02
-  같은 에디토리얼 섹션 번호를 붙이고, 히어로 킥커도 네비·필터와 같은 유리
-  알약 칩으로 통일하고, 카드에 마우스를 올리면 오렌지 헤일로가 은은하게
-  번지도록 해서 톤 하나로 개성을 냈습니다. Pretendard는
-  jsDelivr CDN에서 로드하는데, 이 저장소를 다루는 클로드 세션의 네트워크
-  정책상 jsDelivr가 막혀 있어 세션 내에서는 실제 폰트 렌더링을 스크린샷으로
-  확인하지 못했습니다 — 실제 방문자에게는 문제없는 표준 공식 임베드이니,
-  배포 후 직접 확인해 주세요.
-
-(검토 후 제외: 다크+옐로, Win98 레트로, 다크 게임 HUD, 게임 라이트)
-
-마음에 드는 방향이 정해지면 그 팔레트/장식을 `css/tokens.css` · `css/site.css`에
-반영해 본 사이트에 적용하고, 백도어 버튼은 제거합니다.
-
 ## 디자인
 
+여러 시안(다크+옐로, Win98 레트로, 다크 게임 HUD, 게임 라이트, 모던 글래스,
+레트로 Aero Glass)을 비교해 본 뒤 **Aero Glass**를 본 사이트에 반영했습니다.
 [nutlope/hallmark](https://github.com/nutlope/hallmark) 스킬 규칙으로 제작
-(`.claude/skills/hallmark/`). 매크로 구조 Portfolio Grid, 커스텀 테마
-(오렌지 앵커 + 블루 서브, Space Grotesk · IBM Plex Sans KR · IBM Plex Mono).
-토큰은 전부 `css/tokens.css`에 있습니다.
+(`.claude/skills/hallmark/`). 매크로 구조 Portfolio Grid, 커스텀 테마:
+
+- **팔레트** — 하늘색 유리 배경(`--color-paper`), 코발트 블루 앵커
+  (`--color-accent`, 캐릭터와 같은 색), 연락 버튼 옆 상태 점과 선택된 필터에만
+  쓰는 초록 포인트(`--color-status`) — 그 시절 메신저 "온라인" 표시 오마주.
+- **유리(glass)** — 네비게이션은 떠 있는 알약, 필터·카드·기술 표는 위쪽 밝은
+  하이라이트/중앙 이음선/아래쪽 톤다운의 4단 그라디언트로 광택 있는 유리
+  패널이 됩니다(레시피는 `--glass-hi/mid/seam/lo`, `css/tokens.css`).
+- **타이포** — Pretendard Variable(표시+본문) · IBM Plex Mono(날짜·메타 전용).
+  이전엔 Space Grotesk를 표시용으로 썼지만 한글 글리프가 없어 한글은 전부
+  IBM Plex Sans KR로 폴백되고 있었습니다 — Pretendard 하나로 통일해
+  "개발자 문서" 톤 대신 프로덕트 UI 톤으로 정리했습니다. Pretendard는 jsDelivr
+  CDN에서 로드합니다(`index.html`/`project.html`의 `<link>`).
+- **헤딩 마커** — 이전의 플랫 사각형 대신, 같은 유리 레시피를 쓰는 작은 광택
+  구슬로 교체했습니다. 숫자를 붙인 "01 · 라벨" 형태의 에디토리얼 넘버링은
+  일부러 쓰지 않았습니다 — 경력/프로젝트/기술/연락은 순서가 있는 챕터가
+  아니라 카테고리라서, 장식용 섹션 번호는 hallmark의 anti-pattern 기본
+  금지 대상입니다.
+
+토큰은 전부 `css/tokens.css`에 있습니다. `design-drafts/`에는 비교에 쓰인
+시안 원본이 남아 있습니다(실제 사이트에서는 더 이상 링크되지 않는 참고용 —
+지워도 무방합니다).
