@@ -19,42 +19,28 @@
     return document.createDocumentFragment();
   }
 
-  /* 마스코트 캐릭터 — 사용자 제공 SVG 기반(우리 코드라서 innerHTML 사용) */
+  /* 마스코트 캐릭터 — 사용자 제공 SVG(파란 블롭). stroke 두께는 원본 그대로 속성으로 유지 */
   var PIX_CHAR =
-    '<path class="pix__skin" d="M518.128 330.932C500.521 337.144 482.95 330.505 478.265 317.228C473.581 303.952 483.094 287.755 500.702 281.542C518.309 275.33 535.881 281.97 540.565 295.247C545.249 308.523 535.735 324.72 518.128 330.932Z"/>' +
-    '<path class="pix__white" d="M535.817 337.201C553.255 321.797 576.812 321.145 588.58 334.468C600.349 347.791 596.794 371.087 579.356 386.49C561.918 401.894 538.361 402.546 526.593 389.223C514.824 375.9 518.379 352.604 535.817 337.201Z"/>' +
-    '<path class="pix__skin" d="M605 200C654.726 200 695 239.867 695 289C695 338.133 654.726 378 605 378C555.274 378 515 338.133 515 289C515 239.867 555.274 200 605 200Z"/>' +
-    '<path class="pix__white" d="M678.953 330.289C705.91 320.616 733.32 330.552 740.785 351.353C748.249 372.153 733.412 397.251 706.455 406.925C679.498 416.599 652.088 406.662 644.623 385.861C637.159 365.06 651.997 339.963 678.953 330.289Z"/>' +
+    '<rect class="pix__skin" stroke-width="2" x="117.375" y="45.8779" width="41" height="31" rx="15"/>' +
+    '<rect class="pix__skin" stroke-width="2" x="-3.33569" y="61.6856" width="41" height="31" rx="15" transform="rotate(-20.7384 -3.33569 61.6856)"/>' +
+    '<path class="pix__white" stroke-width="4" d="M38.8462 82.5753C48.6193 73.9424 61.5458 73.7795 67.8667 80.9353C74.1874 88.0911 72.4297 100.898 62.6567 109.531C52.8837 118.163 39.9578 118.327 33.6368 111.172C27.3159 104.016 29.0732 91.2082 38.8462 82.5753Z"/>' +
+    '<path class="pix__skin" stroke-width="2" d="M30.0615 5.75391C30.2032 2.88964 32.7198 0.730823 35.5723 1.02734L97.9941 7.51758C115.827 9.37169 129.375 24.4016 129.375 42.3301V54.3203C129.375 75.7169 110.346 92.1059 89.1855 88.9336L57.749 84.2207C39.9639 81.5543 27.0945 65.8429 27.9814 47.8809L30.0615 5.75391Z"/>' +
     '<g class="pix__blink">' +
-    '<path class="pix__eye" d="M617 254C617 270.569 612.667 284 604 284C595.333 284 591 270.569 591 254C591 237.431 595.333 224 604 224C612.667 224 617 237.431 617 254Z"/>' +
-    '<path class="pix__eye" d="M659 254C659 270.569 654.667 284 646 284C637.333 284 633 270.569 633 254C633 237.431 637.333 224 646 224C654.667 224 659 237.431 659 254Z"/>' +
-    '<path class="pix__shine" d="M613 243.5C613 250.404 610.5 256 605.5 256C600.5 256 598 250.404 598 243.5C598 236.596 600.5 231 605.5 231C610.5 231 613 236.596 613 243.5Z"/>' +
-    '<path class="pix__shine" d="M654 243.5C654 250.404 651.333 256 646 256C640.667 256 638 250.404 638 243.5C638 236.596 640.667 231 646 231C651.333 231 654 236.596 654 243.5Z"/>' +
+    '<rect class="pix__eye" x="73.375" y="13.8779" width="11" height="29" rx="4"/>' +
+    '<rect class="pix__eye" x="107.375" y="19.8779" width="11" height="31" rx="4"/>' +
+    '<path class="pix__shine" d="M81.7577 16.5187C82.1099 16.5607 82.375 16.8592 82.375 17.2138V27.2431C82.375 28.0139 81.3113 28.2187 81.0251 27.5031L76.8128 16.9723C76.6155 16.4791 77.0179 15.9545 77.5454 16.0173L81.7577 16.5187Z"/>' +
+    '<path class="pix__shine" d="M115.758 22.5187C116.11 22.5607 116.375 22.8592 116.375 23.2138V33.2431C116.375 34.0139 115.311 34.2187 115.025 33.5031L110.813 22.9723C110.615 22.4791 111.018 21.9545 111.545 22.0173L115.758 22.5187Z"/>' +
     "</g>" +
-    '<path class="pix__skin" d="M719.024 301.643C697.582 303.616 679.692 291.229 678.191 274.918C676.69 258.606 692.019 243.162 713.46 241.189C734.902 239.215 752.793 251.603 754.294 267.915C755.795 284.226 740.465 299.67 719.024 301.643Z"/>';
+    '<path class="pix__white" d="M98.3485 97.7729C97.2586 89.5607 103.032 82.0198 111.245 80.9298L139.497 77.1802C149.078 75.9086 157.876 82.6447 159.147 92.2257L159.345 93.7127C160.507 102.472 154.348 110.516 145.589 111.679L108.91 116.547C104.53 117.128 100.509 114.048 99.9273 109.669L98.3485 97.7729Z"/>';
 
-  /* 히어로 패널 — 블루 배경 + 옐로/화이트 버스트 + 캐릭터 (원본 레퍼런스 구성) */
-  var PIX_HERO =
-    '<svg class="pix" viewBox="0 0 420 330" role="img" aria-label="마스코트 캐릭터 — 파란 패널 위 오렌지 캐릭터와 노란 버스트">' +
-    '<rect class="pix__bg" x="0" y="0" width="420" height="330"/>' +
-    '<polygon class="pix__burst-w" points="328.8,125.0 273.1,171.9 346.9,225.3 248.2,212.4 294.7,335.7 209.1,223.3 163.4,380.5 175.8,214.0 41.2,305.5 148.6,190.8 20.5,172.2 137.6,149.4 86.3,76.8 162.6,107.3 176.2,37.5 212.8,99.3 276.4,39.5 249.2,130.6"/>' +
-    '<polygon class="pix__burst-y" points="375.9,188.5 253.1,191.9 301.4,269.8 231.2,227.0 212.3,283.4 186.0,233.8 136.0,261.4 153.0,202.6 67.5,200.3 154.5,161.8 51.3,89.6 176.8,136.9 132.4,-4.4 203.7,125.6 256.6,1.3 236.9,126.8 325.9,89.7 267.4,153.7"/>' +
-    '<g transform="translate(-436.8 -151.7) scale(1.05)">' + PIX_CHAR + "</g>" +
-    "</svg>";
-
-  var PIX_PLAIN =
-    '<svg class="pix" viewBox="472 194 288 221" role="img" aria-label="마스코트 캐릭터">' + PIX_CHAR + "</svg>";
+  var PIX_SVG =
+    '<svg class="pix" viewBox="-6 -1 168 122" aria-hidden="true">' + PIX_CHAR + "</svg>";
 
   function pixNode(kind) {
     var holder = el("div");
-    holder.innerHTML = kind === "hero" ? PIX_HERO : PIX_PLAIN;
+    holder.innerHTML = PIX_SVG;
     var svg = holder.firstChild;
-    if (kind === "placeholder") {
-      svg.classList.add("pix--placeholder");
-      svg.setAttribute("aria-hidden", "true");
-      svg.removeAttribute("role");
-      svg.removeAttribute("aria-label");
-    }
+    if (kind === "placeholder") svg.classList.add("pix--placeholder");
     return svg;
   }
 
@@ -150,13 +136,7 @@
       left.appendChild(reveal(meta));
     }
 
-    var art = el("div", "hero__art");
-    art.appendChild(pixNode("hero"));
-    art.classList.add("reveal");
-    art.style.setProperty("--i", String(i++));
-
     hero.appendChild(left);
-    hero.appendChild(art);
   }
 
   function renderCareer() {
@@ -404,6 +384,49 @@
     if (p.retrospective) section("회고").appendChild(el("p", null, p.retrospective));
   }
 
+  /* ---------- helper · 우하단 도우미 + 말풍선 ---------- */
+
+  function renderAssistant() {
+    var conf = profile.assistant || {};
+    var msgs = conf.messages || [];
+    if (conf.enabled === false || !msgs.length) return;
+
+    var box = el("div", "helper");
+
+    var bubble = el("div", "helper__bubble");
+    bubble.setAttribute("role", "status");
+    var closeBtn = el("button", "helper__close", "×");
+    closeBtn.type = "button";
+    closeBtn.setAttribute("aria-label", "말풍선 닫기");
+    var text = el("p", null, msgs[0]);
+    bubble.appendChild(closeBtn);
+    bubble.appendChild(text);
+
+    var charBtn = el("button", "helper__char");
+    charBtn.type = "button";
+    charBtn.setAttribute("aria-label", "도우미 — 누르면 다음 안내가 나옵니다");
+    charBtn.appendChild(pixNode("assistant"));
+
+    box.appendChild(bubble);
+    box.appendChild(charBtn);
+    document.body.appendChild(box);
+
+    var idx = 0;
+    closeBtn.addEventListener("click", function () {
+      box.classList.add("is-quiet");
+    });
+    charBtn.addEventListener("click", function () {
+      if (box.classList.contains("is-quiet")) {
+        box.classList.remove("is-quiet");
+      } else {
+        idx = (idx + 1) % msgs.length;
+        text.textContent = msgs[idx];
+      }
+    });
+
+    window.setTimeout(function () { box.classList.add("is-in"); }, 900);
+  }
+
   /* ---------- boot ---------- */
 
   var isDetail = document.body.dataset.page === "project";
@@ -418,4 +441,5 @@
     renderContact();
   }
   renderColophon();
+  renderAssistant();
 })();

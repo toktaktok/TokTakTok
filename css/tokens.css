@@ -1,7 +1,7 @@
-/* Hallmark · macrostructure: Portfolio Grid · H9 illustration knobs: build=Tier-B hand-SVG (사용자 제공 캐릭터), animation=blink-loop, scale=hero-panel
- * theme: custom v2 · vibe: "비비드 오렌지 마스코트, 블루 패널, 옐로 버스트" · paper: oklch(97% 0.008 45) · accent: oklch(70% 0.175 55)
+/* Hallmark · macrostructure: Portfolio Grid · enrichment: 사용자 제공 캐릭터를 화면 우하단 도우미(말풍선)로 — hero는 타이포그래피 온리
+ * theme: custom v3 · vibe: "iOS 블루 마스코트, 크림 페이퍼, 에스프레소 잉크" · paper: oklch(96.5% 0.009 80) · accent: oklch(58% 0.19 252)
  * display: Space Grotesk · body: IBM Plex Sans KR · outlier: IBM Plex Mono (meta register)
- * axes: light / grotesk-sans / warm · nav: N9 edge-aligned · footer: Ft4 dense-colophon
+ * axes: light / grotesk-sans / cool · nav: N9 edge-aligned · footer: Ft4 dense-colophon
  * studied: no · context: inferred · Hallmark v1.1.0
  * pre-emit critique: P4 H4 E4 S4 R5 V5 · contrast: pass (40–41) · slop: pass (42–45)
  * honest: pass (46) · chrome: pass (47) · tokens: pass (48) · responsive: pass (49) · icons: pass (30)
@@ -9,26 +9,25 @@
  */
 
 :root {
-  /* ---- color · warm near-white paper, signal-orange anchor, blue sub ---- */
-  --color-paper:      oklch(97% 0.008 45);
-  --color-paper-2:    oklch(94.5% 0.010 45);
-  --color-rule:       oklch(86% 0.012 45);
-  --color-rule-2:     oklch(90.5% 0.010 45);
-  --color-muted:      oklch(47% 0.014 45);
-  --color-neutral:    oklch(56% 0.012 45);
-  --color-ink:        oklch(21% 0.014 45);
-  --color-ink-2:      oklch(34% 0.014 45);
-  --color-accent:     oklch(70% 0.175 55);  /* vivid orange (#FD800D 근사) — 마스코트 몸통, 액티브 상태, 마커 */
-  --color-accent-2:   oklch(53% 0.20 264);  /* vivid blue (#385CEB 근사) — 링크, 히어로 패널 */
-  --color-accent-3:   oklch(84% 0.15 85);   /* warm yellow (#FDB60D 근사) — 히어로 버스트 전용 */
-  --color-accent-ink: oklch(21% 0.014 45);  /* text over accent fills (accent L > 50) */
-  --color-focus:      oklch(57% 0.19 50);
-  --color-selection:  oklch(91% 0.06 80);
+  /* ---- color · cream paper, espresso ink, iOS-blue anchor ---- */
+  --color-paper:      oklch(96.5% 0.009 80);  /* 크림 — 캐릭터 눈 하이라이트(#F1EBE7) 계열 */
+  --color-paper-2:    oklch(93.5% 0.011 80);
+  --color-rule:       oklch(85% 0.015 80);
+  --color-rule-2:     oklch(90% 0.012 80);
+  --color-muted:      oklch(46% 0.025 65);
+  --color-neutral:    oklch(55% 0.020 70);
+  --color-ink:        oklch(24% 0.035 55);   /* 에스프레소 브라운 — 캐릭터 눈(#4E1F00) 계열 */
+  --color-ink-2:      oklch(36% 0.030 55);
+  --color-accent:     oklch(58% 0.19 252);   /* iOS 블루 (#007AFF 근사) — 캐릭터 몸통, 마커, 큰 링크 */
+  --color-accent-2:   oklch(49% 0.185 252);  /* 딥 블루 — 본문 크기 링크 (4.5:1 대비 확보) */
+  --color-accent-ink: oklch(98% 0.005 80);   /* text over accent fills */
+  --color-focus:      oklch(52% 0.19 252);
+  --color-selection:  oklch(90% 0.05 252);
 
   /* 마스코트 캐릭터 전용 */
   --color-char-line:  oklch(99.5% 0.003 80); /* 외곽선·발 — 웜 화이트 */
-  --color-char-eye:   oklch(40% 0.06 55);    /* 눈 — 브라운 */
-  --color-char-shine: oklch(94% 0.008 60);   /* 눈 하이라이트 */
+  --color-char-eye:   oklch(24% 0.05 55);    /* 눈 — 딥 브라운(#4E1F00) */
+  --color-char-shine: oklch(94% 0.007 60);   /* 눈 하이라이트(#F1EBE7) */
 
   /* ---- type · Space Grotesk display / IBM Plex Sans KR body / IBM Plex Mono meta ---- */
   --font-display: "Space Grotesk", "IBM Plex Sans KR", ui-sans-serif, system-ui, sans-serif;
@@ -57,6 +56,10 @@
   --space-2xl: 4rem;
   --space-3xl: 6rem;
   --space-4xl: 9rem;
+
+  /* ---- shadows (whisper only) ---- */
+  --shadow-whisper: 0 1px 2px oklch(20% 0.01 60 / 0.05), 0 0 0 1px oklch(30% 0.01 60 / 0.03);
+  --shadow-lift:    0 2px 3px oklch(20% 0.01 60 / 0.14);
 
   /* ---- rules & radius · pixel discipline: sharp corners ---- */
   --rule-hair: 1px;

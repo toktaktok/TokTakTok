@@ -1,4 +1,4 @@
-/* Hallmark · macrostructure: Portfolio Grid · nav: N9 · footer: Ft4 · sections: hero(H9) → career → projects(filter) → skills(F3) → contact(C3) → colophon
+/* Hallmark · macrostructure: Portfolio Grid · nav: N9 · footer: Ft4 · sections: hero(타이포) → career → projects(filter) → skills(F3) → contact(C3) → colophon · helper: 우하단 도우미+말풍선
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
  */
 
@@ -98,13 +98,9 @@ a:active { color: var(--color-accent); }
   min-height: 44px;
 }
 
-/* ---------- hero · H9 custom illustration, left-biased 7/5 ---------- */
+/* ---------- hero · typography-led, left-biased ---------- */
 
 .hero {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
-  gap: var(--space-2xl);
-  align-items: center;
   padding-block: var(--space-2xl) var(--space-3xl);
 }
 
@@ -141,21 +137,11 @@ a:active { color: var(--color-accent); }
   color: var(--color-muted);
 }
 
-.hero__art {
-  justify-self: end;
-  width: min(100%, 26rem);
-  border: var(--rule-hair) solid var(--color-rule-2);
-}
-.hero__art svg { display: block; width: 100%; height: auto; }
-
-/* ---------- mascot character (사용자 제공 SVG 기반) ---------- */
+/* ---------- mascot character (사용자 제공 SVG · stroke 두께는 마크업 속성) ---------- */
 
 .pix { display: block; width: 100%; height: auto; }
-.pix__bg { fill: var(--color-accent-2); }
-.pix__burst-w { fill: var(--color-paper); opacity: 0.9; }
-.pix__burst-y { fill: var(--color-accent-3); opacity: 0.9; }
-.pix__skin { fill: var(--color-accent); stroke: var(--color-char-line); stroke-width: 4; }
-.pix__white { fill: var(--color-char-line); stroke: var(--color-char-line); stroke-width: 4; }
+.pix__skin { fill: var(--color-accent); stroke: var(--color-char-line); }
+.pix__white { fill: var(--color-char-line); stroke: var(--color-char-line); }
 .pix__eye { fill: var(--color-char-eye); }
 .pix__shine { fill: var(--color-char-shine); }
 .pix__blink {
@@ -172,6 +158,98 @@ a:active { color: var(--color-accent); }
 @keyframes pix-blink {
   0%, 91%, 100% { transform: scaleY(1); }
   93%, 95%      { transform: scaleY(0.08); }
+}
+
+/* ---------- helper · 화면 우하단 도우미 + 말풍선 ---------- */
+
+.helper {
+  position: fixed;
+  right: clamp(0.75rem, 3vw, 2rem);
+  bottom: clamp(0.75rem, 3vw, 1.75rem);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-sm);
+  pointer-events: none;
+}
+
+.helper__bubble {
+  pointer-events: auto;
+  position: relative;
+  max-width: 17rem;
+  background: var(--color-paper);
+  border: var(--rule-hair) solid var(--color-rule);
+  border-radius: 12px;
+  border-bottom-right-radius: 2px;
+  padding: var(--space-sm) var(--space-lg) var(--space-sm) var(--space-md);
+  box-shadow: var(--shadow-whisper);
+  font-size: var(--text-sm);
+  color: var(--color-ink-2);
+  line-height: 1.55;
+}
+.helper__bubble::after {
+  content: "";
+  position: absolute;
+  right: 1.6rem;
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
+  background: var(--color-paper);
+  border-right: var(--rule-hair) solid var(--color-rule);
+  border-bottom: var(--rule-hair) solid var(--color-rule);
+  transform: rotate(45deg);
+}
+.helper.is-quiet .helper__bubble { display: none; }
+
+.helper__close {
+  pointer-events: auto;
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0 4px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+.helper__close:hover { color: var(--color-ink); }
+
+.helper__char {
+  pointer-events: auto;
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  width: clamp(4.5rem, 8vw, 6.5rem);
+  cursor: pointer;
+  filter: drop-shadow(var(--shadow-lift));
+  animation: helper-bob 5s var(--ease-in-out) infinite;
+}
+.helper__char:active { transform: translateY(1px); }
+
+.helper { opacity: 0; transform: translateY(14px); }
+.helper.is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--dur-long) var(--ease-out), transform var(--dur-long) var(--ease-out);
+}
+
+@keyframes helper-bob {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -4px; }
+}
+
+@media (max-width: 40rem) {
+  .helper__bubble { max-width: min(72vw, 15rem); }
+}
+
+@media print {
+  .helper { display: none; }
 }
 
 /* ---------- sections · S2 hanging heads, varied rhythm ---------- */
@@ -536,12 +614,7 @@ a:active { color: var(--color-accent); }
 /* ---------- responsive ---------- */
 
 @media (max-width: 60rem) {
-  .hero {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-xl);
-    padding-block: var(--space-xl) var(--space-2xl);
-  }
-  .hero__art { justify-self: start; width: min(82%, 20rem); order: -1; }
+  .hero { padding-block: var(--space-xl) var(--space-2xl); }
   .grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
   .detail__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
