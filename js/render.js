@@ -238,6 +238,37 @@
     }
   }
 
+  /* 하늘의 시계 — 분침·초침만, 한국 시간(UTC+9).
+
+     보는 사람이 어느 시간대에 있든 늘 한국 시간을 가리켜야 하므로, 로컬 시간을 그대로
+     쓰지 않고 UTC로 되돌린 뒤 +9시간을 더합니다(대한민국은 서머타임이 없어 연중 고정).
+     인도(+5:30)처럼 30·45분 단위 시간대에서는 분침 위치까지 달라지기 때문에, 시침이
+     없더라도 이 보정이 필요합니다.
+
+     매 초 경계에 맞춰 한 칸씩(6°) 튑니다 — setInterval은 조금씩 밀려서 초를 건너뛰거나
+     겹치므로, 남은 밀리초만큼만 기다리는 setTimeout을 매번 다시 겁니다. */
+  function renderHeroClock() {
+    var clock = document.querySelector("[data-clock]");
+    if (!clock) return;
+    var minHand = clock.querySelector(".clock__hand--min");
+    var secHand = clock.querySelector(".clock__hand--sec");
+    if (!minHand || !secHand) return;
+
+    var KST_OFFSET_MIN = 9 * 60;
+
+    function tick() {
+      var now = new Date();
+      var kst = new Date(now.getTime() + (now.getTimezoneOffset() + KST_OFFSET_MIN) * 60000);
+      var sec = kst.getSeconds();
+      var min = kst.getMinutes();
+      secHand.style.rotate = sec * 6 + "deg";
+      /* 분침은 초에 따라 조금씩 흐르게 — 정각에 한 번에 튀지 않습니다 */
+      minHand.style.rotate = (min + sec / 60) * 6 + "deg";
+      window.setTimeout(tick, 1000 - (now.getTime() % 1000));
+    }
+    tick();
+  }
+
   function renderCareer() {
     var list = document.querySelector("[data-career]");
     if (!list) return;
@@ -758,6 +789,7 @@
     renderDetail();
   } else {
     renderHero();
+    renderHeroClock();
     renderCareer();
     renderProjects();
     renderSkills();
