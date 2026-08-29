@@ -492,7 +492,15 @@ a:active { color: var(--color-accent); }
   transform-origin: center;
   animation: pix-blink 6.4s var(--ease-in-out) infinite;
 }
-.pix__eyes { transition: transform var(--dur-micro) linear; }
+/* 눈 추적(js/render.js의 trackEyes)은 두 눈을 옮기는 동시에 scaleX로 간격을 줄여
+   고개 돌림을 흉내 냅니다. scale은 기준점이 어디냐에 따라 결과가 달라지므로,
+   기본값(50% 50% = 브라우저가 잡는 박스의 한가운데)에 맡기지 않고 viewBox
+   좌상단으로 못 박아 둡니다 — JS는 이 기준으로 좌표를 계산합니다. */
+.pix__eyes {
+  transition: transform var(--dur-micro) linear;
+  transform-box: view-box;
+  transform-origin: 0 0;
+}
 .pix__eyes.is-tracking { transition: none; }
 
 .pix--placeholder .pix__skin { fill: var(--color-rule); stroke: var(--color-paper); }
@@ -630,6 +638,12 @@ a:active { color: var(--color-accent); }
 }
 .helper--docked .helper__bubble { max-width: min(56vw, 16rem); }
 .helper--docked .helper__bubble::after { right: 50%; margin-right: -6px; }
+
+/* 포인터를 향해 몸을 살짝 옮기는 건 언덕에 서 있을 때만입니다 — 우하단 고정
+   도우미는 화면 모서리와 말풍선에 붙어 있어 몸만 움직이면 자리가 어긋나 보입니다.
+   --pix-sway는 js/render.js의 trackEyes가 매 프레임 씁니다. rotate와는 별개
+   속성이라 비행 중 기울기(--pix-lean)와 부딪히지 않습니다. */
+.helper--docked .pix { translate: var(--pix-sway, 0px) 0; }
 
 /* 비행 중 — 말풍선은 접어 두고 캐릭터만 건너갑니다. 도착해서 다시 말을 겁니다.
    (말풍선 폭·꼬리 위치가 두 상태에서 서로 달라, 켜 둔 채로 옮기면 글자가 늘어나 보임) */

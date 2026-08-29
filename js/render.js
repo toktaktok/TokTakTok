@@ -74,51 +74,110 @@
     return svg;
   }
 
-  /* 눈이 마우스 포인터를 따라갑니다. 포인터가 멈추면 서서히 정면으로 돌아옵니다.
-     터치 기기나 prefers-reduced-motion 환경에서는 붙이지 않습니다. */
+  /* 캐릭터가 마우스 포인터를 따라봅니다. 포인터가 멈추면 서서히 정면으로 돌아옵니다.
+     터치 기기나 prefers-reduced-motion 환경에서는 붙이지 않습니다.
+
+     세 겹으로 따라갑니다 — 뒤로 갈수록 느리고 은근하게:
+     1) 눈 이동(translate) — 두 눈이 함께 포인터 쪽으로.
+     2) 눈 간격(scaleX)   — 옆을 볼수록 두 눈이 머리 중심선 쪽으로 모입니다. 머리를
+        세로축으로 θ만큼 돌리면 앞면의 두 점은 화면에서 간격이 cos θ배로 줄고 동시에
+        (눈 깊이)·sin θ만큼 옆으로 밀리는데, 여기서는 scaleX가 그 cos θ, 위 translate가
+        그 밀림에 해당합니다. 덕분에 눈알만 굴리는 게 아니라 고개를 돌린 것으로 읽힙니다.
+     3) 몸 흔들림          — 히어로 언덕에 도킹해 있을 때만. 포인터의 가로 거리가 멀수록
+        그쪽으로 몸을 살짝 옮깁니다. 눈보다 느리게 따라와서 고개가 먼저 돌고 몸이
+        뒤따르는 순서로 보입니다. 우하단 고정 도우미일 때는 하지 않습니다 — 화면
+        모서리와 말풍선에 붙어 있어 몸만 움직이면 자리가 어긋나 보입니다.
+
+     캐릭터는 스크롤로도 화면 안에서 움직이므로, 포인터가 멈춰 있어도 스크롤 때마다
+     조준을 다시 계산합니다(마지막 포인터 위치 기준). */
   function trackEyes(svg) {
     var eyes = svg.querySelector(".pix__eyes");
     if (!eyes || !window.matchMedia) return;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    var NEAR = 48;     // 이 거리(px) 안에서는 눈이 덜 떨리도록 감쇠
-    var MAX_X = 3.4;   // 사용자 좌표 기준 최대 이동량
-    var MAX_Y = 2.2;
+    var NEAR = 48;       // 이 거리(px) 안에서는 눈이 덜 떨리도록 감쇠
+    var MAX_X = 7.5;     // 사용자 좌표 기준 최대 이동량
+    var MAX_Y = 4.5;
+    var SQUEEZE = 0.24;  // 끝까지 옆을 볼 때 두 눈 간격이 줄어드는 비율(= 1 - cos θ)
+    var SWAY = 7;        // 몸 흔들림 최대치(CSS px)
+    var SWAY_SPAN = 0.4; // 화면 폭의 이 비율만큼 가로로 떨어지면 몸 흔들림이 최대
+
     /* 두 눈 중심(77.5, 28.25)의 viewBox 내 비율 */
     var CX = (77.5 + 4) / 158;
     var CY = (28.25 + 5) / 89;
+    /* 눈 간격을 줄일 때의 기준점 = 몸통 가로 중심(사용자 좌표 76). .pix__eyes는
+       transform-origin을 viewBox 좌상단(-4, -5)에 못 박아 뒀으므로(css/site.css)
+       그만큼 당겨서 씁니다 */
+    var HEAD_CX = 76 + 4;
 
-    var aimX = 0, aimY = 0, curX = 0, curY = 0, raf = 0;
+    var aimX = 0, aimY = 0, aimSway = 0;
+    var curX = 0, curY = 0, curSway = 0;
+    var raf = 0, reaim = 0, host = null, ptrX = 0, ptrY = 0, seen = false;
+
+    /* 도킹 여부는 .helper의 클래스로 봅니다. trackEyes가 불리는 시점엔 캐릭터가 아직
+       .helper 안에 붙기 전이라, 처음 찾을 수 있을 때 찾아서 기억해 둡니다. */
+    function docked() {
+      if (!host && svg.closest) host = svg.closest(".helper");
+      return !!host && host.classList.contains("helper--docked");
+    }
 
     function step() {
       raf = 0;
       curX += (aimX - curX) * 0.16;
       curY += (aimY - curY) * 0.16;
-      eyes.style.transform = "translate(" + curX.toFixed(2) + "px," + curY.toFixed(2) + "px)";
-      if (Math.abs(aimX - curX) > 0.01 || Math.abs(aimY - curY) > 0.01) raf = requestAnimationFrame(step);
+      curSway += (aimSway - curSway) * 0.075;
+
+      var squeeze = 1 - SQUEEZE * Math.min(1, Math.abs(curX) / MAX_X);
+      eyes.style.transform =
+        "translate(" + curX.toFixed(2) + "px," + curY.toFixed(2) + "px)" +
+        " translate(" + HEAD_CX + "px,0)" +
+        " scale(" + squeeze.toFixed(4) + ",1)" +
+        " translate(" + -HEAD_CX + "px,0)";
+      svg.style.setProperty("--pix-sway", curSway.toFixed(2) + "px");
+
+      if (Math.abs(aimX - curX) > 0.01 || Math.abs(aimY - curY) > 0.01 ||
+          Math.abs(aimSway - curSway) > 0.02) raf = requestAnimationFrame(step);
     }
 
     function nudge() {
       if (!raf) raf = requestAnimationFrame(step);
     }
 
-    window.addEventListener("pointermove", function (e) {
+    function aim() {
+      if (!seen) return;
       var r = svg.getBoundingClientRect();
       if (!r.width) return;
-      var dx = e.clientX - (r.left + r.width * CX);
-      var dy = e.clientY - (r.top + r.height * CY);
+      var dx = ptrX - (r.left + r.width * CX);
+      var dy = ptrY - (r.top + r.height * CY);
       var dist = Math.sqrt(dx * dx + dy * dy) || 1;
       /* 방향은 언제나 포인터 쪽. 코앞에서만 살짝 줄여 떨림을 막습니다. */
       var pull = Math.min(1, dist / NEAR);
       aimX = (dx / dist) * pull * MAX_X;
       aimY = (dy / dist) * pull * MAX_Y;
+      /* 눈은 방향만 보지만, 몸은 실제 가로 거리에 비례해서 — 멀수록 크게 기울입니다 */
+      var span = window.innerWidth * SWAY_SPAN || 1;
+      aimSway = docked() ? Math.max(-1, Math.min(1, dx / span)) * SWAY : 0;
       nudge();
+    }
+
+    /* 스크롤·리사이즈로 캐릭터가 화면 안에서 움직였을 때도 다시 조준 — 프레임당 한 번만 */
+    function nudgeAim() {
+      if (!reaim) reaim = requestAnimationFrame(function () { reaim = 0; aim(); });
+    }
+
+    window.addEventListener("pointermove", function (e) {
+      ptrX = e.clientX;
+      ptrY = e.clientY;
+      seen = true;
+      aim();
     }, { passive: true });
+    window.addEventListener("scroll", nudgeAim, { passive: true });
+    window.addEventListener("resize", nudgeAim, { passive: true });
 
     /* 창을 벗어나면 정면으로 */
     document.addEventListener("pointerleave", function () {
-      aimX = aimY = 0;
+      aimX = aimY = aimSway = 0;
       nudge();
     });
 
