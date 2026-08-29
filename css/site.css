@@ -492,16 +492,14 @@ a:active { color: var(--color-accent); }
   transform-origin: center;
   animation: pix-blink 6.4s var(--ease-in-out) infinite;
 }
-/* 눈 추적(js/render.js의 trackEyes)은 두 눈을 옮기는 동시에 scaleX로 간격을 줄여
-   고개 돌림을 흉내 냅니다. scale은 기준점이 어디냐에 따라 결과가 달라지므로,
-   기본값(50% 50% = 브라우저가 잡는 박스의 한가운데)에 맡기지 않고 viewBox
-   좌상단으로 못 박아 둡니다 — JS는 이 기준으로 좌표를 계산합니다. */
-.pix__eyes {
-  transition: transform var(--dur-micro) linear;
-  transform-box: view-box;
-  transform-origin: 0 0;
-}
+.pix__eyes { transition: transform var(--dur-micro) linear; }
 .pix__eyes.is-tracking { transition: none; }
+
+/* 고개 돌림 — 눈 추적(js/render.js의 trackEyes)이 좌/우를 각각 머리 중심선 쪽으로
+   당겨 두 눈 사이를 좁힙니다. 눈 자체는 건드리지 않으므로 크기는 그대로입니다.
+   전부 translate뿐이라 transform-origin이 어디로 잡히든 결과가 같습니다. */
+.pix__eye-side { transition: transform var(--dur-micro) linear; }
+.pix__eyes.is-tracking .pix__eye-side { transition: none; }
 
 .pix--placeholder .pix__skin { fill: var(--color-rule); stroke: var(--color-paper); }
 .pix--placeholder .pix__eye { fill: var(--color-neutral); }

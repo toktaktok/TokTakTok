@@ -28,11 +28,18 @@
     '<g class="pix__torso">' +
     '<path class="pix__skin" stroke-width="2" d="M44 1H90C109.33 1 125 16.67 125 36V43C125 62.33 109.33 78 90 78H62C42.67 78 27 62.33 27 43V18C27 8.61116 34.6112 1 44 1Z"/>' +
     '<g class="pix__eyes">' +
+    /* 좌/우 눈을 각각 .pix__eye-side로 감쌉니다 — 눈 추적이 고개 돌림을 흉내 낼 때
+       이 그룹만 좌우로 옮겨 두 눈 "사이"를 좁힙니다. 눈 자체의 크기는 그대로입니다
+       (예전엔 .pix__eyes 전체를 scaleX 해서 간격과 함께 눈까지 납작해졌습니다). */
     '<g class="pix__blink">' +
+    '<g class="pix__eye-side pix__eye-side--l">' +
     '<rect class="pix__eye" x="55" y="13.749" width="11" height="29" rx="4"/>' +
     '<path class="pix__shine" d="M63.3827 16.3898C63.7349 16.4317 64 16.7303 64 17.0849V27.1142C64 27.885 62.9363 28.0898 62.6501 27.3742L58.4378 16.8434C58.2405 16.3502 58.6429 15.8256 59.1704 15.8884L63.3827 16.3898Z"/>' +
+    "</g>" +
+    '<g class="pix__eye-side pix__eye-side--r">' +
     '<rect class="pix__eye" x="89" y="12.749" width="11" height="31" rx="4"/>' +
     '<path class="pix__shine" d="M97.3827 15.3898C97.7349 15.4317 98 15.7303 98 16.0849V26.1142C98 26.885 96.9363 27.0898 96.6501 26.3742L92.4378 15.8434C92.2405 15.3502 92.6429 14.8256 93.1704 14.8884L97.3827 15.3898Z"/>' +
+    "</g>" +
     "</g>" +
     /* 웃는 눈 — 뜬 눈과 맞바꿔 쓰는 호(弧). 기하는 뜬 눈에서 그대로 따왔고,
        기준은 둘 다 "실제로 칠해지는 잉크"입니다(round cap이 끝점 바깥으로
@@ -42,8 +49,12 @@
        호는 반지름 3.5(= 끝점 사이 거리 7의 절반)인 정확한 반원. 2차 베지어로 그리면
        같은 폭에서 꼭짓점이 반원보다 높이 솟아 캐럿(^)처럼 뾰족해집니다. */
     '<g class="pix__eyes-smile">' +
+    '<g class="pix__eye-side pix__eye-side--l">' +
     '<path class="pix__eye-smile" d="M57 40.749A3.5 3.5 0 0 1 64 40.749"/>' +
+    "</g>" +
+    '<g class="pix__eye-side pix__eye-side--r">' +
     '<path class="pix__eye-smile" d="M91 41.749A3.5 3.5 0 0 1 98 41.749"/>' +
+    "</g>" +
     "</g></g>" +
     "</g>";
 
@@ -78,11 +89,14 @@
      터치 기기나 prefers-reduced-motion 환경에서는 붙이지 않습니다.
 
      세 겹으로 따라갑니다 — 뒤로 갈수록 느리고 은근하게:
-     1) 눈 이동(translate) — 두 눈이 함께 포인터 쪽으로.
-     2) 눈 간격(scaleX)   — 옆을 볼수록 두 눈이 머리 중심선 쪽으로 모입니다. 머리를
-        세로축으로 θ만큼 돌리면 앞면의 두 점은 화면에서 간격이 cos θ배로 줄고 동시에
-        (눈 깊이)·sin θ만큼 옆으로 밀리는데, 여기서는 scaleX가 그 cos θ, 위 translate가
-        그 밀림에 해당합니다. 덕분에 눈알만 굴리는 게 아니라 고개를 돌린 것으로 읽힙니다.
+     1) 눈 이동   — 두 눈이 함께 포인터 쪽으로(.pix__eyes를 통째로 옮김).
+     2) 눈 간격   — 옆을 볼수록 두 눈이 머리 중심선 쪽으로 모입니다. 머리를 세로축으로
+        θ만큼 돌리면 앞면의 두 점은 화면에서 간격이 cos θ배로 줄고 동시에 (눈 깊이)·sin θ
+        만큼 옆으로 밀리는데, 여기서 1)이 그 밀림, 2)가 그 cos θ에 해당합니다. 덕분에
+        눈알만 굴리는 게 아니라 고개를 돌린 것으로 읽힙니다.
+        좁히는 건 어디까지나 두 눈 "사이"입니다 — 각 눈은 제 크기 그대로 안쪽으로
+        옮겨질 뿐이라, 눈 자체가 납작해지지 않습니다. 그래서 그룹을 scaleX 하지 않고
+        좌/우 .pix__eye-side를 각각 반대 방향으로 translate 합니다.
      3) 몸 흔들림          — 히어로 언덕에 도킹해 있을 때만. 포인터의 가로 거리가 멀수록
         그쪽으로 몸을 살짝 옮깁니다. 눈보다 느리게 따라와서 고개가 먼저 돌고 몸이
         뒤따르는 순서로 보입니다. 우하단 고정 도우미일 때는 하지 않습니다 — 화면
@@ -99,17 +113,21 @@
     var NEAR = 48;       // 이 거리(px) 안에서는 눈이 덜 떨리도록 감쇠
     var MAX_X = 7.5;     // 사용자 좌표 기준 최대 이동량
     var MAX_Y = 4.5;
-    var SQUEEZE = 0.24;  // 끝까지 옆을 볼 때 두 눈 간격이 줄어드는 비율(= 1 - cos θ)
+    var SQUEEZE = 0.24;  // 끝까지 옆을 볼 때 두 눈 "간격"이 줄어드는 비율(= 1 - cos θ)
     var SWAY = 7;        // 몸 흔들림 최대치(CSS px)
     var SWAY_SPAN = 0.4; // 화면 폭의 이 비율만큼 가로로 떨어지면 몸 흔들림이 최대
 
     /* 두 눈 중심(77.5, 28.25)의 viewBox 내 비율 */
     var CX = (77.5 + 4) / 158;
     var CY = (28.25 + 5) / 89;
-    /* 눈 간격을 줄일 때의 기준점 = 몸통 가로 중심(사용자 좌표 76). .pix__eyes는
-       transform-origin을 viewBox 좌상단(-4, -5)에 못 박아 뒀으므로(css/site.css)
-       그만큼 당겨서 씁니다 */
-    var HEAD_CX = 76 + 4;
+    /* 고개를 돌리는 축 = 몸통 가로 중심, 그리고 각 눈의 중심(뜬 눈·웃는 눈 공통).
+       각 눈은 이 축 쪽으로 (축까지 거리)×(1-cos θ)만큼 당겨집니다 — 둘을 합하면
+       간격이 정확히 cos θ배가 되고, 눈 크기는 건드리지 않습니다. */
+    var HEAD_CX = 76, EYE_L_CX = 60.5, EYE_R_CX = 94.5;
+    var sides = [
+      { nodes: svg.querySelectorAll(".pix__eye-side--l"), reach: HEAD_CX - EYE_L_CX },
+      { nodes: svg.querySelectorAll(".pix__eye-side--r"), reach: HEAD_CX - EYE_R_CX }
+    ];
 
     var aimX = 0, aimY = 0, aimSway = 0;
     var curX = 0, curY = 0, curSway = 0;
@@ -128,12 +146,18 @@
       curY += (aimY - curY) * 0.16;
       curSway += (aimSway - curSway) * 0.075;
 
-      var squeeze = 1 - SQUEEZE * Math.min(1, Math.abs(curX) / MAX_X);
       eyes.style.transform =
-        "translate(" + curX.toFixed(2) + "px," + curY.toFixed(2) + "px)" +
-        " translate(" + HEAD_CX + "px,0)" +
-        " scale(" + squeeze.toFixed(4) + ",1)" +
-        " translate(" + -HEAD_CX + "px,0)";
+        "translate(" + curX.toFixed(2) + "px," + curY.toFixed(2) + "px)";
+
+      /* 옆을 볼수록(0 → 1) 두 눈을 축 쪽으로 당깁니다. 순수 translate라
+         눈의 폭·높이는 그대로입니다 */
+      var turn = SQUEEZE * Math.min(1, Math.abs(curX) / MAX_X);
+      sides.forEach(function (side) {
+        var d = (side.reach * turn).toFixed(2);
+        for (var i = 0; i < side.nodes.length; i++) {
+          side.nodes[i].style.transform = "translate(" + d + "px,0)";
+        }
+      });
       svg.style.setProperty("--pix-sway", curSway.toFixed(2) + "px");
 
       if (Math.abs(aimX - curX) > 0.01 || Math.abs(aimY - curY) > 0.01 ||
