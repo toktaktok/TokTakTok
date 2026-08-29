@@ -216,14 +216,23 @@ a:active { color: var(--color-accent); }
 .hero__clock {
   position: absolute;
   /* 시안 값(1920 기준): 지름 1026 · left 1073 · top -368.
-     = 지름 53.44vw, 중심 (가로 82.6% · 세로 7.55vw). 폭에 비례해 줄고 늘되,
-     1920보다 넓은 화면에서는 시안 크기(64.2rem ≈ 1027px)와 그때의 중심 높이
-     (9.06rem = 145px)에서 멈춥니다 — 안 그러면 초광폭에서 혼자 계속 커집니다. */
+     아래 세 변수가 문자판의 크기와 중심 좌표 전부입니다 — left/top의 calc은
+     중심을 박스 왼쪽 위 모서리로 바꾸는 계산이라 건드릴 일이 없습니다. */
+
+  /* 지름. 폭에 비례해 줄고 늘되, 1920보다 넓은 화면에서는 시안 크기
+     (64.2rem ≈ 1027px)에서 멈춥니다 — 안 그러면 초광폭에서 혼자 계속 커집니다 */
   --clock-d: clamp(18rem, 53.44vw, 64.2rem);
+  /* 중심 가로 — 씬 폭의 82.6%(1920에서 1586px). 키우면 오른쪽으로 더 나갑니다 */
+  --clock-x: 82.6%;
+  /* 중심 세로 — 기준값 7.55vw(1920에서 145px). 줄이면 시계가 올라가고,
+     그만큼 문자판 아래가 언덕 위로 더 올라옵니다.
+     상한 9.06rem은 --clock-d와 같이 1920에서 멈추게 하려는 값 */
+  --clock-y: clamp(3rem, 7.55vw, 9.06rem);
+
   width: var(--clock-d);
   height: var(--clock-d);
-  left: calc(82.6% - var(--clock-d) / 2);
-  top: calc(clamp(3rem, 7.55vw, 9.06rem) - var(--clock-d) / 2);
+  left: calc(var(--clock-x) - var(--clock-d) / 2);
+  top: calc(var(--clock-y) - var(--clock-d) / 2);
   z-index: 0;
   opacity: 0.55;
   pointer-events: none;
