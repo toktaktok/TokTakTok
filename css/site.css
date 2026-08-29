@@ -1,6 +1,6 @@
-/* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill (화면 최상단 고정, 씬 밖 — 씬의 overflow: clip에 안 걸리게) + section links · footer: Ft4 · sections: hero(풀블리드 씬 + 마퀴 + 경력 팝업) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
+/* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill (화면 최상단 고정, 씬 밖 — 씬의 overflow: clip에 안 걸리게) + section links · footer: Ft4 · sections: hero(언덕 띠 씬 + 타이포 소개 블록) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
- * hero enrichment: 사용자 제공 픽셀아트 배경(assets/images/Aero.png, 아래 정렬 + 위쪽은 --scene-sky가 이어받음) + Black Han Sans 대형 마퀴.
+ * hero enrichment: 사용자 제공 시안의 언덕 띠(인라인 SVG, 둥근 사각형 2톤 · 아래 정렬 · 위쪽 하늘은 --color-paper가 이어받음). 헤드라인은 Black Han Sans 실제 h1(롤링 마퀴 아님).
  * mascot: 입 없음 — 표정은 눈으로만(.pix--smile이 뜬 눈을 웃는 눈 호와 맞바꿈).
  *   도킹 전환은 rAF 비행(.pix--travel 걷는 모션) — 씬은 overflow: clip이라 비행은 body의 fixed 컨텍스트에서 하고 도착 때만 .hero__dock으로 옮김.
  */
@@ -173,7 +173,7 @@ a:active { color: var(--color-accent); }
   50%      { box-shadow: 0 0 0 6px var(--status-ring-soft); }
 }
 
-/* ---------- hero · 풀스크린 씬 — 8비트 픽셀아트 하늘/들판, 네비·마퀴·캐릭터·카드가 전부 그 위에 얹힘 ---------- */
+/* ---------- hero · 풀스크린 씬 — 아래 언덕 띠 + 위–가운데 타이포 소개 블록 + 언덕 위 캐릭터 ---------- */
 
 .hero { position: relative; }
 
@@ -183,21 +183,18 @@ a:active { color: var(--color-accent); }
   min-height: 32rem;
   max-height: 56rem;
   overflow: clip;
-  /* 씬 아트 위쪽은 이 색이 이어받습니다. 이미지 맨 위 30줄이 순수 하늘색이라
-     같은 값을 쓰면 이음새가 보이지 않습니다. 이미지 로딩 전 배경도 겸함 */
-  background: var(--scene-sky);
+  /* 언덕 띠 위쪽(= 하늘)은 이 색이 그대로 이어받습니다. 아트가 투명 배경의
+     인라인 SVG라 경계가 생기지 않습니다 */
+  background: var(--color-paper);
 
-  /* 씬 아트가 차지할 높이. 이미지가 2:1이라 가로를 꽉 채우면 높이는 50vw입니다.
-     · 좁은 화면에서 그대로 두면 잔디 밴드(아트 높이의 20%)가 너무 얇아 캐릭터가
-       설 자리가 없으므로 최소 24rem을 보장합니다(그만큼 좌우가 잘림).
-     · 세로로 긴 화면에서 하늘만 휑하게 남지 않도록 55dvh까지는 키웁니다.
-     · 씬보다 커지지 않게 위를 씬 높이로 막습니다. */
-  --art-h: clamp(24rem, max(50vw, 55dvh), min(100dvh, 56rem));
+  /* 언덕 띠의 높이. 원본 시안에서 띠는 폭의 18.7%(1920 중 359)이라 19vw를 기준값으로
+     두되, 좁은 화면에서 그대로 두면 띠가 너무 얇아 캐릭터가 설 자리가 없으므로
+     최소 10rem을 보장하고(그만큼 좌우가 잘림), 큰 화면에서는 22rem에서 멈춥니다. */
+  --art-h: clamp(10rem, 19vw, 22rem);
 }
 
-/* 씬 아트 — assets/images/Aero.png (1280x640 픽셀아트).
-   지평선을 늘 바닥에 붙여 두려고 아래를 기준으로 잡습니다. 화면비에 따라 좌우가
-   잘릴 수는 있어도 잔디는 항상 바닥에 남습니다. */
+/* 씬 아트 — 아래쪽 언덕 띠. 화면비가 달라지면 좌우가 잘릴 뿐(xMidYMax slice),
+   능선은 늘 같은 두께로 바닥에 붙어 있습니다. */
 .hero__scene-art {
   position: absolute;
   left: 0;
@@ -207,79 +204,63 @@ a:active { color: var(--color-accent); }
   height: var(--art-h);
   display: block;
   z-index: 0;
-  object-fit: cover;
-  object-position: center bottom;
 }
 
-/* 마퀴 — 화면 가로를 다 차지하는 롤링 타이포. 실제 h1은 sr-only, 이건 장식(aria-hidden).
-   네비 아래, 하늘 영역 안에 오도록 배치 */
-.hero__marquee {
-  position: absolute;
-  top: clamp(7rem, 20vh, 11rem);
-  left: 0;
-  right: 0;
-  overflow: clip;
-  z-index: 2;
-  user-select: none;
-}
-.hero__marquee-track {
-  display: inline-flex;
-  white-space: nowrap;
-  font-family: var(--font-hero);
-  font-weight: 400; /* Black Han Sans는 굵기가 하나뿐인 디스플레이 서체 — 이미 최대로 검음 */
-  font-size: clamp(3rem, 9.5vw, 7rem);
-  line-height: 1.05;
-  color: var(--color-ink);
-  animation: hero-marquee 36s linear infinite;
-}
-.hero__marquee-track > span { padding-right: 0.55em; }
-@keyframes hero-marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-/* WCAG 2.2.2 — 자동으로 도는 콘텐츠는 정지 수단이 있어야 함. 마우스를 올리면 멈춤 */
-.hero__marquee:hover .hero__marquee-track { animation-play-state: paused; }
-
-/* 캐릭터가 서 있는 자리 — 앞동산 능선 위 고정 좌표 (씬 비율 기준).
-   씬에서 가장 위(카드 4·네비 5보다 위)에 둡니다: 비행 중에는 캐릭터가 body의
+/* 캐릭터가 서 있는 자리 — 언덕 위 고정 좌표.
+   씬에서 가장 위(소개 블록 4보다 위)에 둡니다: 비행 중에는 캐릭터가 body의
    fixed 컨텍스트(z-toast)에 있다가 도착하는 순간 이 안으로 들어오는데, 여기가
-   더 아래면 그 순간 카드 뒤로 쑥 들어가 보입니다. 좁은 화면에서 캐릭터·말풍선이
-   카드와 겹칠 때도 반쯤 잘려 보이는 것보다 앞에 서는 편이 낫습니다. */
+   더 아래면 그 순간 소개 블록 뒤로 쑥 들어가 보입니다. */
 .hero__dock {
   position: absolute;
   left: 72%;
-  /* 잔디 밴드는 아트 높이의 아래 20%. 그 한가운데쯤에 발을 둡니다 —
-     씬 높이(%)가 아니라 아트 높이를 기준으로 해야 화면비가 바뀌어도 잔디 위에 섭니다 */
-  bottom: calc(var(--art-h) * 0.1);
+  /* 언덕 띠에서 평평한 앞쪽 지면은 아래 52%. 그 안쪽에 발을 둡니다 —
+     씬 높이(%)가 아니라 띠 높이를 기준으로 해야 화면비가 바뀌어도 지면 위에 섭니다 */
+  bottom: calc(var(--art-h) * 0.18);
   z-index: 6;
 }
 
-/* 소개 카드 — 씬 안, 왼쪽 하단에 얹힌 유리 패널. 캐릭터는 오른쪽에 도킹돼 있어서
-   자리가 안 부딪힘. wrap으로 감싸되 빈 공간은 클릭을 막지 않게(포인터 이벤트는 카드에만) */
-.hero__card-wrap {
+/* 소개 블록 — 씬의 위–가운데 왼쪽. 예전에는 마퀴(위)와 유리 카드(아래)로 나뉘어
+   가운데가 통째로 비어 있었는데(3x3 격자 가운데 줄 0%), 하나의 세로 흐름으로 합쳐
+   그 자리를 채웁니다. 배경이 밝은 종이라 유리 패널은 경계가 거의 안 보여 무게가
+   없었기 때문에 걷어냈습니다 — 글자가 종이 위에 바로 앉습니다.
+   wrap으로 감싸되 빈 자리는 클릭을 막지 않게(포인터 이벤트는 안쪽 블록에만). */
+.hero__copy {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(var(--art-h) * 0.1); /* 캐릭터와 같은 바닥선 */
+  top: clamp(6.5rem, 17vh, 10rem);
   z-index: 4;
   pointer-events: none;
 }
-.hero__card {
+.hero__copy-inner {
   pointer-events: auto;
-  max-width: 30rem;
-  backdrop-filter: blur(10px) saturate(1.3);
-  -webkit-backdrop-filter: blur(10px) saturate(1.3);
+  max-width: 34rem;
 }
 
 .hero__kicker {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--color-muted);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
+}
+
+/* 헤드라인 — 예전 마퀴가 쓰던 디스플레이 서체를 그대로 이어받습니다.
+   화면에서 가장 큰 글자가 이제 장식이 아니라 실제로 읽히는 h1입니다. */
+.hero__headline {
+  font-family: var(--font-hero);
+  font-weight: 400; /* Black Han Sans는 굵기가 하나뿐인 디스플레이 서체 — 이미 최대로 검음 */
+  font-size: var(--text-display);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .hero__intro {
   max-width: 42ch;
+  margin-top: var(--space-lg);
+  font-size: var(--text-md);
   color: var(--color-ink-2);
 }
 
@@ -969,10 +950,6 @@ a:active { color: var(--color-accent); }
 @media (max-width: 60rem) {
   .grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); }
   .detail__facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hero__card { max-width: min(26rem, 56%); }
-  /* 카드가 화면 폭에서 차지하는 비율이 커지므로 캐릭터를 오른쪽으로 더 밀어
-     말풍선이 카드 위로 올라타지 않게 합니다 */
-  .hero__dock { left: 78%; }
 }
 
 @media (max-width: 40rem) {
@@ -980,14 +957,10 @@ a:active { color: var(--color-accent); }
   /* 좁은 화면에서는 네비 알약에 4개 링크까지 넣을 자리가 없어서(스크롤해도 중간에
      글자가 잘려 보임) 링크 줄은 숨김 — 섹션은 스크롤로 충분히 닿을 수 있음 */
   .nav__links { display: none; }
-  .hero__marquee { top: 8rem; }
-  /* 좁은 화면에서는 카드(전체 폭)와 캐릭터를 세로로 분리 — 캐릭터는 잔디 위에
-     그대로 두고, 카드는 말풍선까지 피할 만큼 위로 올립니다.
-     캐릭터 자리는 말풍선(폭의 절반)이 오른쪽으로 삐져나가지 않는 선까지만 오른쪽으로 */
+  /* 캐릭터 자리는 말풍선(폭의 절반)이 오른쪽으로 삐져나가지 않는 선까지만 오른쪽으로.
+     소개 블록은 위에서, 캐릭터는 아래에서 자리를 잡으므로 서로 부딪히지 않습니다 */
   .hero__dock { left: 70%; }
   .helper--docked .helper__bubble { max-width: min(50vw, 14rem); }
-  .hero__card-wrap { bottom: calc(var(--art-h) * 0.55); }
-  .hero__card { max-width: none; padding: var(--space-md); }
   .career__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); padding-block: var(--space-md); }
   .career__period { padding-top: 0; }
   .edu__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-3xs); }
@@ -998,12 +971,11 @@ a:active { color: var(--color-accent); }
   .section__head { padding-block: var(--space-xl) var(--space-lg); }
 }
 
-/* 아주 작은 화면 — 마퀴 + 소개 카드 + (캐릭터 + 말풍선)이 세로로 다 들어가지 않습니다.
-   도킹 상태의 말풍선만 접고 캐릭터는 잔디 위에 그대로 둡니다. 스크롤해서 우하단
+/* 아주 작은 화면 — 소개 블록 + (캐릭터 + 말풍선)이 세로로 빠듯합니다.
+   도킹 상태의 말풍선만 접고 캐릭터는 언덕 위에 그대로 둡니다. 스크롤해서 우하단
    도우미로 돌아오면 말풍선이 다시 나오므로 인사말이 사라지지는 않습니다. */
 @media (max-width: 40rem) and (max-height: 44rem) {
   .helper--docked .helper__bubble { display: none; }
-  .hero__card-wrap { bottom: calc(var(--art-h) * 0.3); }
 }
 
 @media (pointer: coarse) {
@@ -1027,8 +999,6 @@ a:active { color: var(--color-accent); }
   .nav__cta::before { animation: none; }
   /* 도킹 전환도 걷지 않고 바로 자리를 옮깁니다(render.js의 canFly가 FLIP 자체를 끔) */
   .pix { rotate: 0deg; }
-  /* 마퀴는 정지 상태로 — 트랙 앞부분(헤드라인 1회분)이 정적으로 보임 */
-  .hero__marquee-track { animation: none; }
   .reveal { animation: reveal-reduced 150ms linear forwards; }
   @keyframes reveal-reduced { to { opacity: 1; transform: none; } }
 }
