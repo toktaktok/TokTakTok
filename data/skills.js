@@ -6,7 +6,7 @@ window.PORTFOLIO.skills = [
   {
     category: "주력",
     items: "C++ · Unreal Engine",
-    note: "실무에서 설계와 구현을 주도할 수 있는 수준. (샘플 — 실제 스택으로 교체)",
+    note: "실무 기반의 설계/구현 진행 가능. Slate UI",
   },
   {
     category: "능숙",
@@ -20,7 +20,7 @@ window.PORTFOLIO.skills = [
   },
   {
     category: "협업 도구",
-    items: "Perforce · SVN · Git · Jira",
+    items: "SVN · Git · Trello",
     note: "(샘플)",
   },
 ];

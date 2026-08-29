@@ -5,21 +5,45 @@ window.PORTFOLIO = window.PORTFOLIO || {};
 
 window.PORTFOLIO.education = [
   {
-    period: "2022 —",
-    label: "소모임",
-    title: "스터디/모임명 입력",
-    note: "활동 내용을 한 줄로. (샘플 행 — data/education.js에서 교체)",
-  },
-  {
-    period: "2023",
-    label: "교육",
-    title: "교육/부트캠프명 입력",
-    note: "이수 내용을 한 줄로.",
-  },
-  {
-    period: "2016.03 — 2020.02",
+    period: "2018.03 — 2025.02",
     label: "학력",
-    title: "학교명 입력 · 전공 입력",
+    title: "홍익대학교 · 컴퓨터공학전공/시각디자인전공",
+    note: "복수전공",
+  },
+  {
+    period: "2023.07 — 2024.11",
+    label: "교육",
+    title: "C++ 클라이언트 프로그래밍 이수",
+    note: "쥬신게임아카데미",
+  },
+  {
+    period: "2022.05 — 2022.12",
+    label: "대외활동",
+    title: "콘텐츠 창의인재 동반사업",
+    note: "인디게임 멘토링",
+  },
+  {
+    period: "2021.12 - 2022.02",
+    label: "대외활동",
+    title: "Polraris 동계 프로그래밍 워크샵 멘토",
+    note: "학회 활동",
+  },
+  {
+    period: "2021.03 - 2021.09",
+    label: "대외활동",
+    title: "캡스톤 디자인 - 창의적 종합설계 경진대회 참여",
+    note: "",
+  },
+  {
+    period: "2020.01 - 2022.02",
+    label: "학회",
+    title: "홍아지(Hongik Art & Technology) 학회",
+    note: "",
+  },
+  {
+    period: "2019.09 - 2020.12",
+    label: "소모임",
+    title: "EXP: 게임제작 동아리",
     note: "",
   },
 ];
