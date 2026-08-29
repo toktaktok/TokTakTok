@@ -56,7 +56,12 @@
      Pretendard 하나로 통일해 "개발자 문서" 톤을 빼고 프로덕트 UI 톤으로 정리. */
   --font-display: "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
   --font-body:    "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
-  --font-mono:    "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+  /* IBM Plex Mono엔 한글 글리프가 없어, 메타 register에 한글이 섞이면(예: 상단 nav 링크,
+     히어로 이름·직함) OS가 임의로 고르는 폴백 모노스페이스로 넘어갑니다 — 이 폴백이
+     플랫폼마다 달라(Windows는 굴림류 비트맵 느낌, iOS/Android는 매끈한 시스템 산세리프)
+     "PC에서는 폰트가 안 보이는" 것처럼 보였음. 라틴/숫자는 IBM Plex Mono가 그대로 맡고,
+     한글만 Pretendard Variable로 명시적으로 떨어지게 해 플랫폼 간 렌더링을 통일. */
+  --font-mono:    "IBM Plex Mono", "Pretendard Variable", Pretendard, ui-monospace, "SFMono-Regular", monospace;
   /* 히어로 헤드라인 전용 아웃라이어 — Black Han Sans (Google Fonts, index.html에서만 로드).
      처음엔 픽셀 폰트(갈무리11)를 썼지만 대형 사이즈에서 획이 깨져 가독성이 떨어져서 교체.
      한글 지원되는 매우 굵은 디스플레이 산세리프로, 개성은 유지하면서 큰 글자에서도 또렷합니다.
