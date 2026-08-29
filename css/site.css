@@ -1,6 +1,7 @@
-/* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill (화면 최상단 고정, 씬 밖 — 씬의 overflow: clip에 안 걸리게) + section links · footer: Ft4 · sections: hero(언덕 띠 씬 + 타이포 소개 블록) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
+/* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill (화면 최상단 고정, 씬 밖 — 씬의 overflow: clip에 안 걸리게 · 내용 폭까지만 = fit-content, 가운데) + section links · footer: Ft4 · sections: hero(언덕 띠 씬 + 타이포 소개 블록) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
  * hero enrichment: 사용자 제공 시안의 언덕 띠(인라인 SVG, 둥근 사각형 2톤 · 아래 정렬 · 위쪽 하늘은 --color-paper가 이어받음). 헤드라인은 Black Han Sans 실제 h1(롤링 마퀴 아님).
+ *   하늘 오른쪽에는 유리 거품 3개(.hero__sky) — 원본 시안 Aero.png의 비눗방울을 섹션 마커와 같은 유리 레시피로 옮긴 것. 글자 자리는 침범하지 않음(왼쪽 끝을 소개 블록 최대 폭 기준으로 계산).
  * mascot: 입 없음 — 표정은 눈으로만(.pix--smile이 뜬 눈을 웃는 눈 호와 맞바꿈).
  *   도킹 전환은 rAF 비행(.pix--travel 걷는 모션) — 씬은 overflow: clip이라 비행은 body의 fixed 컨텍스트에서 하고 도착 때만 .hero__dock으로 옮김.
  */
@@ -86,12 +87,22 @@ a:active { color: var(--color-accent); }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-lg);
+  /* 세 덩어리(워드마크 · 섹션 링크 · CTA) 사이 간격. 링크끼리의 간격(--space-lg)보다
+     넓어야 셋이 각각 하나의 덩어리로 읽힙니다 */
+  gap: clamp(var(--space-md), 2.5vw, var(--space-xl));
+  /* 알약은 내용 폭까지만. 예전엔 .nav-bar(=.wrap, 72rem)를 그대로 채워서, 넓은 화면에서
+     워드마크와 링크 사이가 휑하게 벌어져 알약이 아니라 늘어진 바로 보였습니다.
+     fit-content는 쓸 수 있는 폭보다 내용이 넓어지면 딱 그 폭까지 줄어들기 때문에
+     (핸들이 길거나 링크가 늘어난 경우) .nav__links가 가로로 스크롤되는 예전 동작이
+     그대로 남습니다 — 분기 없이. 40rem 아래에서는 링크 줄 자체를 숨기므로(아래
+     responsive 참고) 알약은 워드마크+CTA 폭의 작은 섬이 됩니다. */
+  width: fit-content;
+  max-width: 100%;
   /* 알약 두께는 링크의 터치 타깃(min-height 44px)이 결정합니다.
      상하 패딩은 그 위에 얹는 여백만 — 얇게 */
   padding-block: var(--space-xs);
   padding-inline: var(--space-lg);
-  margin-block: var(--space-md) 0;
+  margin: var(--space-md) auto 0;
   border-radius: var(--radius-pill);
   background: var(--glass);
   border: 1px solid var(--glass-border);
@@ -204,6 +215,69 @@ a:active { color: var(--color-accent); }
   height: var(--art-h);
   display: block;
   z-index: 0;
+}
+
+/* 하늘의 유리 거품 — 씬 오른쪽 위를 채우는 counterweight.
+   그 전에는 소개 블록(좌상단)과 마스코트(우하단)뿐이라 시선이 대각선 한 줄로만 흘렀고
+   오른쪽 위는 통째로 빈 종이였습니다. 원본 시안(assets/images/Aero.png) 하늘에 떠 있던
+   비눗방울을, 섹션 제목 마커와 같은 유리 구슬 레시피(--glass + --glass-border)로 옮겨
+   왼쪽 아래에서 오른쪽 위로 올라가는 호를 그립니다 — 대각선을 가로지르는 두 번째 축.
+
+   상자를 오른쪽 절반으로 묶어 두는 이유: 소개 블록(.hero__copy-inner, 34rem)과는
+   어떤 폭에서도 겹치면 안 됩니다. 글자가 그림 위에 얹히지 않게 하늘을 비워 둔 게
+   v5.4의 요지라(대비 ~15:1), 거품도 글자 자리는 침범하지 않습니다. */
+.hero__sky {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* 언덕 띠 위쪽(하늘)에서만 — 아래로는 능선에 닿지 않습니다 */
+  bottom: var(--art-h);
+  /* 왼쪽 끝은 소개 블록이 차지할 수 있는 최대 오른쪽 끝 + 3rem. %로 잡으면 폭에 따라
+     글자와 겹칠 수 있어서, .hero__copy(=.wrap)가 가운데 정렬되는 계산을 그대로 씁니다:
+     wrap 바깥 여백 + wrap 안쪽 패딩 + .hero__copy-inner의 max-width(34rem) + 간격.
+     덕분에 실제 헤드라인이 몇 줄이든, 폭이 얼마든 거품은 글자 자리를 넘어오지 않습니다. */
+  left: calc(max(0px, (100% - 72rem) / 2) + clamp(1rem, 4vw, 2.5rem) + 34rem + 3rem);
+  z-index: 1;
+  pointer-events: none;
+  /* 좁은 화면에서는 소개 블록이 폭을 거의 다 써서 남는 하늘이 없습니다 — 그리지 않습니다 */
+  display: none;
+}
+@media (min-width: 64rem) {
+  .hero__sky { display: block; }
+}
+
+.hero__bubble {
+  position: absolute;
+  width: var(--size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 1px 0 var(--glass-highlight) inset, 0 8px 20px var(--glass-shadow);
+  animation: bubble-drift var(--drift, 12s) var(--ease-in-out) infinite;
+  animation-delay: var(--drift-delay, 0s);
+}
+/* 정반사 하이라이트 — 유리 구슬이 아니라 비눗방울로 읽히게 하는 한 점 */
+.hero__bubble::before {
+  content: "";
+  position: absolute;
+  top: 13%;
+  left: 17%;
+  width: 27%;
+  height: 21%;
+  border-radius: 50%;
+  background: var(--glass-hi);
+  rotate: -25deg;
+}
+
+.hero__bubble--1 { --size: clamp(5rem, 8.5vw, 8.5rem); left: 30%; top: 26%; --drift: 13s; }
+.hero__bubble--2 { --size: clamp(2.75rem, 4.5vw, 4.5rem); left: 71%; top: 9%;  --drift: 10.5s; --drift-delay: -3.5s; }
+.hero__bubble--3 { --size: clamp(1.75rem, 2.8vw, 2.75rem); left: 8%; top: 55%; --drift: 16s; --drift-delay: -7s; }
+
+/* 아주 느린 부유 — 거품이 "떠 있다"고만 읽힐 만큼만 움직입니다 */
+@keyframes bubble-drift {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: -0.5rem -1.25rem; }
 }
 
 /* 캐릭터가 서 있는 자리 — 언덕 위 고정 좌표.
@@ -996,7 +1070,8 @@ a:active { color: var(--color-accent); }
   .pix--travel .pix__torso,
   .pix--travel .pix__arm--r,
   .pix--travel .pix__arm--l,
-  .nav__cta::before { animation: none; }
+  .nav__cta::before,
+  .hero__bubble { animation: none; }
   /* 도킹 전환도 걷지 않고 바로 자리를 옮깁니다(render.js의 canFly가 FLIP 자체를 끔) */
   .pix { rotate: 0deg; }
   .reveal { animation: reveal-reduced 150ms linear forwards; }
