@@ -33,15 +33,25 @@
     '<path class="pix__shine" d="M63.3827 16.3898C63.7349 16.4317 64 16.7303 64 17.0849V27.1142C64 27.885 62.9363 28.0898 62.6501 27.3742L58.4378 16.8434C58.2405 16.3502 58.6429 15.8256 59.1704 15.8884L63.3827 16.3898Z"/>' +
     '<rect class="pix__eye" x="89" y="12.749" width="11" height="31" rx="4"/>' +
     '<path class="pix__shine" d="M97.3827 15.3898C97.7349 15.4317 98 15.7303 98 16.0849V26.1142C98 26.885 96.9363 27.0898 96.6501 26.3742L92.4378 15.8434C92.2405 15.3502 92.6429 14.8256 93.1704 14.8884L97.3827 15.3898Z"/>' +
+    "</g>" +
+    /* 웃는 눈 — 뜬 눈과 맞바꿔 쓰는 호(弧). 기하는 뜬 눈에서 그대로 따왔고,
+       기준은 둘 다 "실제로 칠해지는 잉크"입니다(round cap이 끝점 바깥으로
+       선 두께의 절반=2씩 번지므로, 끝점을 그만큼 안쪽으로 당겨 보정):
+       · 잉크 가로 폭 = 그 눈의 폭 11  → 끝점 x는 55+2 … 66-2 (왼쪽), 89+2 … 100-2 (오른쪽)
+       · 잉크 아래끝 = 그 눈의 맨 아래  → 끝점 y는 42.749-2 (왼쪽), 43.749-2 (오른쪽)
+       호는 반지름 3.5(= 끝점 사이 거리 7의 절반)인 정확한 반원. 2차 베지어로 그리면
+       같은 폭에서 꼭짓점이 반원보다 높이 솟아 캐럿(^)처럼 뾰족해집니다. */
+    '<g class="pix__eyes-smile">' +
+    '<path class="pix__eye-smile" d="M57 40.749A3.5 3.5 0 0 1 64 40.749"/>' +
+    '<path class="pix__eye-smile" d="M91 41.749A3.5 3.5 0 0 1 98 41.749"/>' +
     "</g></g>" +
-    '<path class="pix__mouth" d="M67 52 Q77.5 61 88 52"/>' +
     "</g>";
 
   /* 표정/동작 모듈 — css/site.css의 .pix--<이름> 클래스와 1:1 대응.
-     mood: "neutral"(기본) | "smile" · anim: "idle"(기본) | "wave".
+     mood: "neutral"(기본) | "smile" · anim: "idle"(기본) | "wave" | "travel".
      축을 생략(undefined)하면 그 축은 건드리지 않습니다. 새 모듈을 추가하면 아래 배열에도 등록. */
   var PIX_MOODS = ["smile"];
-  var PIX_ANIMS = ["wave"];
+  var PIX_ANIMS = ["wave", "travel"];
   function setPixState(svg, state) {
     if (!svg || !state) return;
     if (state.mood !== undefined) {
@@ -535,8 +545,13 @@
     charBtn.appendChild(charSvg);
     trackEyes(charSvg);
 
-    box.appendChild(bubble);
-    box.appendChild(charBtn);
+    /* .helper는 자리(fixed 우하단 ↔ absolute 들판)만 잡고, 안쪽 .helper__inner가
+       도킹 전환 애니메이션(FLIP)의 transform을 전담합니다 — 둘을 한 엘리먼트에
+       얹으면 위치 지정과 이동 애니메이션이 같은 속성을 두고 싸웁니다. */
+    var inner = el("div", "helper__inner");
+    inner.appendChild(bubble);
+    inner.appendChild(charBtn);
+    box.appendChild(inner);
     document.body.appendChild(box);
 
     var idx = 0;
@@ -556,27 +571,152 @@
 
     /* 들판 도킹 — 히어로 씬이 화면에 충분히 남아 있는 동안 캐릭터가 언덕 위에 서서
        웃으며 손을 흔들고(smile+wave 모듈), 씬을 지나치면 우하단 고정 도우미로
-       복귀해 평소 아이들 모션으로 돌아갑니다. */
+       복귀해 평소 아이들 모션으로 돌아갑니다.
+
+       두 자리를 오갈 때는 순간이동이 아니라 캐릭터가 실제로 그 자리까지 걸어가는
+       것처럼 보여야 합니다. 다만 비행은 언제나 화면 기준 고정(body) 컨텍스트에서
+       하고, 씬 안(.hero__dock)으로는 도착하는 순간에만 옮깁니다. 먼저 옮겨 두면
+       두 군데서 캐릭터가 사라집니다 — .hero__scene은 overflow: clip이라 씬 박스
+       밖을 지나는 구간이 통째로 잘리고(도킹 시작점인 우하단은 대개 씬 아래),
+       .hero__dock은 z-index 3이라 소개 카드(4) 뒤로 지나갑니다.
+
+       착지점(.hero__dock)은 문서 흐름 안에 있어 비행 중 스크롤하면 화면상에서
+       움직입니다. 그래서 CSS 트랜지션 대신 rAF로 매 프레임 착지점을 다시 재서
+       따라갑니다 — 도착 순간에 튀지 않게. */
     var dock = document.querySelector("[data-dock]");
     var scene = document.querySelector(".hero__scene");
     var docked = null;
+    var flight = null;
+    var canFly = !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+    function settleState(state) {
+      setPixState(charSvg, state
+        ? { mood: "smile", anim: "wave" }
+        : { mood: "neutral", anim: "idle" });
+    }
+
+    /* 비행 시간은 css의 --dur-travel 하나만 보고 갑니다 */
+    function travelMs() {
+      var v = getComputedStyle(document.documentElement).getPropertyValue("--dur-travel").trim();
+      var n = parseFloat(v);
+      if (!n) return 820;
+      return /ms$/.test(v) ? n : n * 1000;
+    }
+
+    function cancelFlight() {
+      if (!flight) return;
+      cancelAnimationFrame(flight.raf);
+      flight = null;
+      inner.style.transform = "";
+      inner.style.transformOrigin = "";
+      charSvg.style.removeProperty("--pix-lean");
+      box.classList.remove("is-travelling");
+    }
+
+    function placeAt(state) {
+      box.classList.toggle("helper--docked", !!state);
+      var want = state ? dock : document.body;
+      if (box.parentNode !== want) want.appendChild(box);
+    }
+
+    /* 도킹 자리에서 캐릭터가 놓일 위치를, 최종 부모/클래스로 잠깐 붙여 재고 되돌립니다
+       (같은 프레임 안에서 끝나므로 화면에는 안 보임). 반환값은 .hero__dock 앵커
+       기준 상대 오프셋 — 비행 중 앵커가 스크롤로 움직여도 따라갈 수 있게. */
+    function measureDockSlot() {
+      var parent = box.parentNode, next = box.nextSibling;
+      var wasDocked = box.classList.contains("helper--docked");
+      box.classList.add("helper--docked");
+      dock.appendChild(box);
+      var c = charBtn.getBoundingClientRect(), a = dock.getBoundingClientRect();
+      box.classList.toggle("helper--docked", wasDocked);
+      if (parent) parent.insertBefore(box, next);
+      return { dx: c.left - a.left, dy: c.top - a.top, w: c.width };
+    }
+
     function setDocked(state) {
       if (state === docked) return;
       var entering = docked !== null; // 첫 판정은 등장 애니메이션 없이 바로 배치
+      /* 아직 비행 중이라면 그 순간의 화면상 위치가 그대로 잡히므로,
+         전환이 겹쳐도 캐릭터는 튀지 않고 지금 있는 자리에서 이어서 갑니다. */
+      var first = entering && canFly ? charBtn.getBoundingClientRect() : null;
       docked = state;
-      box.classList.remove("is-in");
-      if (state) {
-        box.classList.add("helper--docked");
-        dock.appendChild(box);
-        setPixState(charSvg, { mood: "smile", anim: "wave" });
-      } else {
-        box.classList.remove("helper--docked");
-        document.body.appendChild(box);
-        setPixState(charSvg, { mood: "neutral", anim: "idle" });
+
+      if (!first || !first.width) {
+        cancelFlight();
+        placeAt(state);
+        box.classList.remove("is-in");
+        settleState(state);
+        if (entering) requestAnimationFrame(function () { box.classList.add("is-in"); });
+        return;
       }
-      if (entering) {
-        requestAnimationFrame(function () { box.classList.add("is-in"); });
+      flyTo(first, state);
+    }
+
+    function flyTo(first, state) {
+      cancelFlight();
+
+      // 도킹이면 착지 오프셋을 먼저 재 둡니다(아직 옮기지는 않음)
+      var slot = state ? measureDockSlot() : null;
+      placeAt(false); // 비행은 잘리지 않고 항상 맨 위에 오는 fixed 컨텍스트에서
+
+      inner.style.transform = "none";
+      var base = charBtn.getBoundingClientRect();   // 비행 컨텍스트에서의 제자리
+      var frame = inner.getBoundingClientRect();
+      if (!base.width) { placeAt(state); settleState(state); return; }
+
+      /* 기준점을 캐릭터의 좌상단에 두면 말풍선까지 함께 실린 채로도
+         캐릭터가 정확히 원하는 좌표에 놓입니다(기준점이 박스 중앙이면 어긋남). */
+      inner.style.transformOrigin =
+        (base.left - frame.left) + "px " + (base.top - frame.top) + "px";
+
+      function target() {
+        if (!slot) return { left: base.left, top: base.top, w: base.width };
+        var a = dock.getBoundingClientRect();
+        return { left: a.left + slot.dx, top: a.top + slot.dy, w: slot.w };
       }
+
+      /* 진행도 e(0=출발, 1=도착)에 해당하는 위치로 옮겨 놓습니다 */
+      function applyAt(e) {
+        var t = target();
+        var x = first.left + (t.left - first.left) * e - base.left;
+        var y = first.top + (t.top - first.top) * e - base.top;
+        var s = (first.width + (t.w - first.width) * e) / base.width;
+        inner.style.transform =
+          "translate(" + x.toFixed(2) + "px," + y.toFixed(2) + "px) scale(" + s.toFixed(4) + ")";
+      }
+
+      charSvg.style.setProperty("--pix-lean", (target().left < first.left ? -5 : 5) + "deg");
+      box.classList.add("is-travelling");
+      box.classList.add("is-in");
+      setPixState(charSvg, { mood: "smile", anim: "travel" });
+
+      /* 출발 위치를 지금 당장(동기적으로) 찍어 둡니다. setDocked는 이미 rAF 콜백
+         안에서 불리므로 아래 requestAnimationFrame(step)은 다음 프레임에야 돕니다.
+         그 사이 이번 프레임이 transform 없이 그려지면 캐릭터가 한 프레임 동안
+         도착지(우하단)에 찍혔다가 되돌아오는 것처럼 튑니다. */
+      applyAt(0);
+
+      var token = {}, dur = travelMs(), t0 = 0;
+
+      function step(now) {
+        if (!flight || flight.token !== token) return;
+        if (!t0) t0 = now;
+        var p = Math.min(1, (now - t0) / dur);
+        /* --ease-in-out(cubic-bezier(.65, 0, .35, 1))과 같은 곡선 */
+        var e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+        applyAt(e);
+
+        if (p < 1) { flight.raf = requestAnimationFrame(step); return; }
+        flight = null;
+        inner.style.transform = "";
+        inner.style.transformOrigin = "";
+        charSvg.style.removeProperty("--pix-lean");
+        box.classList.remove("is-travelling");
+        placeAt(state);
+        settleState(state);
+      }
+
+      flight = { token: token, raf: requestAnimationFrame(step) };
     }
 
     /* 스크롤해서 섹션이 화면 위 40% 지점을 지나면 그 섹션 문구로 자동 전환.

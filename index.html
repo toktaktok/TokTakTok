@@ -16,64 +16,22 @@
 </head>
 <body data-page="index">
 
+  <!-- 상단바 — 스크롤을 내려도 계속 따라오도록 화면에 고정. 히어로 씬 안에 두면
+       .hero__scene의 overflow: clip에 걸려 씬을 벗어나는 순간 잘려서, 씬 밖에 둡니다. -->
+  <div class="nav-bar wrap">
+    <nav class="nav" aria-label="주 메뉴"></nav>
+  </div>
+
   <!-- 히어로 — 화면을 꽉 채우는 풀스크린 씬. 네비/카드/캐릭터가 전부 이 씬 위에 얹힙니다.
-       텍스트는 전부 js/render.js가 data/profile.js에서 채웁니다. 씬 아트는 8비트 픽셀 스타일
-       레퍼런스를 참고해 손으로 그린 SVG(직각 스텝 실루엣 + 블록 구름/꽃) — 외부 이미지 없음. -->
+       텍스트는 전부 js/render.js가 data/profile.js에서 채웁니다.
+       씬 아트는 assets/images/Aero.png (1280x640 픽셀아트, 지평선은 위에서 약 80% 지점).
+       object-position이 아래에 붙어 있어 어떤 화면비에서도 잔디가 항상 바닥에 남습니다. -->
   <section class="hero" aria-label="소개">
     <h1 class="sr-only" data-hero-title></h1>
     <div class="hero__scene">
-      <svg class="hero__scene-art" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-        <defs>
-          <g id="px-cloud" fill="var(--scene-cloud)">
-            <rect x="48" y="0" width="48" height="24"/>
-            <rect x="144" y="0" width="48" height="24"/>
-            <rect x="24" y="24" width="192" height="24"/>
-            <rect x="0" y="48" width="240" height="24"/>
-          </g>
-          <g id="px-bush" fill="var(--scene-tree)">
-            <rect x="10" y="0" width="20" height="14"/>
-            <rect x="0" y="14" width="40" height="14"/>
-          </g>
-        </defs>
+      <img class="hero__scene-art" src="assets/images/Aero.png" alt=""
+           width="1280" height="640" fetchpriority="high" decoding="async">
 
-        <!-- 하늘 — 스무스 그라디언트 대신 3단 플랫 밴딩(8비트 느낌) -->
-        <rect x="0" y="0" width="1440" height="900" fill="var(--scene-sky-hi)"/>
-        <rect x="0" y="480" width="1440" height="220" fill="var(--scene-sky-mid)"/>
-        <rect x="0" y="650" width="1440" height="120" fill="var(--scene-sky-lo)"/>
-
-        <!-- 구름 (블록 스탬프 재사용) -->
-        <use href="#px-cloud" transform="translate(70 110)"/>
-        <use href="#px-cloud" transform="translate(500 70) scale(0.7)"/>
-        <use href="#px-cloud" transform="translate(860 150) scale(1.3)"/>
-        <use href="#px-cloud" transform="translate(1220 90) scale(0.85)"/>
-
-        <!-- 뒷동산 — 완만한 스텝, 밝은 연두 -->
-        <path fill="var(--scene-hill-back-hi)" d="M0,620 H180 V580 H420 V610 H660 V560 H900 V600 H1140 V570 H1440 V900 H0 Z"/>
-
-        <!-- 앞동산 — 큰 스텝, 진한 그린 -->
-        <path fill="var(--scene-hill-hi)" d="M0,700 H150 V650 H300 V690 H500 V640 H700 V680 H900 V630 H1100 V670 H1300 V650 H1440 V900 H0 Z"/>
-
-        <!-- 앞동산 능선 위 덤불 -->
-        <use href="#px-bush" transform="translate(120 636)"/>
-        <use href="#px-bush" transform="translate(460 626) scale(1.2)"/>
-        <use href="#px-bush" transform="translate(860 616)"/>
-        <use href="#px-bush" transform="translate(1260 636) scale(1.1)"/>
-
-        <!-- 풀밭의 작은 꽃 -->
-        <rect x="60" y="860" width="10" height="10" fill="var(--scene-flower-1)"/>
-        <rect x="180" y="880" width="10" height="10" fill="var(--scene-flower-2)"/>
-        <rect x="320" y="865" width="10" height="10" fill="var(--scene-flower-1)"/>
-        <rect x="520" y="882" width="10" height="10" fill="var(--scene-flower-2)"/>
-        <rect x="680" y="862" width="10" height="10" fill="var(--scene-flower-1)"/>
-        <rect x="820" y="878" width="10" height="10" fill="var(--scene-flower-2)"/>
-        <rect x="990" y="864" width="10" height="10" fill="var(--scene-flower-1)"/>
-        <rect x="1150" y="880" width="10" height="10" fill="var(--scene-flower-2)"/>
-        <rect x="1340" y="862" width="10" height="10" fill="var(--scene-flower-1)"/>
-      </svg>
-
-      <div class="hero__nav-wrap wrap">
-        <nav class="nav" aria-label="주 메뉴"></nav>
-      </div>
       <div class="hero__marquee" aria-hidden="true" data-marquee></div>
       <div class="hero__dock" data-dock></div>
       <div class="hero__card-wrap wrap">

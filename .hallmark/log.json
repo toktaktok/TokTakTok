@@ -3,6 +3,24 @@
     "date": "2026-08-28",
     "macrostructure": "Portfolio Grid + full-bleed onboarding scene",
     "theme": "custom",
+    "theme_axes": "light / neo-grotesque-sans + heavy-display outlier / cool",
+    "vibe": "사용자 제공 픽셀아트 들판 위 대형 마퀴, 걸어서 자리를 옮기는 마스코트, Aero 유리",
+    "enrichment": "사용자 제공 픽셀아트 히어로 배경(assets/images/Aero.png) — 아래 정렬 + 위쪽은 --scene-sky가 이어받음",
+    "brief": "toktaktok · 히어로 배경을 손그림 SVG 들판에서 사용자 제공 픽셀아트 이미지로 교체. 캐릭터·카드 바닥선을 아트 높이(--art-h) 기준으로 바꿔 화면비와 무관하게 잔디 위에 서도록. 카드 썸네일 기본 이미지는 원래대로 캐릭터 자리 표시로 환원"
+  },
+  {
+    "date": "2026-08-28",
+    "macrostructure": "Portfolio Grid + full-bleed onboarding scene",
+    "theme": "custom",
+    "theme_axes": "light / neo-grotesque-sans + heavy-display outlier / cool",
+    "vibe": "XP Bliss 들판 위 대형 마퀴, 걸어서 자리를 옮기는 마스코트, Aero 유리",
+    "enrichment": "Tier-B 손제작 SVG 들판 + 사용자 제공 픽셀아트 기본 이미지(assets/images/Aero.png)",
+    "brief": "toktaktok · 마스코트 입 제거(표정을 눈으로만 — .pix--smile이 뜬 눈을 같은 폭·같은 아래끝의 반원 호로 교체) · 히어로↔본문 도킹 전환을 FLIP 비행으로 교체(걷는 모션 .pix--travel) · 썸네일 기본 이미지 지정"
+  },
+  {
+    "date": "2026-08-28",
+    "macrostructure": "Portfolio Grid + full-bleed onboarding scene",
+    "theme": "custom",
     "theme_axes": "light / neo-grotesque-sans + pixel-display outlier / cool",
     "vibe": "XP Bliss 들판 위 픽셀 마퀴, 손 흔드는 마스코트, Aero 유리",
     "enrichment": "Tier-B 손제작 SVG 들판 + Galmuri11 픽셀 마퀴 (외부 이미지·라이브러리 없음)",
