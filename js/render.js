@@ -208,41 +208,33 @@
 
   /* ---------- index ---------- */
 
+  /* 히어로 소개 블록 — 이름·직함 / 헤드라인 / 소개 / 메타가 하나의 세로 흐름.
+     헤드라인만 마크업에 미리 있고(페이지의 유일한 h1), 나머지는 그 앞뒤로 채웁니다. */
   function renderHero() {
-    var srTitle = document.querySelector("[data-hero-title]");
-    var marquee = document.querySelector("[data-marquee]");
-    var card = document.querySelector("[data-hero-card]");
-    if (!srTitle && !marquee && !card) return;
+    var title = document.querySelector("[data-hero-title]");
+    var copy = document.querySelector("[data-hero-copy]");
+    if (!title && !copy) return;
 
-    var headline = profile.headline || "";
-    if (srTitle) srTitle.textContent = headline;
+    if (title) title.textContent = profile.headline || "";
+    if (!copy) return;
 
-    /* 마퀴 — 같은 문구를 8번(= 동일한 절반 2개) 이어붙이고 translateX(-50%) 루프.
-       절반이 서로 동일해야 이음새 없이 무한히 도는 것처럼 보입니다. */
-    if (marquee && headline) {
-      var track = el("div", "hero__marquee-track");
-      for (var r = 0; r < 8; r++) track.appendChild(el("span", null, headline + " /"));
-      marquee.appendChild(track);
+    var i = 0;
+    function reveal(node) {
+      node.classList.add("reveal");
+      node.style.setProperty("--i", String(i++));
+      return node;
     }
 
-    if (card) {
-      var i = 0;
-      function reveal(node) {
-        node.classList.add("reveal");
-        node.style.setProperty("--i", String(i++));
-        return node;
-      }
+    var who = (profile.name ? profile.name + " · " : "") + (profile.role || "");
+    if (who) copy.insertBefore(reveal(el("p", "hero__kicker", who)), title);
+    if (title) reveal(title);
 
-      card.appendChild(reveal(el("p", "hero__kicker",
-        (profile.name ? profile.name + " · " : "") + (profile.role || ""))));
+    if (profile.intro) copy.appendChild(reveal(el("p", "hero__intro", profile.intro)));
 
-      if (profile.intro) card.appendChild(reveal(el("p", "hero__intro", profile.intro)));
-
-      if (profile.meta && profile.meta.length) {
-        var meta = el("p", "hero__meta");
-        profile.meta.forEach(function (m) { meta.appendChild(el("span", null, m)); });
-        card.appendChild(reveal(meta));
-      }
+    if (profile.meta && profile.meta.length) {
+      var meta = el("p", "hero__meta");
+      profile.meta.forEach(function (m) { meta.appendChild(el("span", null, m)); });
+      copy.appendChild(reveal(meta));
     }
   }
 

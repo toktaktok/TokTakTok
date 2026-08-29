@@ -30,7 +30,6 @@
        둥근 사각형을 두 톤(뒤/앞)으로 겹쳐 언덕을 만들고, 왼쪽 언덕은 같은 사각형을
        matrix(-1 0 0 1 …)로 뒤집은 것입니다. 좌표는 원본 1920x1080 기준을 그대로 씁니다. -->
   <section class="hero" aria-label="소개">
-    <h1 class="sr-only" data-hero-title></h1>
     <div class="hero__scene">
       <svg class="hero__scene-art" viewBox="0 721 1920 359"
            preserveAspectRatio="xMidYMax slice" aria-hidden="true">
@@ -56,11 +55,14 @@
         </g>
       </svg>
 
-      <div class="hero__marquee" aria-hidden="true" data-marquee></div>
-      <div class="hero__dock" data-dock></div>
-      <div class="hero__card-wrap wrap">
-        <div class="hero__card glass-panel" data-hero-card></div>
+      <!-- 소개 블록 — 이름·직함 / 헤드라인 / 소개 / 메타가 하나의 세로 흐름.
+           나머지는 js/render.js가 h1 앞뒤로 채웁니다. -->
+      <div class="hero__copy wrap">
+        <div class="hero__copy-inner" data-hero-copy>
+          <h1 class="hero__headline" data-hero-title></h1>
+        </div>
       </div>
+      <div class="hero__dock" data-dock></div>
     </div>
   </section>
 
