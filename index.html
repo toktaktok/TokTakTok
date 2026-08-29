@@ -42,10 +42,13 @@
         <div class="hero__clock-face"></div>
         <svg class="hero__clock-hands" viewBox="0 0 200 200" aria-hidden="true">
           <!-- 바늘은 나침반 바늘처럼 축에서 가장 넓고 양 끝으로 뾰족해지는 마름모(도핀 핸드).
-               위쪽이 긴 쪽 = 가리키는 방향, 축 아래로 짧은 꼬리가 남습니다. -->
-          <polygon class="clock__hand clock__hand--min" points="100,26 103.2,100 100,114 96.8,100"/>
-          <polygon class="clock__hand clock__hand--sec" points="100,8 101.6,100 100,120 98.4,100"/>
-          <circle class="clock__pin" cx="100" cy="100" r="3.4"/>
+               위쪽이 긴 쪽 = 가리키는 방향, 축 아래로 짧은 꼬리가 남습니다.
+               치수는 시안 값: 분침 46 x 494 (문자판 1026 기준). 뷰박스 200 = 1026px이므로
+               1단위 = 5.13px — 46px = 8.96단위(반폭 4.48), 494px = 96.3단위.
+               초침은 같은 모양을 더 가늘게(26px) 조금 더 길게 뽑아 분침과 구별합니다. -->
+          <polygon class="clock__hand clock__hand--min" points="100,19 104.48,100 100,115.3 95.52,100"/>
+          <polygon class="clock__hand clock__hand--sec" points="100,17.2 102.53,100 100,115.6 97.47,100"/>
+          <circle class="clock__pin" cx="100" cy="100" r="5"/>
         </svg>
       </div>
 
