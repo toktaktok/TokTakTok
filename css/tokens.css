@@ -1,10 +1,10 @@
 /* Hallmark · macrostructure: Portfolio Grid + full-bleed onboarding scene · theme: custom v5.1 (Aero Glass + Bliss 들판 히어로)
- * vibe: "XP Bliss 들판 위 대형 디스플레이 마퀴, 손 흔드는 마스코트, Aero 유리" · paper: oklch(97% 0.010 240) · accent: oklch(58% 0.19 252)
- * display: Pretendard Variable · body: Pretendard Variable · outlier: IBM Plex Mono (meta register, index.html 전용) + Black Han Sans (히어로 마퀴 한 곳 전용, index.html 전용)
+ * vibe: "밝은 종이 위 대형 디스플레이 헤드라인, 아래 언덕 띠에 선 마스코트, Aero 유리 크롬" · paper: oklch(97% 0.010 240) · accent: oklch(58% 0.19 252)
+ * display: Pretendard Variable · body: Pretendard Variable · outlier: IBM Plex Mono (meta register, index.html 전용) + Black Han Sans (히어로 헤드라인 한 곳 전용, index.html 전용)
  *   ↳ v5.0에서는 갈무리11(픽셀 폰트)이었으나 대형 사이즈에서 가독성이 떨어져 Black Han Sans로 교체(v5.1) — 개성은 유지하되 픽셀 그리드 없는 굵은 디스플레이 산세리프
  * axes: light / neo-grotesque-sans + heavy-display outlier / cool · nav: N5 floating pill (was N9 edge-aligned) · footer: Ft4 dense-colophon (unchanged)
  * studied: no · context: explicit — user compared 5 design-drafts variants across sessions and picked Aero · Hallmark v1.1.0
- * pre-emit critique: P4 H4 E4 S4 R4 V4 · contrast: pass (40–41, 히어로 카드/마퀴 합성 대비 픽셀 샘플링 확인) · slop: pass — heading mark는 유리 구슬(숫자 에이바우 아님), 마퀴에 hover-pause 있음(gate 18)
+ * pre-emit critique: P4 H4 E4 S4 R4 V4 · contrast: pass (40–41, 히어로 타이포가 단색 종이 위라 합성 대비 문제 없음) · slop: pass — heading mark는 유리 구슬(숫자 에이바우 아님), 자동으로 도는 콘텐츠 없음(gate 18 해당 없음)
  * mobile: verified at 320 / 375 / 414 / 768 / 1280
  * v5.2: 마스코트 입 제거(표정은 눈으로만) · 도킹 전환을 걸어서 이동하는 비행으로 교체(--dur-travel) · 카드 기본 이미지 assets/images/Aero.png
  * v5.2.1: 비행 중 캐릭터가 씬 clip/카드에 가려지던 문제 — 비행을 fixed 컨텍스트로 옮기고 .hero__dock을 씬 최상단(z-index 6)으로
@@ -13,6 +13,16 @@
  *   캐릭터·카드 바닥선은 씬 높이 %가 아니라 아트 높이(--art-h) 기준 — 화면비가 바뀌어도 잔디 위에 서도록.
  * v5.3.1: 상단바를 화면 최상단 고정으로(스크롤 따라옴) + 두께 94→62px. 앵커 여백은 --nav-h.
  *   도킹 비행이 첫 프레임에 도착지로 튀던 문제 수정(출발 위치를 동기적으로 적용).
+ * v5.4: 히어로 배경을 픽셀아트 이미지 → 사용자 제공 시안의 언덕 띠(인라인 SVG, 2톤 둥근 사각형)로 교체.
+ *   하늘을 그리지 않고 --color-paper가 이어받아 글자가 그림 위에 얹히지 않습니다
+ *   (대비 3.3:1 → ~15:1, 구름·거품이 사라져 마스코트가 유일한 그림 요소).
+ * v5.5: 히어로 빈 중단 해소 — 롤링 마퀴(위)와 유리 카드(아래)로 갈려 3x3 격자 가운데 줄이
+ *   0%였던 걸, 하나의 세로 타이포 블록(.hero__copy)으로 합쳐 그 자리를 채움.
+ *   마퀴의 글자는 실제 h1으로 승격(서체 유지), 유리 카드는 제거(밝은 종이 위에선 무게가 없음).
+ *   최대 빈 구간 353px(39%) → 180px(20%), 가운데 줄 0/0/0 → 34/28/0.
+ * v5.6: 감사 잔여 minor 2건. 네비 알약을 wrap 폭(72rem) 채우기 → 내용 폭(fit-content, 가운데)으로
+ *   — 1920에서 1152px가 545px로. 빈 오른쪽 위에는 하늘의 유리 거품 3개(.hero__sky)를 두어
+ *   좌상단→우하단 한 방향이던 시선에 두 번째 축을 만듦(64rem 이상에서만).
  */
 
 :root {
@@ -46,11 +56,16 @@
      Pretendard 하나로 통일해 "개발자 문서" 톤을 빼고 프로덕트 UI 톤으로 정리. */
   --font-display: "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
   --font-body:    "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
-  --font-mono:    "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
-  /* 히어로 마퀴 전용 아웃라이어 — Black Han Sans (Google Fonts, index.html에서만 로드).
+  /* IBM Plex Mono엔 한글 글리프가 없어, 메타 register에 한글이 섞이면(예: 상단 nav 링크,
+     히어로 이름·직함) OS가 임의로 고르는 폴백 모노스페이스로 넘어갑니다 — 이 폴백이
+     플랫폼마다 달라(Windows는 굴림류 비트맵 느낌, iOS/Android는 매끈한 시스템 산세리프)
+     "PC에서는 폰트가 안 보이는" 것처럼 보였음. 라틴/숫자는 IBM Plex Mono가 그대로 맡고,
+     한글만 Pretendard Variable로 명시적으로 떨어지게 해 플랫폼 간 렌더링을 통일. */
+  --font-mono:    "IBM Plex Mono", "Pretendard Variable", Pretendard, ui-monospace, "SFMono-Regular", monospace;
+  /* 히어로 헤드라인 전용 아웃라이어 — Black Han Sans (Google Fonts, index.html에서만 로드).
      처음엔 픽셀 폰트(갈무리11)를 썼지만 대형 사이즈에서 획이 깨져 가독성이 떨어져서 교체.
      한글 지원되는 매우 굵은 디스플레이 산세리프로, 개성은 유지하면서 큰 글자에서도 또렷합니다.
-     이 한 곳(히어로 마퀴)에서만 씁니다 — 아웃라이어 규율(최대 2슬롯) 안. */
+     이 한 곳(히어로 헤드라인)에서만 씁니다 — 아웃라이어 규율(최대 2슬롯) 안. */
   --font-hero:    "Black Han Sans", "Pretendard Variable", Pretendard, sans-serif;
 
   /* 1.25 major-third scale on a 16px base */
@@ -94,13 +109,13 @@
   --glass-shadow:       oklch(45% 0.1 250 / 0.10); /* 앰비언트 그림자 틴트 — 평상시 */
   --glass-shadow-hi:    oklch(45% 0.1 250 / 0.14); /* 〃 — hover */
 
-  /* ---- scene · 히어로 풀스크린 씬 — 아트는 assets/images/Aero.png(1280x640 픽셀아트).
-     아래 값은 그 이미지에서 실제로 뽑은 색입니다. UI 컴포넌트에는 쓰지 않는 일러스트
-     전용 미니 팔레트로, 이미지가 뜨기 전 배경과 이미지 위에 얹는 요소의 대비 기준으로 씁니다.
-     이미지를 교체하면 이 값도 새 이미지에서 다시 뽑아 맞춰 주세요.
-     이미지 팔레트: 하늘 rgb(0,128,255) 53% · 구름 흰 16% · 잔디 rgb(128,255,0) 15%
-                    · 구름 그림자 rgb(128,255,255) 12% · 수풀 rgb(0,128,0) 4% */
-  --scene-sky: oklch(61.5% 0.211 256);   /* 이미지의 하늘색 그대로 */
+  /* ---- scene · 히어로 아래쪽 언덕 띠(index.html의 인라인 SVG) 전용 2색.
+     UI 컴포넌트에는 쓰지 않는 일러스트 전용 미니 팔레트입니다.
+     뒤/앞 두 톤을 살짝 어긋나게 겹쳐 능선에 밝은 테두리가 생깁니다.
+     하늘에 해당하는 위쪽은 --color-paper가 그대로 이어받습니다 — 원본 시안의
+     배경색 #EFF6FB가 그 토큰과 같은 값이라 이음새가 보이지 않습니다. */
+  --scene-hill-far:  oklch(79.4% 0.165 140);  /* 뒤 언덕 — 원본 #7ED56B */
+  --scene-hill-near: oklch(89.4% 0.135 140);  /* 앞 언덕 — 원본 #ACF29B */
 
   /* ---- status · 초록 유리(파란 크롬과 분리된 유일한 보조색) ---- */
   --status-hi:    oklch(97% 0.03 145 / 0.95);
