@@ -2,6 +2,7 @@
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
  * hero enrichment: 사용자 제공 시안의 언덕 띠(인라인 SVG, 둥근 사각형 2톤 · 아래 정렬 · 위쪽 하늘은 --color-paper가 이어받음). 헤드라인은 Black Han Sans 실제 h1(롤링 마퀴 아님).
  *   하늘 오른쪽에는 유리 거품 3개(.hero__sky) — 원본 시안 Aero.png의 비눗방울을 섹션 마커와 같은 유리 레시피로 옮긴 것. 글자 자리는 침범하지 않음(왼쪽 끝을 소개 블록 최대 폭 기준으로 계산).
+ *   씬의 맨 뒤에는 하늘에 걸린 큰 시계(.hero__clock) — 오른쪽 모서리 밖으로 넘어가고 아래 끝은 능선 바로 위에 걸리는 원경(거품이 그 위에 뜸). 테두리·숫자·눈금 없이 면 + 분침·초침만, 한국 시간(UTC+9)에 맞춰 매 초. 거품보다 옅어 위계상 뒤.
  * mascot: 입 없음 — 표정은 눈으로만(.pix--smile이 뜬 눈을 웃는 눈 호와 맞바꿈).
  *   도킹 전환은 rAF 비행(.pix--travel 걷는 모션) — 씬은 overflow: clip이라 비행은 body의 fixed 컨텍스트에서 하고 도착 때만 .hero__dock으로 옮김.
  */
@@ -204,6 +205,60 @@ a:active { color: var(--color-accent); }
   --art-h: clamp(10rem, 19vw, 22rem);
 }
 
+/* 하늘에 걸린 거대한 시계 — 씬의 맨 뒤(언덕 띠보다 뒤, 마크업 순서로 결정).
+   오른쪽 모서리 밖으로 넘어가고, 아래 끝은 능선 바로 위에 걸려서 문자판 아래 곡선이
+   다 보입니다 — 언덕 너머에 걸린 원경. 하늘의 거품이 이 문자판 위에 뜨므로, 반투명한
+   거품 너머로 시계가 비치고 바늘도 그 밑을 지나갑니다.
+
+   테두리·숫자·눈금은 그리지 않습니다 — 면과 바늘(분·초)뿐. 면은 거품과 똑같은 유리
+   레시피(--glass)를 쓰되 opacity로 통째로 희석해서, 같은 재질이면서 위계는 거품보다
+   한 단계 뒤에 놓입니다(글자 대비를 해치지 않을 만큼 옅게). */
+.hero__clock {
+  position: absolute;
+  --clock-d: clamp(16rem, 38vw, 58rem);
+  width: var(--clock-d);
+  height: var(--clock-d);
+  /* 가로: 중심이 씬의 88% — 오른쪽 모서리 밖으로 넘어갑니다.
+     세로: 화면 비율에 따라 언덕 높이(--art-h)가 달라지므로 %가 아니라 언덕 띠에
+     물려서 잡습니다. 문자판 아래 끝이 늘 능선 바로 위에 오도록 — 시계 밑이 언덕에
+     먹히지 않고 곡선이 다 보입니다. 위쪽은 지름이 남는 하늘보다 크면 잘려 나갑니다. */
+  right: calc(12% - var(--clock-d) / 2);
+  bottom: calc(var(--art-h) + 0.5rem);
+  z-index: 0;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.hero__clock-face {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--glass);
+}
+
+/* 바늘은 면보다 한 번 더 흐리게 — 지름이 화면만 해서 바늘이 조금만 진해도 헤드라인을
+   가로지르는 긴 직선으로 읽힙니다. 여기서는 있는 듯 없는 듯한 자국이면 충분합니다 */
+.hero__clock-hands {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  opacity: 0.45;
+}
+
+/* 바늘·중심점도 거품 테두리와 같은 색 — 씬 전체가 하나의 유리 팔레트 안에 있습니다.
+   모양은 선이 아니라 채워진 마름모(마크업의 polygon)라 두께가 축에서 가장 두껍고
+   양 끝으로 뾰족해집니다 — 나침반 바늘처럼. */
+.clock__hand {
+  fill: var(--glass-border);
+  stroke: none;
+  /* 12시가 위. rotate는 뷰박스 좌표계의 한가운데(=문자판 중심)를 축으로 돕니다 */
+  transform-box: view-box;
+  transform-origin: center;
+}
+.clock__pin { fill: var(--glass-border); }
+
 /* 씬 아트 — 아래쪽 언덕 띠. 화면비가 달라지면 좌우가 잘릴 뿐(xMidYMax slice),
    능선은 늘 같은 두께로 바닥에 붙어 있습니다. */
 .hero__scene-art {
@@ -251,7 +306,8 @@ a:active { color: var(--color-accent); }
   width: var(--size);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: var(--glass);
+  /* 뒤에 걸린 시계가 위아래로 다 비치도록 하이라이트가 묽은 거품 전용 유리 */
+  background: var(--scene-bubble-glass);
   border: 1px solid var(--glass-border);
   box-shadow: 0 1px 0 var(--glass-highlight) inset, 0 8px 20px var(--glass-shadow);
   animation: bubble-drift var(--drift, 12s) var(--ease-in-out) infinite;
@@ -266,7 +322,7 @@ a:active { color: var(--color-accent); }
   width: 27%;
   height: 21%;
   border-radius: 50%;
-  background: var(--glass-hi);
+  background: var(--scene-bubble-hi);
   rotate: -25deg;
 }
 
@@ -1072,6 +1128,10 @@ a:active { color: var(--color-accent); }
   .pix--travel .pix__arm--l,
   .nav__cta::before,
   .hero__bubble { animation: none; }
+  /* 초침은 1초마다 6°씩 튀는, 페이지에서 유일하게 스스로 움직이는 요소라 감춥니다.
+     분침은 그대로 둡니다 — 1초에 0.1°씩이라 움직임으로 읽히지 않고, 시계는 계속
+     맞는 시각(분 단위)을 가리킵니다 */
+  .clock__hand--sec { display: none; }
   /* 도킹 전환도 걷지 않고 바로 자리를 옮깁니다(render.js의 canFly가 FLIP 자체를 끔) */
   .pix { rotate: 0deg; }
   .reveal { animation: reveal-reduced 150ms linear forwards; }
