@@ -55,6 +55,16 @@
         </g>
       </svg>
 
+      <!-- 하늘의 유리 거품 — 씬 오른쪽 위가 비어 시선이 좌상단(소개 블록) → 우하단(마스코트)
+           한 방향으로만 흐르던 걸 끊는 두 번째 축. 원본 시안(assets/images/Aero.png) 하늘의
+           비눗방울을 섹션 제목 마커와 같은 유리 구슬 레시피로 옮긴 것이라, 새 장식이 아니라
+           씬에 원래 있던 요소입니다. 읽어 줄 내용은 없으므로 aria-hidden. -->
+      <div class="hero__sky" aria-hidden="true">
+        <span class="hero__bubble hero__bubble--1"></span>
+        <span class="hero__bubble hero__bubble--2"></span>
+        <span class="hero__bubble hero__bubble--3"></span>
+      </div>
+
       <!-- 소개 블록 — 이름·직함 / 헤드라인 / 소개 / 메타가 하나의 세로 흐름.
            나머지는 js/render.js가 h1 앞뒤로 채웁니다. -->
       <div class="hero__copy wrap">
