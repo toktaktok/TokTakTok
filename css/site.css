@@ -1,6 +1,6 @@
 /* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill (화면 최상단 고정, 씬 밖 — 씬의 overflow: clip에 안 걸리게) + section links · footer: Ft4 · sections: hero(풀블리드 씬 + 마퀴 + 경력 팝업) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
- * hero enrichment: 사용자 제공 픽셀아트 배경(assets/images/Aero.png, 아래 정렬 + 위쪽은 --scene-sky가 이어받음) + Black Han Sans 대형 마퀴.
+ * hero enrichment: 사용자 제공 시안의 언덕 띠(인라인 SVG, 둥근 사각형 2톤 · 아래 정렬 · 위쪽 하늘은 --color-paper가 이어받음) + Black Han Sans 대형 마퀴.
  * mascot: 입 없음 — 표정은 눈으로만(.pix--smile이 뜬 눈을 웃는 눈 호와 맞바꿈).
  *   도킹 전환은 rAF 비행(.pix--travel 걷는 모션) — 씬은 overflow: clip이라 비행은 body의 fixed 컨텍스트에서 하고 도착 때만 .hero__dock으로 옮김.
  */
@@ -183,21 +183,18 @@ a:active { color: var(--color-accent); }
   min-height: 32rem;
   max-height: 56rem;
   overflow: clip;
-  /* 씬 아트 위쪽은 이 색이 이어받습니다. 이미지 맨 위 30줄이 순수 하늘색이라
-     같은 값을 쓰면 이음새가 보이지 않습니다. 이미지 로딩 전 배경도 겸함 */
-  background: var(--scene-sky);
+  /* 언덕 띠 위쪽(= 하늘)은 이 색이 그대로 이어받습니다. 아트가 투명 배경의
+     인라인 SVG라 경계가 생기지 않습니다 */
+  background: var(--color-paper);
 
-  /* 씬 아트가 차지할 높이. 이미지가 2:1이라 가로를 꽉 채우면 높이는 50vw입니다.
-     · 좁은 화면에서 그대로 두면 잔디 밴드(아트 높이의 20%)가 너무 얇아 캐릭터가
-       설 자리가 없으므로 최소 24rem을 보장합니다(그만큼 좌우가 잘림).
-     · 세로로 긴 화면에서 하늘만 휑하게 남지 않도록 55dvh까지는 키웁니다.
-     · 씬보다 커지지 않게 위를 씬 높이로 막습니다. */
-  --art-h: clamp(24rem, max(50vw, 55dvh), min(100dvh, 56rem));
+  /* 언덕 띠의 높이. 원본 시안에서 띠는 폭의 18.7%(1920 중 359)이라 19vw를 기준값으로
+     두되, 좁은 화면에서 그대로 두면 띠가 너무 얇아 캐릭터가 설 자리가 없으므로
+     최소 10rem을 보장하고(그만큼 좌우가 잘림), 큰 화면에서는 22rem에서 멈춥니다. */
+  --art-h: clamp(10rem, 19vw, 22rem);
 }
 
-/* 씬 아트 — assets/images/Aero.png (1280x640 픽셀아트).
-   지평선을 늘 바닥에 붙여 두려고 아래를 기준으로 잡습니다. 화면비에 따라 좌우가
-   잘릴 수는 있어도 잔디는 항상 바닥에 남습니다. */
+/* 씬 아트 — 아래쪽 언덕 띠. 화면비가 달라지면 좌우가 잘릴 뿐(xMidYMax slice),
+   능선은 늘 같은 두께로 바닥에 붙어 있습니다. */
 .hero__scene-art {
   position: absolute;
   left: 0;
@@ -207,8 +204,6 @@ a:active { color: var(--color-accent); }
   height: var(--art-h);
   display: block;
   z-index: 0;
-  object-fit: cover;
-  object-position: center bottom;
 }
 
 /* 마퀴 — 화면 가로를 다 차지하는 롤링 타이포. 실제 h1은 sr-only, 이건 장식(aria-hidden).
@@ -248,9 +243,9 @@ a:active { color: var(--color-accent); }
 .hero__dock {
   position: absolute;
   left: 72%;
-  /* 잔디 밴드는 아트 높이의 아래 20%. 그 한가운데쯤에 발을 둡니다 —
-     씬 높이(%)가 아니라 아트 높이를 기준으로 해야 화면비가 바뀌어도 잔디 위에 섭니다 */
-  bottom: calc(var(--art-h) * 0.1);
+  /* 언덕 띠에서 평평한 앞쪽 지면은 아래 52%. 그 안쪽에 발을 둡니다 —
+     씬 높이(%)가 아니라 띠 높이를 기준으로 해야 화면비가 바뀌어도 지면 위에 섭니다 */
+  bottom: calc(var(--art-h) * 0.18);
   z-index: 6;
 }
 
@@ -260,7 +255,7 @@ a:active { color: var(--color-accent); }
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(var(--art-h) * 0.1); /* 캐릭터와 같은 바닥선 */
+  bottom: calc(var(--art-h) * 0.18); /* 캐릭터와 같은 바닥선 */
   z-index: 4;
   pointer-events: none;
 }
@@ -986,7 +981,9 @@ a:active { color: var(--color-accent); }
      캐릭터 자리는 말풍선(폭의 절반)이 오른쪽으로 삐져나가지 않는 선까지만 오른쪽으로 */
   .hero__dock { left: 70%; }
   .helper--docked .helper__bubble { max-width: min(50vw, 14rem); }
-  .hero__card-wrap { bottom: calc(var(--art-h) * 0.55); }
+  /* 좁은 화면에서는 띠가 얇아(최소 10rem) 띠 비율로는 카드를 띄울 수 없습니다.
+     캐릭터 + 말풍선 높이를 넘길 만큼 고정값으로 올립니다 */
+  .hero__card-wrap { bottom: 13rem; }
   .hero__card { max-width: none; padding: var(--space-md); }
   .career__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); padding-block: var(--space-md); }
   .career__period { padding-top: 0; }
@@ -1003,7 +1000,7 @@ a:active { color: var(--color-accent); }
    도우미로 돌아오면 말풍선이 다시 나오므로 인사말이 사라지지는 않습니다. */
 @media (max-width: 40rem) and (max-height: 44rem) {
   .helper--docked .helper__bubble { display: none; }
-  .hero__card-wrap { bottom: calc(var(--art-h) * 0.3); }
+  .hero__card-wrap { bottom: 7rem; } /* 말풍선이 접혔으니 캐릭터 키만 넘기면 됨 */
 }
 
 @media (pointer: coarse) {

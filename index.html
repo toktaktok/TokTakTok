@@ -24,13 +24,37 @@
 
   <!-- 히어로 — 화면을 꽉 채우는 풀스크린 씬. 네비/카드/캐릭터가 전부 이 씬 위에 얹힙니다.
        텍스트는 전부 js/render.js가 data/profile.js에서 채웁니다.
-       씬 아트는 assets/images/Aero.png (1280x640 픽셀아트, 지평선은 위에서 약 80% 지점).
-       object-position이 아래에 붙어 있어 어떤 화면비에서도 잔디가 항상 바닥에 남습니다. -->
+
+       씬 아트는 아래쪽 언덕 띠 하나뿐입니다. 위쪽 하늘은 씬 배경(--color-paper)이
+       그대로 이어받아서 이음새가 없습니다 — 원본 시안의 배경색이 이 토큰과 같은 값.
+       둥근 사각형을 두 톤(뒤/앞)으로 겹쳐 언덕을 만들고, 왼쪽 언덕은 같은 사각형을
+       matrix(-1 0 0 1 …)로 뒤집은 것입니다. 좌표는 원본 1920x1080 기준을 그대로 씁니다. -->
   <section class="hero" aria-label="소개">
     <h1 class="sr-only" data-hero-title></h1>
     <div class="hero__scene">
-      <img class="hero__scene-art" src="assets/images/Aero.png" alt=""
-           width="1280" height="640" fetchpriority="high" decoding="async">
+      <svg class="hero__scene-art" viewBox="0 721 1920 359"
+           preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <g fill="var(--scene-hill-far)">
+          <rect width="2058" height="244" rx="23" transform="matrix(-1 0 0 1 2143 892)"/>
+          <rect width="759" height="117" rx="23" transform="matrix(-1 0 0 1 822 827)"/>
+          <rect width="550" height="106" rx="23" transform="matrix(-1 0 0 1 691 755)"/>
+          <rect width="286" height="106" rx="23" transform="matrix(-1 0 0 1 481 721)"/>
+          <rect x="-171" y="892" width="2058" height="244" rx="23"/>
+          <rect x="1038" y="827" width="797" height="117" rx="23"/>
+          <rect x="1562" y="789" width="441" height="106" rx="23"/>
+          <rect x="1700" y="755" width="300" height="106" rx="23"/>
+        </g>
+        <g fill="var(--scene-hill-near)">
+          <rect width="2058" height="244" rx="23" transform="matrix(-1 0 0 1 2143 892)"/>
+          <rect width="416" height="72" rx="16" transform="matrix(-1 0 0 1 705 755)"/>
+          <rect width="645" height="65" rx="23" transform="matrix(-1 0 0 1 840 827)"/>
+          <rect width="137" height="34" rx="8" transform="matrix(-1 0 0 1 494 721)"/>
+          <rect x="-113" y="892" width="2058" height="244" rx="23"/>
+          <rect x="1166" y="827" width="727" height="117" rx="23"/>
+          <rect x="1620" y="789" width="441" height="106" rx="23"/>
+          <rect x="1758" y="755" width="300" height="106" rx="23"/>
+        </g>
+      </svg>
 
       <div class="hero__marquee" aria-hidden="true" data-marquee></div>
       <div class="hero__dock" data-dock></div>

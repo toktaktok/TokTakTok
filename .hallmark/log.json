@@ -1,6 +1,15 @@
 [
   {
     "date": "2026-08-28",
+    "macrostructure": "Portfolio Grid + typographic hero over a hill band",
+    "theme": "custom",
+    "theme_axes": "light / neo-grotesque-sans + heavy-display outlier / cool + leaf-green illustration accent",
+    "vibe": "밝은 종이 위 대형 마퀴, 아래 언덕 띠에 선 마스코트",
+    "enrichment": "사용자 제공 시안의 언덕 띠 (Tier-B 인라인 SVG, 둥근 사각형 2톤 · 외부 이미지 없음)",
+    "brief": "toktaktok · 히어로 배경을 픽셀아트 이미지에서 사용자 제공 시안의 언덕 띠로 교체. 하늘을 그리지 않고 --color-paper가 이어받게 해 마퀴가 그림 위에 얹히지 않도록(대비 3.3:1 → ~15:1). 캐릭터·카드 바닥선을 새 띠 높이(--art-h) 기준으로 재조정"
+  },
+  {
+    "date": "2026-08-28",
     "macrostructure": "Portfolio Grid + full-bleed onboarding scene",
     "theme": "custom",
     "theme_axes": "light / neo-grotesque-sans + heavy-display outlier / cool",
