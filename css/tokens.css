@@ -1,6 +1,6 @@
 /* Hallmark · macrostructure: Portfolio Grid + full-bleed onboarding scene · theme: custom v5.1 (Aero Glass + Bliss 들판 히어로)
  * vibe: "밝은 종이 위 대형 디스플레이 헤드라인, 아래 언덕 띠에 선 마스코트, Aero 유리 크롬" · paper: oklch(97% 0.010 240) · accent: oklch(58% 0.19 252)
- * display: Pretendard Variable · body: Pretendard Variable · outlier: IBM Plex Mono (meta register, index.html 전용) + Black Han Sans (히어로 헤드라인 한 곳 전용, index.html 전용)
+ * display: Pretendard Variable · body: Pretendard Variable · outlier: JetBrains Mono (meta register, index.html 전용) + Black Han Sans (히어로 헤드라인 한 곳 전용, index.html 전용)
  *   ↳ v5.0에서는 갈무리11(픽셀 폰트)이었으나 대형 사이즈에서 가독성이 떨어져 Black Han Sans로 교체(v5.1) — 개성은 유지하되 픽셀 그리드 없는 굵은 디스플레이 산세리프
  * axes: light / neo-grotesque-sans + heavy-display outlier / cool · nav: N5 floating pill (was N9 edge-aligned) · footer: Ft4 dense-colophon (unchanged)
  * studied: no · context: explicit — user compared 5 design-drafts variants across sessions and picked Aero · Hallmark v1.1.0
@@ -31,6 +31,8 @@
  *   바늘은 render.js가 한국 시간(UTC+9)에 맞춰 매 초 돌립니다.
  * v5.7.1: 시계 크기·자리·바늘 치수를 시안 값으로 확정(1920 기준 문자판 1026px, left 1073 /
  *   top -368, 분침 46x494). vw로 옮겨 폭에 비례하되 1920 위쪽에서는 시안 크기에서 멈춥니다.
+ * v5.8: 메타 register 모노를 IBM Plex Mono → JetBrains Mono로 교체. 같은 자리·같은 웨이트(400/500)로
+ *   1:1 교체라 레이아웃 영향 없음 — x-height가 커서 11~13px 라벨에서 더 또렷합니다.
  */
 
 :root {
@@ -58,18 +60,18 @@
   --color-char-eye:   oklch(24% 0.05 55);     /* 눈 — 딥 브라운 */
   --color-char-shine: oklch(94% 0.007 60);    /* 눈 하이라이트 */
 
-  /* ---- type · Pretendard Variable (display+body) / IBM Plex Mono (meta register only) ----
-     이전엔 Space Grotesk(display)를 썼지만 한글 글리프가 없어 실제로는 한글 전부가
-     IBM Plex Sans KR로 폴백되고 있었음 — Space Grotesk는 라틴 워드마크에만 적용됐던 것.
-     Pretendard 하나로 통일해 "개발자 문서" 톤을 빼고 프로덕트 UI 톤으로 정리. */
+  /* ---- type · Pretendard Variable (display+body) / JetBrains Mono (meta register only) ----
+     display와 body는 Pretendard 하나로 통일 — 한글·라틴이 한 서체 안에서 끝나서
+     "개발자 문서" 톤 없이 프로덕트 UI 톤으로 읽힙니다. */
   --font-display: "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
   --font-body:    "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
-  /* IBM Plex Mono엔 한글 글리프가 없어, 메타 register에 한글이 섞이면(예: 상단 nav 링크,
+  /* JetBrains Mono엔 한글 글리프가 없어, 메타 register에 한글이 섞이면(예: 상단 nav 링크,
      히어로 이름·직함) OS가 임의로 고르는 폴백 모노스페이스로 넘어갑니다 — 이 폴백이
      플랫폼마다 달라(Windows는 굴림류 비트맵 느낌, iOS/Android는 매끈한 시스템 산세리프)
-     "PC에서는 폰트가 안 보이는" 것처럼 보였음. 라틴/숫자는 IBM Plex Mono가 그대로 맡고,
-     한글만 Pretendard Variable로 명시적으로 떨어지게 해 플랫폼 간 렌더링을 통일. */
-  --font-mono:    "IBM Plex Mono", "Pretendard Variable", Pretendard, ui-monospace, "SFMono-Regular", monospace;
+     "PC에서는 폰트가 안 보이는" 것처럼 보였음. 라틴/숫자는 JetBrains Mono가 그대로 맡고,
+     한글만 Pretendard Variable로 명시적으로 떨어지게 해 플랫폼 간 렌더링을 통일.
+     → 이 폴백 체인은 모노를 교체해도 그대로 유지해야 합니다. */
+  --font-mono:    "JetBrains Mono", "Pretendard Variable", Pretendard, ui-monospace, "SFMono-Regular", monospace;
   /* 히어로 헤드라인 전용 아웃라이어 — Black Han Sans (Google Fonts, index.html에서만 로드).
      처음엔 픽셀 폰트(갈무리11)를 썼지만 대형 사이즈에서 획이 깨져 가독성이 떨어져서 교체.
      한글 지원되는 매우 굵은 디스플레이 산세리프로, 개성은 유지하면서 큰 글자에서도 또렷합니다.
