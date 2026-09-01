@@ -123,7 +123,7 @@
     var SWAY = 7;         // 최대치(CSS px)
     var SWAY_DEAD = 0.15; // 화면 폭의 이 비율 안쪽이면 아예 반응하지 않음(사각지대)
     var SWAY_SPAN = 0.45; // 사각지대 끝에서 여기까지 0 → SWAY로 커짐
-    var SWAY_WAIT = 2000; // 사각지대를 벗어나고 이만큼(ms) 뜸을 들인 뒤에 움직이기 시작
+    var SWAY_WAIT = 1000; // 사각지대를 벗어나고 이만큼(ms) 뜸을 들인 뒤에 움직이기 시작
     var SWAY_MOVE = 1200; // 목표까지 옮겨 가는 데 걸리는 시간(ms) — ease-in-out
     var SWAY_STEP = 1.5;  // 목표가 이만큼(px) 달라져야 새로 반응합니다(잔떨림 무시)
 
