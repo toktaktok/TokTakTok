@@ -1,10 +1,21 @@
-/* 프로젝트 — 카드와 상세 페이지가 이 파일 하나로 만들어집니다.
+/* 프로젝트 — 경력의 "담당 시스템", 프로젝트 카드, 상세 페이지가 이 파일 하나로 만들어집니다.
+ *
+ * 어디에 나오는지는 따로 표시하지 않고 데이터로 정해집니다
+ *   · company가 data/career.js의 org와 글자까지 같으면 → 그 경력 행 아래 "담당 시스템" 목록
+ *     (프로젝트 그리드에는 나오지 않음)
+ *   · 그 외(개인·스터디·팀 프로젝트) → 프로젝트 그리드
+ *   · 상세 내용(overview·responsibilities·contributions·troubleshooting·retrospective·media·metrics)이
+ *     하나도 없으면 상세 페이지가 없는 것으로 봅니다 → 그리드에서는 이미지 없는 컴팩트 카드
+ *     (기간·팀·역할·영상 표), 담당 시스템 목록에서는 링크 없는 한 줄
  *
  * 항목 설명
  *   id        : 상세 페이지 주소(project.html?id=...)에 쓰이는 고유 슬러그
- *   featured  : true면 목록 맨 위에서 큰 카드로 표시
- *   tags      : 필터 버튼이 이 태그들로 자동 생성됨
- *   thumb     : 카드 썸네일 경로(assets/images/...). 비우면 캐릭터 자리 표시가 뜸
+ *   featured  : true면 그리드 맨 위에서 큰 카드로 표시(상세 내용이 있는 항목에서만 효과)
+ *   company   : 회사명 — data/career.js의 org와 같아야 그 경력 아래로 들어감. 개인 프로젝트는 비움
+ *   team/role : 팀 구성·역할. 컴팩트 카드의 표와 상세 페이지 facts에 쓰임
+ *   video     : 플레이 영상 주소(유튜브 등). 컴팩트 카드에 "영상" 행이 생김
+ *   tags      : 필터 버튼이 그리드에 있는 프로젝트의 태그로 자동 생성됨
+ *   thumb     : 카드 썸네일 경로(assets/images/...). 비우면 캐릭터 자리 표시가 뜸(컴팩트 카드는 이미지 없음)
  *   media     : 상세 페이지 상단의 이미지/영상 목록. 스크린샷보다 플레이 GIF 권장
  *   metrics   : 핵심 수치. 아직 없으면 value를 "—" 로 두세요 — 지어내지 않기
  *   contributions : 핵심 기여. 문제 → 접근 → 결과 순서로, 결과는 수치로
@@ -13,12 +24,12 @@
 window.PORTFOLIO = window.PORTFOLIO || {};
 
 window.PORTFOLIO.projects = [
+  /* ---- 회사 시스템 (작성 예시) — company가 경력의 org와 같아서 경력 아래로 들어갑니다 ---- */
   {
     id: "sample-minimap",
-    featured: true,
     title: "미니맵 시스템 개편 (작성 예시)",
-    period: "2023.01 — 2024.06",
-    company: "회사명 입력",
+    period: "2025.06 — 현재",
+    company: "빅게임스튜디오",
     team: "클라이언트 6인",
     role: "미니맵·월드맵 시스템 담당",
     engine: "Unreal Engine 5",
@@ -26,7 +37,7 @@ window.PORTFOLIO.projects = [
     tags: ["UI", "최적화"],
     thumb: "",
     summary:
-      "이 항목은 작성 형식을 보여 주는 예시입니다. 카드에는 이렇게 프로젝트를 한 문장으로 요약합니다.",
+      "담당 시스템 목록과 상세 페이지에 쓰이는 한 줄 요약 자리입니다. 무엇을 맡았는지 한 문장으로.",
     metrics: [
       { label: "이동 시 히치", value: "—", note: "수치 입력" },
       { label: "핀 갱신 비용", value: "—", note: "수치 입력" },
@@ -73,21 +84,20 @@ window.PORTFOLIO.projects = [
   },
 
   {
-    id: "sample-second",
-    featured: false,
-    title: "두 번째 프로젝트 제목 입력",
-    period: "2021.05 — 2022.12",
-    company: "회사명 입력",
-    team: "팀 구성 입력",
-    role: "담당 역할 입력",
-    engine: "엔진 입력",
-    platforms: "플랫폼 입력",
-    tags: ["게임플레이"],
+    id: "sample-widget-plugin",
+    title: "공용 위젯 플러그인 (작성 예시)",
+    period: "2025.05 — 현재",
+    company: "빅게임스튜디오",
+    team: "클라이언트 6인",
+    role: "공용 UI 위젯 유지보수",
+    engine: "Unreal Engine 5",
+    platforms: "PC · Mobile",
+    tags: ["UI", "플러그인"],
     thumb: "",
-    summary: "카드에 보일 한 줄 요약 입력. (샘플 카드 — data/projects.js에서 교체)",
+    summary: "팀이 같이 쓰는 위젯 레이어를 맡았다면 이렇게 한 줄로. (작성 예시)",
     metrics: [],
-    overview: "프로젝트 개요 입력.",
-    responsibilities: ["담당 업무 입력"],
+    overview: "두 번째 회사 시스템의 개요 입력. 짧게 써도 상세 페이지가 생깁니다.",
+    responsibilities: ["공용 스크롤·텍스트·버튼 위젯 유지보수 (예시 항목)"],
     contributions: [
       {
         title: "핵심 기여 제목 입력",
@@ -99,5 +109,64 @@ window.PORTFOLIO.projects = [
     troubleshooting: null,
     retrospective: "",
     media: [],
+  },
+
+  /* ---- 개인·스터디 프로젝트 (작성 예시) — company 없음 → 프로젝트 그리드 ---- */
+  {
+    id: "sample-team-clone",
+    featured: true,
+    title: "팀 모작 프로젝트 (작성 예시 — 상세 있음)",
+    period: "2024.05 — 2024.07",
+    company: "",
+    team: "6인",
+    role: "이펙트·셰이더·카메라",
+    engine: "자체 엔진 · DirectX 11",
+    platforms: "PC",
+    tags: ["팀 프로젝트", "셰이더"],
+    thumb: "",
+    video: "",
+    summary: "상세 내용이 있는 개인·팀 프로젝트는 지금까지처럼 큰 카드와 상세 페이지로 나옵니다.",
+    metrics: [],
+    overview: "프로젝트 개요 입력. 어떤 게임을 왜 골랐고 팀에서 무엇을 맡았는지.",
+    responsibilities: ["담당 업무 입력"],
+    contributions: [
+      {
+        title: "핵심 기여 제목 입력",
+        problem: "문제 입력.",
+        approach: "접근 입력.",
+        result: "결과 입력.",
+      },
+    ],
+    troubleshooting: null,
+    retrospective: "",
+    media: [{ src: "", caption: "플레이 영상 캡처 자리" }],
+  },
+
+  {
+    id: "sample-solo",
+    title: "개인 프로젝트 (작성 예시 — 컴팩트 카드)",
+    period: "2024.03 — 2024.05",
+    company: "",
+    team: "개인",
+    role: "전체",
+    engine: "DirectX 11",
+    tags: ["개인"],
+    video: "",
+    summary:
+      "상세 내용을 하나도 적지 않으면 이런 컴팩트 카드가 됩니다. video에 유튜브 주소를 넣으면 " +
+      "‘영상’ 행이 생깁니다.",
+  },
+
+  {
+    id: "sample-unity",
+    title: "Unity 2D 게임 (작성 예시 — 컴팩트 카드)",
+    period: "2022.05 — 2022.12",
+    company: "",
+    team: "2인",
+    role: "프로그래밍",
+    engine: "Unity",
+    tags: ["팀 프로젝트"],
+    video: "",
+    summary: "한 줄 요약 자리. 카드에는 이것과 위의 표만 들어갑니다.",
   },
 ];

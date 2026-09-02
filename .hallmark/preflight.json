@@ -1,0 +1,10 @@
+{
+  "scanned": "2026-09-02",
+  "framework": "vanilla HTML (index.html, project.html) · data/*.js → js/render.js",
+  "font_stack": "Pretendard Variable (display+body, jsdelivr) · JetBrains Mono (meta register, Google Fonts) · Black Han Sans (hero headline only, Google Fonts) — css/tokens.css --font-*",
+  "palette": "OKLCH custom properties, custom Aero Glass theme (css/tokens.css :root)",
+  "motion": "motion-cut (no motion library; CSS transitions on transform/opacity, prefers-reduced-motion handled in css/site.css)",
+  "spacing": "--space-3xs … --space-4xl 4pt scale (css/tokens.css)",
+  "preserve": ["font stack", "palette", "spacing scale", "nav N5 floating pill", "footer Ft4 colophon", "glass marble section markers"],
+  "note": "Hallmark-built project (stamp at top of css/tokens.css). Re-scan with 'refresh pre-flight'."
+}
