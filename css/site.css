@@ -107,9 +107,9 @@ a:active { color: var(--color-accent); }
   border-radius: var(--radius-pill);
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 1px 0 var(--glass-highlight) inset, var(--shadow-lift);
-  backdrop-filter: blur(14px) saturate(1.3);
-  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  box-shadow: var(--glass-rim), var(--shadow-lift);
+  backdrop-filter: var(--glass-filter);
+  -webkit-backdrop-filter: var(--glass-filter);
 }
 
 .nav__mark {
@@ -366,7 +366,7 @@ a:active { color: var(--color-accent); }
   /* 뒤에 걸린 시계가 위아래로 다 비치도록 하이라이트가 묽은 거품 전용 유리 */
   background: var(--scene-bubble-glass);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 1px 0 var(--glass-highlight) inset, 0 8px 20px var(--glass-shadow);
+  box-shadow: var(--glass-rim), 0 8px 20px var(--glass-shadow);
   animation: bubble-drift var(--drift, 12s) var(--ease-in-out) infinite;
   animation-delay: var(--drift-delay, 0s);
 }
@@ -611,9 +611,9 @@ a:active { color: var(--color-accent); }
   border-radius: var(--radius-bubble);
   border-bottom-right-radius: 2px;
   padding: var(--space-sm) var(--space-lg) var(--space-sm) var(--space-md);
-  backdrop-filter: blur(10px) saturate(1.3);
-  -webkit-backdrop-filter: blur(10px) saturate(1.3);
-  box-shadow: 0 1px 0 var(--glass-highlight) inset, var(--shadow-whisper);
+  backdrop-filter: var(--glass-filter-soft);
+  -webkit-backdrop-filter: var(--glass-filter-soft);
+  box-shadow: var(--glass-rim), var(--shadow-whisper);
   font-size: var(--text-sm);
   color: var(--color-ink-2);
   line-height: 1.55;
@@ -751,7 +751,7 @@ a:active { color: var(--color-accent); }
   border-radius: 50%;
   background: var(--glass);
   border: 1px solid var(--glass-border);
-  box-shadow: 0 1px 0 var(--glass-highlight) inset, 0 2px 5px var(--glass-shadow-hi);
+  box-shadow: var(--glass-rim), 0 2px 5px var(--glass-shadow-hi);
   vertical-align: -0.05em;
 }
 
@@ -865,20 +865,22 @@ a.system__link:active .system__title { text-decoration-color: var(--color-accent
   font-size: var(--text-sm);
   color: var(--color-muted);
   cursor: pointer;
-  box-shadow: 0 1px 0 var(--glass-highlight) inset;
-  transition: color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+  box-shadow: var(--glass-rim);
+  transition: color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
 }
 .filter__btn:hover {
   color: var(--color-ink);
-  box-shadow: 0 1px 0 var(--glass-highlight-hi) inset, 0 3px 8px var(--glass-shadow-hi);
+  box-shadow: var(--glass-rim-hi), 0 3px 8px var(--glass-shadow-hi);
+  transform: scale(1.01);
 }
-.filter__btn:active { transform: translateY(1px); }
+/* 누름은 Aero의 '눌러 들어감'(1px 하강)과 Liquid의 '물러남'(수축)을 반씩 — 스프링·바운스 없음 */
+.filter__btn:active { transform: translateY(0.5px) scale(0.985); }
 /* 선택된 필터만 초록 유리로 — 파란 크롬(구조)과 초록(선택 상태)을 구분 */
 .filter__btn[aria-pressed="true"] {
   color: var(--color-ink);
   background: var(--status-glass);
   border-color: var(--color-status);
-  box-shadow: 0 1px 0 var(--glass-highlight-hi) inset, 0 0 0 3px var(--status-ring-tight);
+  box-shadow: var(--glass-rim-hi), 0 0 0 3px var(--status-ring-tight);
 }
 
 .grid {
@@ -899,7 +901,7 @@ a.system__link:active .system__title { text-decoration-color: var(--color-accent
   border-radius: var(--radius-panel);
   background: linear-gradient(180deg, var(--glass-hi), var(--glass-lo));
   border: 1px solid var(--glass-border);
-  box-shadow: 0 1px 0 var(--glass-highlight) inset, 0 6px 18px var(--glass-shadow);
+  box-shadow: var(--glass-rim), 0 6px 18px var(--glass-shadow);
   overflow: hidden;
 }
 .card__media img {
@@ -1003,7 +1005,7 @@ a.system__link:active .system__title { text-decoration-color: var(--color-accent
   border-radius: var(--radius-panel);
   background: linear-gradient(180deg, var(--glass-hi), var(--glass-lo));
   border: 1px solid var(--glass-border);
-  box-shadow: 0 1px 0 var(--glass-highlight) inset, 0 6px 18px var(--glass-shadow);
+  box-shadow: var(--glass-rim), 0 6px 18px var(--glass-shadow);
 }
 
 /* ---------- skills · F3 tabular spec sheet ---------- */
