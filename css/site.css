@@ -1200,6 +1200,108 @@ a.system__link:active .system__title { text-decoration-color: var(--color-accent
 }
 .contrib dd { margin-top: var(--space-3xs); }
 
+/* ---------- detail body · Notion에서 옮겨 온 섹션 본문(문단·그림·인용·목록·옆글) ---------- */
+.detail__section p + p { margin-top: var(--space-sm); }
+.detail__sub {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-base);
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-xs);
+  max-width: 60ch;
+}
+.detail__quote {
+  margin: var(--space-md) 0;
+  padding: var(--space-xs) 0 var(--space-xs) var(--space-md);
+  border-left: var(--rule-bold) solid var(--color-rule);
+  color: var(--color-ink-2);
+  max-width: 65ch;
+  line-height: 1.7;
+}
+.detail__ol { padding-left: 1.4em; margin: var(--space-sm) 0; }
+.detail__ol li { margin-bottom: var(--space-xs); }
+.detail__section .detail__list { margin: var(--space-sm) 0; }
+/* 그림 — 카드 썸네일과 같은 유리 테두리, 비율은 원본대로 */
+.detail__fig { margin: var(--space-lg) 0; min-width: 0; }
+.detail__fig img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-panel);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-rim), 0 6px 18px var(--glass-shadow);
+  background: var(--color-paper-2);
+}
+.detail__fig figcaption, .detail__video figcaption {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  margin-top: var(--space-xs);
+}
+.detail__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+}
+.detail__row .detail__fig { margin: 0; }
+/* 작은 픽셀 스프라이트 묶음 — 원본 크기 근처에서 또렷하게, 한 줄에 여러 장 */
+.detail__row--small { grid-template-columns: repeat(auto-fit, minmax(6rem, 10rem)); }
+.detail__row--small img { image-rendering: pixelated; width: 100%; }
+/* 유튜브 임베드 — 16:9, 유리 테두리 */
+.detail__video { margin: var(--space-xl) 0 0; }
+.detail__video iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--glass-rim), 0 6px 18px var(--glass-shadow);
+  background: var(--color-paper-2);
+}
+/* 옆글("이후 개선 사항?") — 유리 패널 */
+.detail__note {
+  margin: var(--space-lg) 0;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(180deg, var(--glass-hi), var(--glass-lo));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-rim), 0 6px 18px var(--glass-shadow);
+  max-width: 65ch;
+}
+.detail__note h4 {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  margin-bottom: var(--space-xs);
+}
+.detail__kv {
+  border-collapse: collapse;
+  width: 100%;
+  margin: var(--space-md) 0;
+  font-size: var(--text-sm);
+}
+.detail__kv th, .detail__kv td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--space-xs) var(--space-sm) var(--space-xs) 0;
+  border-bottom: var(--rule-hair) solid var(--color-rule-2);
+}
+.detail__kv th {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  white-space: nowrap;
+  width: 1%;
+  padding-right: var(--space-lg);
+}
+.detail__kv td { color: var(--color-ink-2); }
+@media (max-width: 40rem) {
+  .detail__row { grid-template-columns: minmax(0, 1fr); }
+}
+
 .metrics {
   display: flex;
   flex-wrap: wrap;
