@@ -44,6 +44,12 @@
  *   기법만 빌려 왔고(시트 그림자 + translateX 드리프트) 산·나무·집·동물 오브젝트와 원본 색은 안 씀 —
  *   초록은 v5.4의 두 언덕색을 가운데 두고 같은 색상각으로 한 단계씩 넓힌 4단, 구름은 종이 흰색.
  *   토큰: --scene-hill-far/near → --scene-field-1..4, --scene-sheet-shadow(-deep), --scene-cloud(-shadow).
+ * v6: 유리 재질을 Aero(현행) ↔ Liquid Glass 사이 정확히 절반(t=0.5)으로. 구조·선택자·컴포넌트는 그대로이고
+ *   유리 토큰 값만 바뀝니다. 이음선 2% 경계 → 39~60% 광택 띠 · 면 알파 0.55 → 0.39 · 테두리 0.65 → 0.43
+ *   + 신규 --glass-rim(위 흰 림 0.83 · 좌우 0.28 · 아래 파란 0.11 · 렌즈 13px)이 예전 한 줄 하이라이트를 대체
+ *   · blur 14 → 18 / saturate 1.3 → 1.55(--glass-filter) · --shadow-lift 0 14px 33px / 0.17 · 패널 19px, 말풍선 22px
+ *   · 필터 칩 :active는 1px 하강 → 0.5px 하강 + 1.5% 수축, hover 1% 확대. 하늘 거품·시계·초록 상태 유리는
+ *   같은 정지점(39/60)으로 따라옵니다. 시안: Aero × Liquid 아티팩트(세 레인 + 슬라이더).
  */
 
 :root {
@@ -114,21 +120,48 @@
 
   /* ---- shadows ---- */
   --shadow-whisper: 0 1px 2px oklch(40% 0.05 250 / 0.08);
-  --shadow-lift:    0 10px 26px oklch(50% 0.12 250 / 0.22);
+  --shadow-lift:    0 14px 33px oklch(50% 0.12 250 / 0.17);
 
-  /* ---- glass · Aero 버튼 공식 — 위쪽 밝은 하이라이트, 중앙 이음선, 아래쪽 톤다운 ---- */
-  --glass-hi:     oklch(99.5% 0.004 240 / 0.92);
-  --glass-mid:    oklch(95%   0.020 245 / 0.55);
-  --glass-seam:   oklch(88%   0.050 250 / 0.55);
-  --glass-lo:     oklch(93%   0.030 248 / 0.55);
-  --glass-border: oklch(75%   0.060 250 / 0.65);
-  --glass: linear-gradient(180deg, var(--glass-hi), var(--glass-mid) 48%, var(--glass-seam) 50%, var(--glass-lo) 100%);
+  /* ---- glass · Aero × Liquid 중간점 (v6) ----
+     Aero 공식(위쪽 밝은 하이라이트 → 이음선 → 아래쪽 톤다운)의 방향성은 그대로 두고,
+     Liquid Glass 쪽으로 정확히 절반만 갑니다.
+     · 이음선은 지우지 않고 풉니다 — 48→50%의 2% 경계가 39→60%의 띠로. 경계로는 안 읽히고
+       면을 지나간 광택으로 읽힙니다(t=1 Liquid는 30→70%, 사실상 없음).
+     · 면은 0.55 → 0.39로 비웁니다(Liquid는 0.22). 밝은 종이 위에서 그 이상 비우면 필터 칩이
+       글자만 떠 보이고, 마스코트·시계·거품이 공유하는 '유리 구슬' 정체성이 옅어집니다.
+     · 파란 테두리 알파 0.65 → 0.43. 지운 절반의 몫은 아래 --glass-rim(림 라이트)이 맡습니다. */
+  --glass-hi:     oklch(99.5% 0.004 240 / 0.77);
+  --glass-mid:    oklch(95%   0.020 245 / 0.39);
+  --glass-seam:   oklch(88%   0.050 250 / 0.36);
+  --glass-lo:     oklch(93%   0.030 248 / 0.39);
+  --glass-border: oklch(75%   0.060 250 / 0.43);
+  --glass: linear-gradient(180deg, var(--glass-hi), var(--glass-mid) 39%, var(--glass-seam) 60%, var(--glass-lo) 100%);
 
-  /* 유리 표면 공통 하이라이트/그림자 — nav·filter·card·panel·badge가 전부 이 두 쌍을 재사용 */
-  --glass-highlight:    oklch(100% 0 0 / 0.75);    /* 이음선 위쪽 인셋 하이라이트 — 평상시 */
-  --glass-highlight-hi: oklch(100% 0 0 / 0.85);    /* 〃 — hover/pressed */
+  /* 림 라이트 — 예전의 `0 1px 0 var(--glass-highlight) inset`(위쪽 한 줄 하이라이트) 자리를
+     통째로 대체합니다. 위쪽 흰 림이 가장 밝고, 좌우는 얇게, 아래는 파란 기운으로 살짝 닫히고,
+     안쪽으로 번지는 렌즈 광(마지막 항)이 가장자리에서 빛이 굴절되는 느낌을 냅니다.
+     nav·filter·card·panel·bubble·marker가 전부 이 두 묶음(평상시 / hover·pressed)을 재사용. */
+  --glass-rim-top:  oklch(100% 0 0 / 0.83);
+  --glass-rim-side: oklch(100% 0 0 / 0.28);
+  --glass-rim-bot:  oklch(70% 0.08 250 / 0.11);
+  --glass-lens:     oklch(100% 0 0 / 0.40);
+  --glass-rim: inset 0 1px 0 var(--glass-rim-top),
+               inset 1px 0 0 var(--glass-rim-side), inset -1px 0 0 var(--glass-rim-side),
+               inset 0 -1px 0 var(--glass-rim-bot),
+               inset 0 0 13px -5px var(--glass-lens);
+  --glass-rim-top-hi:  oklch(100% 0 0 / 0.92);   /* hover/pressed — 림이 한 단계 밝아짐 */
+  --glass-rim-side-hi: oklch(100% 0 0 / 0.36);
+  --glass-rim-hi: inset 0 1px 0 var(--glass-rim-top-hi),
+                  inset 1px 0 0 var(--glass-rim-side-hi), inset -1px 0 0 var(--glass-rim-side-hi),
+                  inset 0 -1px 0 var(--glass-rim-bot),
+                  inset 0 0 13px -5px var(--glass-lens);
   --glass-shadow:       oklch(45% 0.1 250 / 0.10); /* 앰비언트 그림자 틴트 — 평상시 */
   --glass-shadow-hi:    oklch(45% 0.1 250 / 0.14); /* 〃 — hover */
+
+  /* 배경 블러 — 면이 비워진 만큼 블러와 채도를 올려, 비치는 언덕 초록이 탁해지지 않게.
+     (Aero: blur 14 / sat 1.3 · Liquid: blur 22 / sat 1.8). soft는 도우미 말풍선용(원래 blur 10). */
+  --glass-filter:      blur(18px) saturate(1.55);
+  --glass-filter-soft: blur(14px) saturate(1.55);
 
   /* ---- scene · 히어로 들판 띠(index.html의 인라인 SVG, paper-cut 시트 4장) 전용 미니 팔레트.
      UI 컴포넌트에는 쓰지 않는 일러스트 전용입니다.
@@ -155,14 +188,14 @@
      --glass-hi는 알파 0.92라 그 띠에서는 뒤가 거의 안 비치는데, 이 거품 뒤에는 시계가
      걸려 있어서 위아래 어디로도 비쳐야 합니다. 나머지 정지점은 --glass 그대로 재사용. */
   --scene-bubble-hi: oklch(99.5% 0.004 240 / 0.6);
-  --scene-bubble-glass: linear-gradient(180deg, var(--scene-bubble-hi), var(--glass-mid) 48%, var(--glass-seam) 50%, var(--glass-lo) 100%);
+  --scene-bubble-glass: linear-gradient(180deg, var(--scene-bubble-hi), var(--glass-mid) 39%, var(--glass-seam) 60%, var(--glass-lo) 100%);
 
   /* ---- status · 초록 유리(파란 크롬과 분리된 유일한 보조색) ---- */
-  --status-hi:    oklch(97% 0.03 145 / 0.95);
-  --status-mid:   oklch(90% 0.08 145 / 0.75);
-  --status-seam:  oklch(78% 0.14 145 / 0.75);
-  --status-lo:    oklch(87% 0.09 145 / 0.75);
-  --status-glass: linear-gradient(180deg, var(--status-hi), var(--status-mid) 48%, var(--status-seam) 50%, var(--status-lo) 100%);
+  --status-hi:    oklch(97% 0.03 145 / 0.80);   /* 파란 유리와 같은 비율로 희석(v6) */
+  --status-mid:   oklch(90% 0.08 145 / 0.55);
+  --status-seam:  oklch(78% 0.14 145 / 0.54);
+  --status-lo:    oklch(87% 0.09 145 / 0.55);
+  --status-glass: linear-gradient(180deg, var(--status-hi), var(--status-mid) 39%, var(--status-seam) 60%, var(--status-lo) 100%);
   --status-ring:       oklch(72% 0.17 145 / 0.22); /* 프레즌스 점 펄스 — 평상시 */
   --status-ring-soft:  oklch(72% 0.17 145 / 0.10); /* 〃 — 피크(옅어지는 순간) */
   --status-ring-tight: oklch(72% 0.17 145 / 0.18); /* 선택된 필터의 포커스풍 링 */
@@ -174,8 +207,8 @@
   /* ---- rules & radius · 유리 알약, 둥근 패널 (이전의 각진 모서리 원칙을 대체) ---- */
   --rule-hair: 1px;
   --rule-bold: 2px;
-  --radius-panel:  14px;
-  --radius-bubble: 18px;
+  --radius-panel:  19px;   /* v6: 14 → 19 (Liquid는 24). 알약·구슬은 이미 완전한 원이라 그대로 */
+  --radius-bubble: 22px;   /* v6: 18 → 22 */
   --radius-pill:   999px;
 
   /* ---- motion ---- */
