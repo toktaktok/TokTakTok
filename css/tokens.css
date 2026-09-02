@@ -1,6 +1,6 @@
 /* Hallmark · macrostructure: Portfolio Grid + full-bleed onboarding scene · theme: custom v5.1 (Aero Glass + Bliss 들판 히어로)
  * vibe: "밝은 종이 위 대형 디스플레이 헤드라인, 아래 언덕 띠에 선 마스코트, Aero 유리 크롬" · paper: oklch(97% 0.010 240) · accent: oklch(58% 0.19 252)
- * display: Pretendard Variable · body: Pretendard Variable · outlier: IBM Plex Mono (meta register, index.html 전용) + Black Han Sans (히어로 헤드라인 한 곳 전용, index.html 전용)
+ * display: Pretendard Variable · body: Pretendard Variable · outlier: JetBrains Mono (meta register, index.html 전용) + Black Han Sans (히어로 헤드라인 한 곳 전용, index.html 전용)
  *   ↳ v5.0에서는 갈무리11(픽셀 폰트)이었으나 대형 사이즈에서 가독성이 떨어져 Black Han Sans로 교체(v5.1) — 개성은 유지하되 픽셀 그리드 없는 굵은 디스플레이 산세리프
  * axes: light / neo-grotesque-sans + heavy-display outlier / cool · nav: N5 floating pill (was N9 edge-aligned) · footer: Ft4 dense-colophon (unchanged)
  * studied: no · context: explicit — user compared 5 design-drafts variants across sessions and picked Aero · Hallmark v1.1.0
@@ -31,6 +31,19 @@
  *   바늘은 render.js가 한국 시간(UTC+9)에 맞춰 매 초 돌립니다.
  * v5.7.1: 시계 크기·자리·바늘 치수를 시안 값으로 확정(1920 기준 문자판 1026px, left 1073 /
  *   top -368, 분침 46x494). vw로 옮겨 폭에 비례하되 1920 위쪽에서는 시안 크기에서 멈춥니다.
+ * v5.8: 메타 register 모노를 IBM Plex Mono → JetBrains Mono로 교체. 같은 자리·같은 웨이트(400/500)로
+ *   1:1 교체라 레이아웃 영향 없음 — x-height가 커서 11~13px 라벨에서 더 또렷합니다.
+ * v5.9: 경력·프로젝트 재편(매크로구조·테마·네비·푸터는 그대로).
+ *   (1) 경력 행 아래에 그 회사(project.company == career.org)의 담당 시스템을 hairline 목록으로
+ *       중첩 — 유리 패널 없음(카드 속 카드 금지), 번호 없음(목록이지 챕터가 아님).
+ *   (2) 프로젝트 그리드는 경력이 데려가지 않은 것만. 상세 내용이 없는 항목은 이미지 없는
+ *       컴팩트 카드(top rule + 기간·팀·역할·영상 표)로 — 썸네일 없는 자리 표시가 줄지어
+ *       반복되는 걸 막습니다. 판정은 데이터 유무로만, 새 플래그 없음.
+ * v5.10: 히어로 배경을 paper-cut 레이어로. 둥근 사각형 2톤 언덕 → 종이를 겹쳐 오린 들판 시트 4장
+ *   (뒤→앞으로 진해지고 시트마다 아래로 부드러운 그림자)과, 하늘을 2~4분 주기로 흘러가는 종이 구름 4개.
+ *   기법만 빌려 왔고(시트 그림자 + translateX 드리프트) 산·나무·집·동물 오브젝트와 원본 색은 안 씀 —
+ *   초록은 v5.4의 두 언덕색을 가운데 두고 같은 색상각으로 한 단계씩 넓힌 4단, 구름은 종이 흰색.
+ *   토큰: --scene-hill-far/near → --scene-field-1..4, --scene-sheet-shadow(-deep), --scene-cloud(-shadow).
  */
 
 :root {
@@ -58,18 +71,18 @@
   --color-char-eye:   oklch(24% 0.05 55);     /* 눈 — 딥 브라운 */
   --color-char-shine: oklch(94% 0.007 60);    /* 눈 하이라이트 */
 
-  /* ---- type · Pretendard Variable (display+body) / IBM Plex Mono (meta register only) ----
-     이전엔 Space Grotesk(display)를 썼지만 한글 글리프가 없어 실제로는 한글 전부가
-     IBM Plex Sans KR로 폴백되고 있었음 — Space Grotesk는 라틴 워드마크에만 적용됐던 것.
-     Pretendard 하나로 통일해 "개발자 문서" 톤을 빼고 프로덕트 UI 톤으로 정리. */
+  /* ---- type · Pretendard Variable (display+body) / JetBrains Mono (meta register only) ----
+     display와 body는 Pretendard 하나로 통일 — 한글·라틴이 한 서체 안에서 끝나서
+     "개발자 문서" 톤 없이 프로덕트 UI 톤으로 읽힙니다. */
   --font-display: "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
   --font-body:    "Pretendard Variable", Pretendard, -apple-system, ui-sans-serif, system-ui, sans-serif;
-  /* IBM Plex Mono엔 한글 글리프가 없어, 메타 register에 한글이 섞이면(예: 상단 nav 링크,
+  /* JetBrains Mono엔 한글 글리프가 없어, 메타 register에 한글이 섞이면(예: 상단 nav 링크,
      히어로 이름·직함) OS가 임의로 고르는 폴백 모노스페이스로 넘어갑니다 — 이 폴백이
      플랫폼마다 달라(Windows는 굴림류 비트맵 느낌, iOS/Android는 매끈한 시스템 산세리프)
-     "PC에서는 폰트가 안 보이는" 것처럼 보였음. 라틴/숫자는 IBM Plex Mono가 그대로 맡고,
-     한글만 Pretendard Variable로 명시적으로 떨어지게 해 플랫폼 간 렌더링을 통일. */
-  --font-mono:    "IBM Plex Mono", "Pretendard Variable", Pretendard, ui-monospace, "SFMono-Regular", monospace;
+     "PC에서는 폰트가 안 보이는" 것처럼 보였음. 라틴/숫자는 JetBrains Mono가 그대로 맡고,
+     한글만 Pretendard Variable로 명시적으로 떨어지게 해 플랫폼 간 렌더링을 통일.
+     → 이 폴백 체인은 모노를 교체해도 그대로 유지해야 합니다. */
+  --font-mono:    "JetBrains Mono", "Pretendard Variable", Pretendard, ui-monospace, "SFMono-Regular", monospace;
   /* 히어로 헤드라인 전용 아웃라이어 — Black Han Sans (Google Fonts, index.html에서만 로드).
      처음엔 픽셀 폰트(갈무리11)를 썼지만 대형 사이즈에서 획이 깨져 가독성이 떨어져서 교체.
      한글 지원되는 매우 굵은 디스플레이 산세리프로, 개성은 유지하면서 큰 글자에서도 또렷합니다.
@@ -117,13 +130,26 @@
   --glass-shadow:       oklch(45% 0.1 250 / 0.10); /* 앰비언트 그림자 틴트 — 평상시 */
   --glass-shadow-hi:    oklch(45% 0.1 250 / 0.14); /* 〃 — hover */
 
-  /* ---- scene · 히어로 아래쪽 언덕 띠(index.html의 인라인 SVG) 전용 2색.
-     UI 컴포넌트에는 쓰지 않는 일러스트 전용 미니 팔레트입니다.
-     뒤/앞 두 톤을 살짝 어긋나게 겹쳐 능선에 밝은 테두리가 생깁니다.
-     하늘에 해당하는 위쪽은 --color-paper가 그대로 이어받습니다 — 원본 시안의
-     배경색 #EFF6FB가 그 토큰과 같은 값이라 이음새가 보이지 않습니다. */
-  --scene-hill-far:  oklch(79.4% 0.165 140);  /* 뒤 언덕 — 원본 #7ED56B */
-  --scene-hill-near: oklch(89.4% 0.135 140);  /* 앞 언덕 — 원본 #ACF29B */
+  /* ---- scene · 히어로 들판 띠(index.html의 인라인 SVG, paper-cut 시트 4장) 전용 미니 팔레트.
+     UI 컴포넌트에는 쓰지 않는 일러스트 전용입니다.
+     뒤(1) → 앞(4)으로 갈수록 진해집니다 — 종이를 겹쳐 오린 풍경의 대기 원근.
+     2·3은 v5.4부터 쓰던 두 언덕색(원본 #ACF29B / #7ED56B) 그대로이고, 1·4는 같은 색상각(140)
+     안에서 그 양쪽으로 한 단계씩 넓힌 값이라 계열이 바뀌지 않습니다.
+     하늘에 해당하는 위쪽은 --color-paper가 그대로 이어받습니다. */
+  --scene-field-1: oklch(93% 0.095 140);   /* 맨 뒤 — 가장 옅음 */
+  --scene-field-2: oklch(89.4% 0.135 140); /* 원본 #ACF29B (v5.4 앞 언덕) */
+  --scene-field-3: oklch(79.4% 0.165 140); /* 원본 #7ED56B (v5.4 뒤 언덕) */
+  --scene-field-4: oklch(70% 0.16 142);    /* 맨 앞 — 가장 진함, 캐릭터가 서는 시트 */
+  /* 시트가 아래 시트 위에 떨어뜨리는 그림자 — 종이 두께를 읽히는 유일한 장치.
+     초록 위에 떨어지므로 초록 쪽으로 기운 어두운 틴트(맨 앞 시트는 조금 더 진하게). */
+  --scene-sheet-shadow:      oklch(32% 0.07 160 / 0.26);
+  --scene-sheet-shadow-deep: oklch(30% 0.07 160 / 0.34);
+
+  /* 하늘의 종이 구름 — 채움은 유리 하이라이트(--glass-hi)와 같은 종이 흰색(알파 없이).
+     97% 종이 위에 99.5%라 면으로는 거의 안 보이고, 파란 기운의 그림자가 구름을 띄웁니다
+     (UI 유리의 앰비언트 그림자와 같은 계열, 조금 더 진하게). */
+  --scene-cloud:        oklch(99.5% 0.004 240);
+  --scene-cloud-shadow: oklch(45% 0.10 250 / 0.20);
 
   /* 하늘의 거품 전용 유리 — UI의 --glass와 같은 레시피인데 맨 위 하이라이트만 묽습니다.
      --glass-hi는 알파 0.92라 그 띠에서는 뒤가 거의 안 비치는데, 이 거품 뒤에는 시계가
