@@ -19,6 +19,7 @@
       (p.troubleshooting && p.troubleshooting.body) ||
       p.retrospective ||
       (p.media || []).length ||
+      (p.sections || []).length ||
       (p.metrics || []).length);
   }
   function isClaimed(p) {
@@ -308,6 +309,130 @@
     return box;
   }
 
+  /* ---------- detail body · 섹션 본문 렌더러 ----------
+     Notion에서 옮겨 온 상세 내용은 "문단 + 그림 + 인용 + 목록"이 섞인 순서 있는 흐름이라,
+     sections[].body / sections[].items[].body 를 항목 배열로 받아 그 순서대로 그립니다.
+       "문단"                       → <p> (**굵게**, `코드` 두 가지 인라인 표기만 지원)
+       { h: "소제목" }               → <h4>
+       { quote: ["줄", "줄"] }       → <blockquote> (줄바꿈 유지)
+       { list: [...], ordered }     → <ul> / <ol>
+       { img: "경로", caption }      → <figure> 한 장
+       { imgs: [{src, caption}] }   → 나란히 놓는 그림 묶음(모바일에서는 한 열)
+       { video: "유튜브 주소", caption, start } → 임베드 + 원본 링크
+       { note: {title, body} }      → 옆글(예: "이후 개선 사항?")
+       { table: [[항목, 값], ...] }  → 항목·값 표
+     본문은 data/projects.js(직접 편집하는 파일)에서만 오므로 innerHTML을 씁니다 — profile.js와 같은 규칙. */
+  function inline(text) {
+    var t = String(text)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return t
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/`([^`]+)`/g, "<code>$1</code>");
+  }
+
+  function figureNode(src, caption) {
+    var fig = el("figure", "detail__fig");
+    if (src) {
+      var img = document.createElement("img");
+      img.src = src;
+      img.alt = caption || "";
+      img.loading = "lazy";
+      img.addEventListener("error", function () {
+        fig.replaceChildren(mediaPlaceholder("이미지를 찾을 수 없음 — 경로 확인"));
+      });
+      fig.appendChild(img);
+    } else {
+      fig.appendChild(mediaPlaceholder());
+    }
+    if (caption) fig.appendChild(el("figcaption", null, caption));
+    return fig;
+  }
+
+  /* youtu.be/ID · youtube.com/watch?v=ID → 임베드 주소. ?si= 같은 추적 파라미터는 버리고
+     t= / start= (초)만 시작 위치로 넘깁니다. 유튜브가 아니면 링크만 남깁니다. */
+  function youtubeEmbed(url, start) {
+    var m = String(url).match(/(?:youtu\.be\/|[?&]v=)([A-Za-z0-9_-]{6,})/);
+    if (!m) return "";
+    var t = start;
+    if (t == null) {
+      var tm = String(url).match(/[?&#](?:t|start)=(\d+)/);
+      if (tm) t = tm[1];
+    }
+    return "https://www.youtube-nocookie.com/embed/" + m[1] + (t ? "?start=" + t : "");
+  }
+
+  function videoNode(url, caption, start) {
+    var fig = el("figure", "detail__video");
+    var src = youtubeEmbed(url, start);
+    if (src) {
+      var frame = document.createElement("iframe");
+      frame.src = src;
+      frame.title = caption || "플레이 영상";
+      frame.loading = "lazy";
+      frame.setAttribute("allow", "accelerometer; encrypted-media; picture-in-picture");
+      frame.setAttribute("allowfullscreen", "");
+      fig.appendChild(frame);
+    }
+    var cap = el("figcaption");
+    if (caption) cap.appendChild(document.createTextNode(caption + " · "));
+    var a = el("a", null, linkLabel(url) + " ↗");
+    a.href = url;
+    a.rel = "noreferrer";
+    cap.appendChild(a);
+    fig.appendChild(cap);
+    return fig;
+  }
+
+  function renderBody(root, items) {
+    (items || []).forEach(function (it) {
+      if (typeof it === "string") {
+        var p = el("p");
+        p.innerHTML = inline(it);
+        root.appendChild(p);
+      } else if (it.h) {
+        root.appendChild(el("h4", "detail__sub", it.h));
+      } else if (it.quote) {
+        var bq = el("blockquote", "detail__quote");
+        bq.innerHTML = it.quote.map(inline).join("<br>");
+        root.appendChild(bq);
+      } else if (it.list) {
+        var list = el(it.ordered ? "ol" : "ul", it.ordered ? "detail__ol" : "detail__list");
+        it.list.forEach(function (x) {
+          var li = el("li");
+          li.innerHTML = inline(x);
+          list.appendChild(li);
+        });
+        root.appendChild(list);
+      } else if (it.img) {
+        root.appendChild(figureNode(it.img, it.caption));
+      } else if (it.imgs) {
+        var row = el("div", "detail__row" + (it.small ? " detail__row--small" : ""));
+        it.imgs.forEach(function (m) { row.appendChild(figureNode(m.src, m.caption)); });
+        root.appendChild(row);
+      } else if (it.video) {
+        root.appendChild(videoNode(it.video, it.caption, it.start));
+      } else if (it.note) {
+        var aside = el("aside", "detail__note");
+        if (it.note.title) aside.appendChild(el("h4", null, it.note.title));
+        var np = el("p");
+        np.innerHTML = inline(it.note.body);
+        aside.appendChild(np);
+        root.appendChild(aside);
+      } else if (it.table) {
+        var tb = el("table", "detail__kv");
+        it.table.forEach(function (r) {
+          var tr = el("tr");
+          tr.appendChild(el("th", null, r[0]));
+          var td = el("td");
+          td.innerHTML = inline(r[1]);
+          tr.appendChild(td);
+          tb.appendChild(tr);
+        });
+        root.appendChild(tb);
+      }
+    });
+  }
+
   /* ---------- shared chrome ---------- */
 
   function renderNav(backLink) {
@@ -500,6 +625,12 @@
     wrap.appendChild(panel);
   }
 
+  /* 카드 메타 줄의 태그 — 엔진 문자열에 이미 있는 말(예: "DirectX 11")은 한 번만 보이게 */
+  function metaTags(p) {
+    var engine = p.engine || "";
+    return (p.tags || []).filter(function (t) { return engine.indexOf(t) === -1; }).join(" · ");
+  }
+
   /* 상세 페이지가 없는 프로젝트(개인·스터디)의 카드 — 이미지 자리 대신 기간·팀·역할·영상 표.
      썸네일 없는 항목이 여럿일 때 자리 표시 캐릭터가 줄지어 반복되는 걸 막습니다. */
   function compactCard(p) {
@@ -508,7 +639,7 @@
 
     card.appendChild(el("h3", "card__title", p.title || p.id));
 
-    var metaBits = [p.engine, (p.tags || []).join(" · ")].filter(Boolean);
+    var metaBits = [p.engine, metaTags(p)].filter(Boolean);
     if (metaBits.length) card.appendChild(el("p", "card__meta", metaBits.join("  ·  ")));
 
     var dl = el("dl", "card__facts");
@@ -552,7 +683,7 @@
     title.appendChild(titleLink);
     card.appendChild(title);
 
-    var metaBits = [p.period, p.engine, (p.tags || []).join(" · ")].filter(Boolean);
+    var metaBits = [p.period, p.engine, metaTags(p)].filter(Boolean);
     if (metaBits.length) card.appendChild(el("p", "card__meta", metaBits.join("  ·  ")));
 
     if (p.summary) card.appendChild(el("p", "card__summary", p.summary));
@@ -715,6 +846,9 @@
     factItem(facts, "플랫폼", p.platforms);
     if (facts.childNodes.length) root.appendChild(facts);
 
+    /* 플레이 영상 — 유튜브면 임베드, 아니면 링크만 */
+    if (p.video) root.appendChild(videoNode(p.video, "유튜브 링크"));
+
     if (p.metrics && p.metrics.length) {
       var met = el("p", "metrics");
       p.metrics.forEach(function (m) {
@@ -769,6 +903,18 @@
         cs.appendChild(block);
       });
     }
+
+    /* Notion 상세처럼 제목이 있는 큰 단락들 — 단락마다 h2, 그 안의 항목은 h3 */
+    (p.sections || []).forEach(function (s) {
+      var sec = section(s.title || "");
+      renderBody(sec, s.body);
+      (s.items || []).forEach(function (item) {
+        var block = el("article", "contrib");
+        if (item.title) block.appendChild(el("h3", null, item.title));
+        renderBody(block, item.body);
+        sec.appendChild(block);
+      });
+    });
 
     if (p.troubleshooting && p.troubleshooting.body) {
       var ts = section("트러블슈팅 — " + (p.troubleshooting.title || ""));
