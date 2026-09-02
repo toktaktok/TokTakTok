@@ -111,10 +111,10 @@
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     var NEAR = 48;       // 이 거리(px) 안에서는 눈이 덜 떨리도록 감쇠
-    var MAX_X = 7.5;     // 사용자 좌표 기준 최대 이동량
-    var MAX_Y = 4.5;
+    var MAX_X = 20.5;     // 사용자 좌표 기준 최대 이동량
+    var MAX_Y = 10.5;
     var SQUEEZE = 0.24;  // 끝까지 옆을 볼 때 두 눈 "간격"이 줄어드는 비율(= 1 - cos θ)
-    var SWAY = 7;        // 몸 흔들림 최대치(CSS px)
+    var SWAY = 50;        // 몸 흔들림 최대치(CSS px)
     var SWAY_SPAN = 0.4; // 화면 폭의 이 비율만큼 가로로 떨어지면 몸 흔들림이 최대
 
     /* 두 눈 중심(77.5, 28.25)의 viewBox 내 비율 */
