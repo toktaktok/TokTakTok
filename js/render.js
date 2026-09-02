@@ -6,6 +6,31 @@
   var profile = P.profile || {};
   var projects = P.projects || [];
 
+  /* 회사 시스템 vs 개인 프로젝트 — 따로 표시하지 않고 데이터로 판정합니다.
+     · company가 경력(data/career.js)의 org와 글자까지 같은 프로젝트는 그 경력 행 아래
+       "담당 시스템"으로 들어가고, 프로젝트 그리드에는 나오지 않습니다.
+     · 상세 페이지에 실을 내용(overview·responsibilities·contributions·troubleshooting·
+       retrospective·media·metrics)이 하나도 없으면 상세 페이지로 가는 링크를 만들지 않고,
+       그리드에서는 이미지 없는 컴팩트 카드(기간·팀·역할·영상)로 그립니다. */
+  function hasDetail(p) {
+    return !!(p.overview ||
+      (p.responsibilities || []).length ||
+      (p.contributions || []).length ||
+      (p.troubleshooting && p.troubleshooting.body) ||
+      p.retrospective ||
+      (p.media || []).length ||
+      (p.metrics || []).length);
+  }
+  function isClaimed(p) {
+    return !!p.company && (P.career || []).some(function (c) { return c.org === p.company; });
+  }
+  function systemsOf(c) {
+    return projects.filter(function (p) { return !!c.org && p.company === c.org; });
+  }
+  function detailHref(p) { return "project.html?id=" + encodeURIComponent(p.id); }
+  /* "https://youtu.be/abc" → "youtu.be/abc" — 링크 글자를 주소 그대로 보여 줄 때 */
+  function linkLabel(url) { return String(url).replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""); }
+
   /* ---------- helpers ---------- */
 
   function el(tag, cls, text) {
@@ -412,9 +437,42 @@
       if (c.role) head.appendChild(el("span", "career__role", " — " + c.role));
       body.appendChild(head);
       if (c.note) body.appendChild(el("p", "career__note", c.note));
+      var sys = systemsOf(c);
+      if (sys.length) body.appendChild(systemsList(sys));
       row.appendChild(body);
       list.appendChild(row);
     });
+  }
+
+  /* 경력 행 안에 중첩되는 "담당 시스템" 목록 — 회사 → 시스템 위계.
+     상세 내용이 있는 시스템은 행 전체가 상세 페이지 링크, 없으면 텍스트 행. */
+  function systemsList(list) {
+    var box = el("div", "systems");
+    box.appendChild(el("p", "systems__label", "담당 시스템"));
+    var ul = el("ul", "systems__list");
+    list.forEach(function (p) {
+      var li = el("li", "system");
+      var linked = hasDetail(p);
+      var row = el(linked ? "a" : "div", "system__link");
+      if (linked) row.href = detailHref(p);
+
+      var main = el("span", "system__main");
+      main.appendChild(el("span", "system__title", p.title || p.id));
+      if (p.summary) main.appendChild(el("span", "system__summary", p.summary));
+      row.appendChild(main);
+
+      var bits = [p.period, (p.tags || []).join(" · ")].filter(Boolean);
+      if (bits.length || linked) {
+        var aside = el("span", "system__aside");
+        if (bits.length) aside.appendChild(el("span", "system__meta", bits.join("  ·  ")));
+        if (linked) aside.appendChild(el("span", "system__more", "자세히 →"));
+        row.appendChild(aside);
+      }
+      li.appendChild(row);
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+    return box;
   }
 
   /* data/education.js가 비어 있으면 "학력·활동" 섹션 자체를 페이지에서 뗍니다
@@ -442,7 +500,42 @@
     wrap.appendChild(panel);
   }
 
+  /* 상세 페이지가 없는 프로젝트(개인·스터디)의 카드 — 이미지 자리 대신 기간·팀·역할·영상 표.
+     썸네일 없는 항목이 여럿일 때 자리 표시 캐릭터가 줄지어 반복되는 걸 막습니다. */
+  function compactCard(p) {
+    var card = el("article", "card card--compact");
+    card.dataset.tags = (p.tags || []).join("|");
+
+    card.appendChild(el("h3", "card__title", p.title || p.id));
+
+    var metaBits = [p.engine, (p.tags || []).join(" · ")].filter(Boolean);
+    if (metaBits.length) card.appendChild(el("p", "card__meta", metaBits.join("  ·  ")));
+
+    var dl = el("dl", "card__facts");
+    function fact(label, value) {
+      if (!value) return;
+      dl.appendChild(el("dt", null, label));
+      dl.appendChild(typeof value === "string" ? el("dd", null, value) : value);
+    }
+    fact("기간", p.period);
+    fact("팀", p.team);
+    fact("역할", p.role);
+    if (p.video) {
+      var dd = el("dd");
+      var a = el("a", null, linkLabel(p.video) + " ↗");
+      a.href = p.video;
+      a.rel = "noreferrer";
+      dd.appendChild(a);
+      fact("영상", dd);
+    }
+    if (dl.childNodes.length) card.appendChild(dl);
+
+    if (p.summary) card.appendChild(el("p", "card__summary", p.summary));
+    return card;
+  }
+
   function projectCard(p, wide) {
+    if (!hasDetail(p)) return compactCard(p);
     var card = el("article", "card" + (wide ? " card--wide" : ""));
     card.dataset.tags = (p.tags || []).join("|");
 
@@ -477,7 +570,20 @@
     var filterBar = document.querySelector("[data-filter]");
     if (!grid) return;
 
-    var ordered = projects.slice().sort(function (a, b) {
+    /* 경력 행이 데려간(회사 시스템) 프로젝트는 여기 오지 않습니다 — 남은 것만, featured 먼저.
+       남는 게 하나도 없으면 빈 그리드 대신 섹션과 네비 링크를 함께 뗍니다(학력·활동과 같은 규칙). */
+    var pool = projects.filter(function (p) { return !isClaimed(p); });
+    if (!pool.length) {
+      var sec = document.getElementById("projects");
+      if (sec) sec.remove();
+      Array.prototype.forEach.call(
+        document.querySelectorAll('.nav__links a[href$="#projects"]'),
+        function (a) { a.remove(); }
+      );
+      return;
+    }
+
+    var ordered = pool.slice().sort(function (a, b) {
       return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
     });
 
@@ -487,7 +593,7 @@
 
     if (!filterBar) return;
     var tags = [];
-    projects.forEach(function (p) {
+    pool.forEach(function (p) {
       (p.tags || []).forEach(function (t) {
         if (tags.indexOf(t) === -1) tags.push(t);
       });
@@ -591,8 +697,10 @@
 
     document.title = (p.title || p.id) + " — " + (profile.handle || "portfolio");
 
-    var back2 = el("a", "detail__back", "← 프로젝트 목록");
-    back2.href = "index.html#projects";
+    /* 회사 시스템이면 경력으로, 아니면 프로젝트 그리드로 — 온 곳으로 돌려보냅니다 */
+    var fromCareer = isClaimed(p);
+    var back2 = el("a", "detail__back", fromCareer ? "← 경력" : "← 프로젝트 목록");
+    back2.href = fromCareer ? "index.html#career" : "index.html#projects";
     root.appendChild(back2);
 
     root.appendChild(el("h1", "detail__title", p.title || p.id));
