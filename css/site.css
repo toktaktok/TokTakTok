@@ -1,8 +1,8 @@
 /* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill (화면 최상단 고정, 씬 밖 — 씬의 overflow: clip에 안 걸리게 · 내용 폭까지만 = fit-content, 가운데) + section links · footer: Ft4 · sections: hero(언덕 띠 씬 + 타이포 소개 블록) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
- * hero enrichment: paper-cut 들판 띠(인라인 SVG, 종이 시트 4장 · 시트마다 아래로 떨어지는 그림자 · 아래 정렬 · 위쪽 하늘은 --color-paper가 이어받음) + 하늘을 흘러가는 종이 구름(.hero__clouds, translateX 드리프트). 헤드라인은 Black Han Sans 실제 h1(롤링 마퀴 아님).
+ * hero enrichment: paper-cut 들판 띠(인라인 SVG, 종이 시트 4장 · 시트마다 아래로 떨어지는 그림자 · 아래 정렬 · 위쪽 하늘은 --color-paper가 이어받음) + 하늘을 흘러가는 종이 구름(.hero__clouds — 구름마다 하늘 상자 비율 자리(--x·--y)에서 화면 폭만큼 translateX 드리프트, 세로 화면에서도 하늘 전체에 퍼짐). 헤드라인은 Black Han Sans 실제 h1(롤링 마퀴 아님).
  *   하늘 오른쪽에는 유리 거품 3개(.hero__sky) — 원본 시안 Aero.png의 비눗방울을 섹션 마커와 같은 유리 레시피로 옮긴 것. 글자 자리는 침범하지 않음(왼쪽 끝을 소개 블록 최대 폭 기준으로 계산).
- *   씬의 맨 뒤에는 하늘에 걸린 큰 시계(.hero__clock) — 시안 값(1920 기준 1026px, left 1073 / top -368)을 vw로 옮긴 자리, 위·오른쪽 모서리 밖으로 넘어감(거품이 그 위에 뜸). 테두리·숫자·눈금 없이 면 + 분침·초침만, 한국 시간(UTC+9)에 맞춰 매 초. 거품보다 옅어 위계상 뒤.
+ *   씬의 맨 뒤에는 하늘에 걸린 큰 시계(.hero__clock) — 64rem 이상은 시안 값(1920 기준 1026px, left 1073 / top -368)을 vw로 옮긴 자리, 위·오른쪽 모서리 밖으로 넘어감(거품이 그 위에 뜸). 그 아래(거품 없음)는 지름 118vw에 아래 끝이 능선 뒤로 살짝 들어가는 세로 화면 구도. 테두리·숫자·눈금 없이 면 + 분침·초침만, 한국 시간(UTC+9)에 맞춰 매 초. 거품보다 옅어 위계상 뒤.
  * mascot: 입 없음 — 표정은 눈으로만(.pix--smile이 뜬 눈을 웃는 눈 호와 맞바꿈).
  *   도킹 전환은 rAF 비행(.pix--travel 걷는 모션) — 씬은 overflow: clip이라 비행은 body의 fixed 컨텍스트에서 하고 도착 때만 .hero__dock으로 옮김.
  */
@@ -206,28 +206,32 @@ a:active { color: var(--color-accent); }
 }
 
 /* 하늘에 걸린 거대한 시계 — 씬의 맨 뒤(언덕 띠보다 뒤, 마크업 순서로 결정).
-   자리와 크기는 시안(1920 기준 1026px 원, left 1073 · top -368) 그대로 — 위·오른쪽
-   모서리 밖으로 넘어가고, 아래는 오른쪽 언덕에 살짝 물립니다. 하늘의 거품이 이 문자판
-   위에 뜨므로, 반투명한 거품 너머로 시계가 비치고 바늘도 그 밑을 지나갑니다.
+   넓은 화면에서 자리와 크기는 시안(1920 기준 1026px 원, left 1073 · top -368) 그대로 —
+   위·오른쪽 모서리 밖으로 넘어가고, 아래는 오른쪽 언덕에 살짝 물립니다. 하늘의 거품이
+   이 문자판 위에 뜨므로, 반투명한 거품 너머로 시계가 비치고 바늘도 그 밑을 지나갑니다.
 
    테두리·숫자·눈금은 그리지 않습니다 — 면과 바늘(분·초)뿐. 면은 거품과 똑같은 유리
    레시피(--glass)를 쓰되 opacity로 통째로 희석해서, 같은 재질이면서 위계는 거품보다
    한 단계 뒤에 놓입니다(글자 대비를 해치지 않을 만큼 옅게). */
 .hero__clock {
   position: absolute;
-  /* 시안 값(1920 기준): 지름 1026 · left 1073 · top -368.
-     아래 세 변수가 문자판의 크기와 중심 좌표 전부입니다 — left/top의 calc은
-     중심을 박스 왼쪽 위 모서리로 바꾸는 계산이라 건드릴 일이 없습니다. */
+  /* 아래 세 변수가 문자판의 크기와 중심 좌표 전부입니다 — left/top의 calc은
+     중심을 박스 왼쪽 위 모서리로 바꾸는 계산이라 건드릴 일이 없습니다.
 
-  /* 지름. 폭에 비례해 줄고 늘되, 1920보다 넓은 화면에서는 시안 크기
-     (64.2rem ≈ 1027px)에서 멈춥니다 — 안 그러면 초광폭에서 혼자 계속 커집니다 */
-  --clock-d: clamp(18rem, 53.44vw, 64.2rem);
+     기본값은 좁은 화면(거품이 없는 64rem 미만) 몫입니다. 넓은 화면의 시안 값을 그대로
+     줄이면 지름은 18rem 바닥에 걸리고 중심은 3rem까지 올라가서, 문자판이 화면 위
+     모서리 뒤로 거의 다 넘어가 오른쪽 위에 얇은 호 하나만 남았습니다. 세로로 긴 화면에서
+     하늘의 빈 자리는 위가 아니라 소개 블록 아래쪽이므로, 지름을 폭보다 크게 잡고 중심을
+     띠 기준으로 내려 아래 끝이 능선 뒤로 살짝 들어가게 합니다 — 넓은 화면과 같은
+     "오른쪽 모서리 밖으로 넘어가는 원경" 구도를 세로 화면에 맞게 다시 잡은 것입니다. */
+
+  /* 지름 — 폭의 118%, 상한 34rem */
+  --clock-d: min(118vw, 34rem);
   /* 중심 가로 — 씬 폭의 82.6%(1920에서 1586px). 키우면 오른쪽으로 더 나갑니다 */
   --clock-x: 82.6%;
-  /* 중심 세로 — 기준값 7.55vw(1920에서 145px). 줄이면 시계가 올라가고,
-     그만큼 문자판 아래가 언덕 위로 더 올라옵니다.
-     상한 9.06rem은 --clock-d와 같이 1920에서 멈추게 하려는 값 */
-  --clock-y: clamp(3rem, 7.55vw, 9.06rem);
+  /* 중심 세로 — 띠 위 가장자리에서 지름의 40% 위. 그러면 문자판 아래 10%가 띠 안으로
+     들어가 맨 뒤 시트의 능선(띠 위쪽 15~30%) 뒤로 사라집니다. 계수를 키우면 올라갑니다 */
+  --clock-y: calc(100% - var(--art-h) - var(--clock-d) * 0.4);
 
   width: var(--clock-d);
   height: var(--clock-d);
@@ -236,6 +240,18 @@ a:active { color: var(--color-accent); }
   z-index: 0;
   opacity: 0.55;
   pointer-events: none;
+}
+/* 넓은 화면 — 시안 값(1920 기준: 지름 1026 · left 1073 · top -368)을 vw로 옮긴 자리 */
+@media (min-width: 64rem) {
+  .hero__clock {
+    /* 지름. 폭에 비례해 줄고 늘되, 1920보다 넓은 화면에서는 시안 크기
+       (64.2rem ≈ 1027px)에서 멈춥니다 — 안 그러면 초광폭에서 혼자 계속 커집니다 */
+    --clock-d: clamp(18rem, 53.44vw, 64.2rem);
+    /* 중심 세로 — 기준값 7.55vw(1920에서 145px). 줄이면 시계가 올라가고,
+       그만큼 문자판 아래가 언덕 위로 더 올라옵니다.
+       상한 9.06rem은 --clock-d와 같이 1920에서 멈추게 하려는 값 */
+    --clock-y: clamp(3rem, 7.55vw, 9.06rem);
+  }
 }
 
 .hero__clock-face {
@@ -295,39 +311,55 @@ a:active { color: var(--color-accent); }
 .field--3 { fill: var(--scene-field-3); }
 .field--4 { fill: var(--scene-field-4); }
 
-/* 하늘의 종이 구름 — 띠 위쪽 하늘을 차지하는 상자. 아래 끝을 띠 안쪽(--art-h의 72%)까지
-   내려서, 낮게 뜬 구름이 상자 경계에서 수평으로 잘리지 않고 앞에 있는 들판 시트 뒤로
-   자연스럽게 사라집니다(맨 뒤 시트의 능선이 띠 위쪽 15~30% 사이를 지나므로 그 아래).
-   xMidYMax slice: 좁은 화면에서는 하늘 높이에 맞춰 확대되어 좌우가 잘리고(구름은 한 번에
-   하나쯤 보임), 아주 넓은 화면에서는 위쪽이 잘립니다 — 그래서 구름은 y 200 아래에만 둡니다. */
+/* 하늘의 종이 구름 — 띠 위쪽 하늘 전부를 차지하는 상자. 구름 하나가 <svg> 하나이고,
+   상자 안의 자리(--x 가로 · --y 세로)와 폭(--w)을 아래 .cloud--N에서 따로 받습니다.
+
+   예전에는 1920x720 한 장에 네 구름을 다 그려 넣고 xMidYMax slice로 잘라 썼는데, 그 상자가
+   폭의 37.5%(뷰박스 비율) 높이로만 잡혀 좁은 화면에서는 네 구름이 위쪽 140px 띠에 몰렸습니다
+   (시계까지 그 위에 있어 하늘의 아래 2/3가 비었음). 세로 자리를 상자 높이의 비율로 두면
+   하늘이 길어지는 만큼 구름도 같이 퍼지고, 가로는 화면 폭 기준으로 흘러가므로 어떤
+   화면비에서도 네 구름이 다 지나갑니다. */
 .hero__clouds {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: calc(var(--art-h) * 0.72);
-  width: 100%;
-  height: auto;
-  display: block;
+  inset: 0 0 var(--art-h);
   z-index: 0;
   pointer-events: none;
 }
 .cloud {
-  fill: var(--scene-cloud);
-  /* 구름도 한 장의 종이 — 종이 흰색이 종이 위에 놓이므로 이 그림자가 구름의 전부입니다 */
-  filter: drop-shadow(0 8px 8px var(--scene-cloud-shadow));
-}
-/* 드리프트 — 왼쪽 화면 밖(--from)에서 오른쪽 화면 밖(--to)까지 한 방향으로, 일정한 속도로.
-   구름마다 주기(--dur)와 시작 위치(--delay, 음수)가 달라 줄지어 가지 않습니다.
-   길이는 SVG 사용자 좌표라 화면 폭과 무관하게 같은 궤적입니다. */
-.cloud-drift {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--w);
+  height: auto;
+  display: block;
+  /* 그림자와 곡선이 살짝 넘치는 부분이 svg 상자에서 잘리지 않게 */
+  overflow: visible;
+  /* 드리프트 — 왼쪽 화면 밖(--x 자리에서 제 폭 + --x 만큼 왼쪽)에서 오른쪽 화면 밖까지
+     한 방향으로, 일정한 속도로. 구름마다 주기(--dur)와 위상(--delay, 음수)이 달라
+     줄지어 가지 않습니다. 거리가 화면 폭 + 제 폭이라 화면을 건너는 데 걸리는 시간은
+     폭과 무관하게 같습니다(좁은 화면에서는 px 속도가 느려짐 — 작은 화면에서 빠른
+     움직임은 거슬립니다). */
   animation: cloud-drift var(--dur, 180s) linear infinite;
   animation-delay: var(--delay, 0s);
 }
 @keyframes cloud-drift {
-  from { transform: translateX(var(--from, -600px)); }
-  to   { transform: translateX(var(--to, 2100px)); }
+  from { transform: translateX(calc(-1 * var(--x) - 100%)); }
+  to   { transform: translateX(calc(100vw - var(--x))); }
 }
+.cloud__paper {
+  fill: var(--scene-cloud);
+  /* 구름도 한 장의 종이 — 종이 흰색이 종이 위에 놓이므로 이 그림자가 구름의 전부입니다.
+     길이는 SVG 사용자 좌표라 구름이 작아지면 그림자도 같이 줄어듭니다 */
+  filter: drop-shadow(0 8px 8px var(--scene-cloud-shadow));
+}
+/* 네 구름의 자리·폭·주기. --x는 vw(상자 = 화면 폭), --y는 하늘 상자 높이의 %(구름 위 끝).
+   폭은 1440에서 예전 한 장 그림과 같은 크기(164 · 191 · 118 · 154px)가 되는 vw 값에
+   좁은 화면용 바닥을 둔 것. 넷째 구름은 오른쪽 끝에서 4vw 안쪽에 세워 좁은 화면에서도
+   제자리(움직임 끔)에 통째로 보입니다. */
+.cloud--1 { --x: 6vw;  --y: 35%; --w: clamp(8.5rem, 11.4vw, 14rem); --dur: 170s; --delay: -40s; }
+.cloud--2 { --x: 40vw; --y: 27%; --w: clamp(9.5rem, 13.3vw, 16rem); --dur: 230s; --delay: -150s; }
+.cloud--3 { --x: 70vw; --y: 56%; --w: clamp(6rem, 8.2vw, 10rem);    --dur: 200s; --delay: -90s; }
+.cloud--4 { --x: calc(96vw - var(--w)); --y: 75%; --w: clamp(8rem, 10.7vw, 13rem); --dur: 260s; --delay: -210s; }
 
 /* 하늘의 유리 거품 — 씬 오른쪽 위를 채우는 counterweight.
    그 전에는 소개 블록(좌상단)과 마스코트(우하단)뿐이라 시선이 대각선 한 줄로만 흘렀고
@@ -682,7 +714,12 @@ a:active { color: var(--color-accent); }
   left: 0;
   right: auto;
   bottom: 0;
-  translate: -50% 0;
+  /* -50%는 앵커(.hero__dock)에 가운데를 맞추는 몫, --pix-sway는 포인터를 향해 언덕을
+     가로질러 옮겨 가는 몫 — js/render.js의 trackEyes가 .helper에 매 프레임 씁니다.
+     캐릭터만이 아니라 말풍선까지 통째로 옮기는 이유: 예전 ±7px 흔들림과 달리 이제는
+     화면 반대편까지 가므로, 말풍선을 두고 가면 꼬리가 빈자리를 가리킵니다.
+     비행 전용인 transform, 등장용인 .helper__inner의 translate와는 별개 속성입니다. */
+  translate: calc(-50% + var(--pix-sway, 0px)) 0;
   /* 앵커(.hero__dock)가 폭 0이라, shrink-to-fit에 맡기면 말풍선이 세로로 짜부라짐 */
   width: max-content;
 }
@@ -693,12 +730,6 @@ a:active { color: var(--color-accent); }
 }
 .helper--docked .helper__bubble { max-width: min(56vw, 16rem); }
 .helper--docked .helper__bubble::after { right: 50%; margin-right: -6px; }
-
-/* 포인터를 향해 몸을 살짝 옮기는 건 언덕에 서 있을 때만입니다 — 우하단 고정
-   도우미는 화면 모서리와 말풍선에 붙어 있어 몸만 움직이면 자리가 어긋나 보입니다.
-   --pix-sway는 js/render.js의 trackEyes가 매 프레임 씁니다. rotate와는 별개
-   속성이라 비행 중 기울기(--pix-lean)와 부딪히지 않습니다. */
-.helper--docked .pix { translate: var(--pix-sway, 0px) 0; }
 
 /* 비행 중 — 말풍선은 접어 두고 캐릭터만 건너갑니다. 도착해서 다시 말을 겁니다.
    (말풍선 폭·꼬리 위치가 두 상태에서 서로 달라, 켜 둔 채로 옮기면 글자가 늘어나 보임) */
@@ -1396,7 +1427,7 @@ a.system__link:active .system__title { text-decoration-color: var(--color-accent
   .pix--travel .pix__arm--l,
   .nav__cta::before,
   .hero__bubble,
-  .cloud-drift { animation: none; } /* 구름은 제자리(path 좌표)에 서 있습니다 — 전부 화면 안 */
+  .cloud { animation: none; } /* 구름은 제자리(--x 자리)에 서 있습니다 — 전부 화면 안 */
   /* 초침은 1초마다 6°씩 튀는, 페이지에서 유일하게 스스로 움직이는 요소라 감춥니다.
      분침은 그대로 둡니다 — 1초에 0.1°씩이라 움직임으로 읽히지 않고, 시계는 계속
      맞는 시각(분 단위)을 가리킵니다 */
