@@ -5,6 +5,15 @@
     "theme": "custom",
     "theme_axes": "light / heavy-display headline (Black Han Sans) + neo-grotesque body / cool + leaf-green illustration accent",
     "vibe": "밝은 종이 위 대형 헤드라인, 오른쪽 하늘에 걸린 시계와 그 위에 뜬 유리 거품, 아래 paper-cut 들판 띠에 선 마스코트 — 유리는 Aero×Liquid 중간점",
+    "enrichment": "paper-cut 들판 시트 4장(맨 앞 시트 = 마스코트가 올라선 큰 언덕, 마루 y≈172로 띠의 절반) + 종이 구름 4개(하늘 상자 비율 자리) + 시계(원경). 하늘의 유리 거품은 제거.",
+    "brief": "toktaktok · 히어로 씬 보정 2 — 맨 앞 들판 시트를 마스코트가 올라선 큰 언덕으로 다시 그림(왼쪽에서 낮게 시작, x 1180~1540 마루 y≈172, 뒤 세 장은 그 위로 얇게 원경), 발을 능선 8단위 아래로(.hero__dock bottom 18% → 50%). 하늘의 유리 거품 3개(.hero__sky)와 --scene-bubble-* 토큰 제거. 320/375/768/1440/1920/2560 검증 — 어떤 폭에서도 도킹 x가 마루 구간 안. 매크로구조·테마·네비·푸터 변경 없음."
+  },
+  {
+    "date": "2026-09-05",
+    "macrostructure": "Portfolio Grid + typographic hero over a hill band",
+    "theme": "custom",
+    "theme_axes": "light / heavy-display headline (Black Han Sans) + neo-grotesque body / cool + leaf-green illustration accent",
+    "vibe": "밝은 종이 위 대형 헤드라인, 오른쪽 하늘에 걸린 시계와 그 위에 뜬 유리 거품, 아래 paper-cut 들판 띠에 선 마스코트 — 유리는 Aero×Liquid 중간점",
     "enrichment": "paper-cut 들판 시트 4장 + 종이 구름 4개(구름마다 하늘 상자 비율 자리 --x·--y, 화면 폭만큼 드리프트) + 하늘의 유리 거품 3개 + 시계(원경, 64rem 미만은 지름 118vw·능선 위에 걸리는 세로 구도)",
     "brief": "toktaktok · 히어로 씬 보정(컴포넌트 범위) — (1) 모바일에서 시계·구름이 위쪽 140px 띠에만 몰리던 문제: .hero__clouds가 height:auto라 상자가 폭의 37.5%로만 잡히던 것을, 구름을 개별 svg로 나눠 하늘 상자 비율 자리(--y 27~75%)에 두고 화면 폭 기준으로 흘러가게 함 · 시계는 64rem 미만에서 지름 118vw, 중심을 띠 기준(아래 끝이 능선 뒤로 10%)으로 내림. (2) 마스코트 몸 이동 범위 ±7px → 포인터 가로 위치의 92%까지(씬 가장자리 12px 안쪽으로 클램프), 말풍선과 함께 이동, 거리 비례 시간(380px/s, 0.6~2.8s), 24px 이상은 걷는 모션(.pix--travel)+4deg 기울기, 언도킹 시 즉시 0. 320/375/414/768/1024/1440/1920 검증, 가로 스크롤 없음. 매크로구조·테마·네비·푸터 변경 없음."
   },

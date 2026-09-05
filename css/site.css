@@ -1,8 +1,7 @@
 /* Hallmark · macrostructure: Portfolio Grid · nav: N5 floating glass pill (화면 최상단 고정, 씬 밖 — 씬의 overflow: clip에 안 걸리게 · 내용 폭까지만 = fit-content, 가운데) + section links · footer: Ft4 · sections: hero(언덕 띠 씬 + 타이포 소개 블록) → career → projects(filter) → skills(F3) → education → contact(C3) → colophon · helper: 들판 도킹 ↔ 우하단 도우미
  * See css/tokens.css for the full stamp. All colour/font values reference tokens — no inline values.
- * hero enrichment: paper-cut 들판 띠(인라인 SVG, 종이 시트 4장 · 시트마다 아래로 떨어지는 그림자 · 아래 정렬 · 위쪽 하늘은 --color-paper가 이어받음) + 하늘을 흘러가는 종이 구름(.hero__clouds — 구름마다 하늘 상자 비율 자리(--x·--y)에서 화면 폭만큼 translateX 드리프트, 세로 화면에서도 하늘 전체에 퍼짐). 헤드라인은 Black Han Sans 실제 h1(롤링 마퀴 아님).
- *   하늘 오른쪽에는 유리 거품 3개(.hero__sky) — 원본 시안 Aero.png의 비눗방울을 섹션 마커와 같은 유리 레시피로 옮긴 것. 글자 자리는 침범하지 않음(왼쪽 끝을 소개 블록 최대 폭 기준으로 계산).
- *   씬의 맨 뒤에는 하늘에 걸린 큰 시계(.hero__clock) — 64rem 이상은 시안 값(1920 기준 1026px, left 1073 / top -368)을 vw로 옮긴 자리, 위·오른쪽 모서리 밖으로 넘어감(거품이 그 위에 뜸). 그 아래(거품 없음)는 지름 118vw에 아래 끝이 능선 뒤로 살짝 들어가는 세로 화면 구도. 테두리·숫자·눈금 없이 면 + 분침·초침만, 한국 시간(UTC+9)에 맞춰 매 초. 거품보다 옅어 위계상 뒤.
+ * hero enrichment: paper-cut 들판 띠(인라인 SVG, 종이 시트 4장 · 시트마다 아래로 떨어지는 그림자 · 아래 정렬 · 위쪽 하늘은 --color-paper가 이어받음) + 하늘을 흘러가는 종이 구름(.hero__clouds — 구름마다 하늘 상자 비율 자리(--x·--y)에서 화면 폭만큼 translateX 드리프트, 세로 화면에서도 하늘 전체에 퍼짐). 맨 앞 시트는 마스코트가 올라선 큰 언덕(띠 높이의 절반, 마루 y≈172). 헤드라인은 Black Han Sans 실제 h1(롤링 마퀴 아님).
+ *   씬의 맨 뒤에는 하늘에 걸린 큰 시계(.hero__clock) — 64rem 이상은 시안 값(1920 기준 1026px, left 1073 / top -368)을 vw로 옮긴 자리, 위·오른쪽 모서리 밖으로 넘어감. 그 아래는 지름 118vw에 아래 끝이 능선 뒤로 살짝 들어가는 세로 화면 구도. 테두리·숫자·눈금 없이 면 + 분침·초침만, 한국 시간(UTC+9)에 맞춰 매 초. UI 유리보다 옅어 위계상 뒤.
  * mascot: 입 없음 — 표정은 눈으로만(.pix--smile이 뜬 눈을 웃는 눈 호와 맞바꿈).
  *   도킹 전환은 rAF 비행(.pix--travel 걷는 모션) — 씬은 overflow: clip이라 비행은 body의 fixed 컨텍스트에서 하고 도착 때만 .hero__dock으로 옮김.
  */
@@ -207,18 +206,18 @@ a:active { color: var(--color-accent); }
 
 /* 하늘에 걸린 거대한 시계 — 씬의 맨 뒤(언덕 띠보다 뒤, 마크업 순서로 결정).
    넓은 화면에서 자리와 크기는 시안(1920 기준 1026px 원, left 1073 · top -368) 그대로 —
-   위·오른쪽 모서리 밖으로 넘어가고, 아래는 오른쪽 언덕에 살짝 물립니다. 하늘의 거품이
-   이 문자판 위에 뜨므로, 반투명한 거품 너머로 시계가 비치고 바늘도 그 밑을 지나갑니다.
+   위·오른쪽 모서리 밖으로 넘어가고, 아래는 오른쪽 언덕에 살짝 물립니다. 구름이 그 앞을
+   지나가고, 마스코트가 선 큰 언덕이 아래를 가립니다.
 
-   테두리·숫자·눈금은 그리지 않습니다 — 면과 바늘(분·초)뿐. 면은 거품과 똑같은 유리
-   레시피(--glass)를 쓰되 opacity로 통째로 희석해서, 같은 재질이면서 위계는 거품보다
-   한 단계 뒤에 놓입니다(글자 대비를 해치지 않을 만큼 옅게). */
+   테두리·숫자·눈금은 그리지 않습니다 — 면과 바늘(분·초)뿐. 면은 UI(네비·카드·섹션
+   마커)와 똑같은 유리 레시피(--glass)를 쓰되 opacity로 통째로 희석해서, 같은 재질이면서
+   위계는 한 단계 뒤에 놓입니다(글자 대비를 해치지 않을 만큼 옅게). */
 .hero__clock {
   position: absolute;
   /* 아래 세 변수가 문자판의 크기와 중심 좌표 전부입니다 — left/top의 calc은
      중심을 박스 왼쪽 위 모서리로 바꾸는 계산이라 건드릴 일이 없습니다.
 
-     기본값은 좁은 화면(거품이 없는 64rem 미만) 몫입니다. 넓은 화면의 시안 값을 그대로
+     기본값은 좁은 화면(64rem 미만) 몫입니다. 넓은 화면의 시안 값을 그대로
      줄이면 지름은 18rem 바닥에 걸리고 중심은 3rem까지 올라가서, 문자판이 화면 위
      모서리 뒤로 거의 다 넘어가 오른쪽 위에 얇은 호 하나만 남았습니다. 세로로 긴 화면에서
      하늘의 빈 자리는 위가 아니라 소개 블록 아래쪽이므로, 지름을 폭보다 크게 잡고 중심을
@@ -272,7 +271,7 @@ a:active { color: var(--color-accent); }
   opacity: 0.45;
 }
 
-/* 바늘·중심점도 거품 테두리와 같은 색 — 씬 전체가 하나의 유리 팔레트 안에 있습니다.
+/* 바늘·중심점도 UI 유리 테두리와 같은 색 — 씬 전체가 하나의 유리 팔레트 안에 있습니다.
    모양은 선이 아니라 채워진 마름모(마크업의 polygon)라 두께가 축에서 가장 두껍고
    양 끝으로 뾰족해집니다 — 나침반 바늘처럼. */
 .clock__hand {
@@ -303,7 +302,7 @@ a:active { color: var(--color-accent); }
    너머로 번지는 부분만 보이므로 능선마다 얇은 음영 띠가 생깁니다.
    filter의 길이는 SVG 사용자 좌표(1920 기준)라 띠가 작아지면 그림자도 같이 줄어듭니다. */
 .sheet { filter: drop-shadow(0 6px 8px var(--scene-sheet-shadow)); }
-/* 맨 앞 시트 — 캐릭터가 서는 지면. 한 단계 두꺼운 종이처럼 그림자가 조금 더 깊습니다 */
+/* 맨 앞 시트 — 캐릭터가 올라선 큰 언덕. 한 단계 두꺼운 종이처럼 그림자가 조금 더 깊습니다 */
 .sheet--deep { filter: drop-shadow(0 10px 12px var(--scene-sheet-shadow-deep)); }
 
 .field--1 { fill: var(--scene-field-1); }
@@ -361,70 +360,6 @@ a:active { color: var(--color-accent); }
 .cloud--3 { --x: 70vw; --y: 56%; --w: clamp(6rem, 8.2vw, 10rem);    --dur: 200s; --delay: -90s; }
 .cloud--4 { --x: calc(96vw - var(--w)); --y: 75%; --w: clamp(8rem, 10.7vw, 13rem); --dur: 260s; --delay: -210s; }
 
-/* 하늘의 유리 거품 — 씬 오른쪽 위를 채우는 counterweight.
-   그 전에는 소개 블록(좌상단)과 마스코트(우하단)뿐이라 시선이 대각선 한 줄로만 흘렀고
-   오른쪽 위는 통째로 빈 종이였습니다. 원본 시안(assets/images/Aero.png) 하늘에 떠 있던
-   비눗방울을, 섹션 제목 마커와 같은 유리 구슬 레시피(--glass + --glass-border)로 옮겨
-   왼쪽 아래에서 오른쪽 위로 올라가는 호를 그립니다 — 대각선을 가로지르는 두 번째 축.
-
-   상자를 오른쪽 절반으로 묶어 두는 이유: 소개 블록(.hero__copy-inner, 34rem)과는
-   어떤 폭에서도 겹치면 안 됩니다. 글자가 그림 위에 얹히지 않게 하늘을 비워 둔 게
-   v5.4의 요지라(대비 ~15:1), 거품도 글자 자리는 침범하지 않습니다. */
-.hero__sky {
-  position: absolute;
-  top: 0;
-  right: 0;
-  /* 언덕 띠 위쪽(하늘)에서만 — 아래로는 능선에 닿지 않습니다 */
-  bottom: var(--art-h);
-  /* 왼쪽 끝은 소개 블록이 차지할 수 있는 최대 오른쪽 끝 + 3rem. %로 잡으면 폭에 따라
-     글자와 겹칠 수 있어서, .hero__copy(=.wrap)가 가운데 정렬되는 계산을 그대로 씁니다:
-     wrap 바깥 여백 + wrap 안쪽 패딩 + .hero__copy-inner의 max-width(34rem) + 간격.
-     덕분에 실제 헤드라인이 몇 줄이든, 폭이 얼마든 거품은 글자 자리를 넘어오지 않습니다. */
-  left: calc(max(0px, (100% - 72rem) / 2) + clamp(1rem, 4vw, 2.5rem) + 34rem + 3rem);
-  z-index: 1;
-  pointer-events: none;
-  /* 좁은 화면에서는 소개 블록이 폭을 거의 다 써서 남는 하늘이 없습니다 — 그리지 않습니다 */
-  display: none;
-}
-@media (min-width: 64rem) {
-  .hero__sky { display: block; }
-}
-
-.hero__bubble {
-  position: absolute;
-  width: var(--size);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  /* 뒤에 걸린 시계가 위아래로 다 비치도록 하이라이트가 묽은 거품 전용 유리 */
-  background: var(--scene-bubble-glass);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-rim), 0 8px 20px var(--glass-shadow);
-  animation: bubble-drift var(--drift, 12s) var(--ease-in-out) infinite;
-  animation-delay: var(--drift-delay, 0s);
-}
-/* 정반사 하이라이트 — 유리 구슬이 아니라 비눗방울로 읽히게 하는 한 점 */
-.hero__bubble::before {
-  content: "";
-  position: absolute;
-  top: 13%;
-  left: 17%;
-  width: 27%;
-  height: 21%;
-  border-radius: 50%;
-  background: var(--scene-bubble-hi);
-  rotate: -25deg;
-}
-
-.hero__bubble--1 { --size: clamp(5rem, 8.5vw, 8.5rem); left: 30%; top: 26%; --drift: 13s; }
-.hero__bubble--2 { --size: clamp(2.75rem, 4.5vw, 4.5rem); left: 71%; top: 9%;  --drift: 10.5s; --drift-delay: -3.5s; }
-.hero__bubble--3 { --size: clamp(1.75rem, 2.8vw, 2.75rem); left: 8%; top: 55%; --drift: 16s; --drift-delay: -7s; }
-
-/* 아주 느린 부유 — 거품이 "떠 있다"고만 읽힐 만큼만 움직입니다 */
-@keyframes bubble-drift {
-  0%, 100% { translate: 0 0; }
-  50%      { translate: -0.5rem -1.25rem; }
-}
-
 /* 캐릭터가 서 있는 자리 — 언덕 위 고정 좌표.
    씬에서 가장 위(소개 블록 4보다 위)에 둡니다: 비행 중에는 캐릭터가 body의
    fixed 컨텍스트(z-toast)에 있다가 도착하는 순간 이 안으로 들어오는데, 여기가
@@ -432,9 +367,10 @@ a:active { color: var(--color-accent); }
 .hero__dock {
   position: absolute;
   left: 72%;
-  /* 언덕 띠에서 평평한 앞쪽 지면은 아래 52%. 그 안쪽에 발을 둡니다 —
-     씬 높이(%)가 아니라 띠 높이를 기준으로 해야 화면비가 바뀌어도 지면 위에 섭니다 */
-  bottom: calc(var(--art-h) * 0.18);
+  /* 맨 앞 시트(마스코트가 올라선 큰 언덕)의 마루는 x 1180~1540 구간에서 y≈172, 즉 띠
+     높이의 52%. 발이 능선보다 8단위쯤 아래 묻히도록 50%에 둡니다 — 씬 높이(%)가 아니라
+     띠 높이를 기준으로 해야 화면비가 바뀌어도 지면 위에 섭니다. 마루를 옮기면 같이 조정 */
+  bottom: calc(var(--art-h) * 0.5);
   z-index: 6;
 }
 
@@ -1426,7 +1362,6 @@ a.system__link:active .system__title { text-decoration-color: var(--color-accent
   .pix--travel .pix__arm--r,
   .pix--travel .pix__arm--l,
   .nav__cta::before,
-  .hero__bubble,
   .cloud { animation: none; } /* 구름은 제자리(--x 자리)에 서 있습니다 — 전부 화면 안 */
   /* 초침은 1초마다 6°씩 튀는, 페이지에서 유일하게 스스로 움직이는 요소라 감춥니다.
      분침은 그대로 둡니다 — 1초에 0.1°씩이라 움직임으로 읽히지 않고, 시계는 계속
