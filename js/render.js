@@ -123,10 +123,12 @@
         좁히는 건 어디까지나 두 눈 "사이"입니다 — 각 눈은 제 크기 그대로 안쪽으로
         옮겨질 뿐이라, 눈 자체가 납작해지지 않습니다. 그래서 그룹을 scaleX 하지 않고
         좌/우 .pix__eye-side를 각각 반대 방향으로 translate 합니다.
-     3) 몸 흔들림 — 히어로 언덕에 도킹해 있을 때만. 눈처럼 계속 붙어 다니지 않고,
-        포인터가 화면 폭 기준 사각지대(SWAY_DEAD)를 벗어나야 비로소 알아채고 →
-        SWAY_WAIT만큼 뜸을 들인 뒤 → 그 시점의 목표까지 SWAY_MOVE 동안 ease-in-out으로
-        천천히 옮겨 갑니다. 눈이 즉각 반응하는 것과 대비되어, 고개는 바로 돌아가고
+     3) 몸 옮기기 — 히어로 언덕에 도킹해 있을 때만. 눈처럼 계속 붙어 다니지 않고,
+        포인터가 코앞(SWAY_DEAD)을 벗어나야 비로소 알아채고 → SWAY_WAIT만큼 뜸을 들인
+        뒤 → 그 시점의 포인터 가로 위치(의 SWAY_FOLLOW배)까지 걷는 모션(.pix--travel)으로
+        ease-in-out 이동합니다. 이동 시간은 거리에 비례(SWAY_SPEED). 목표가 포인터의
+        자리 그 자체라 화면 반대편이면 말풍선과 함께 언덕을 가로질러 거기까지 갑니다 —
+        씬 가장자리 안에서만. 눈이 즉각 반응하는 것과 대비되어, 고개는 바로 돌아가고
         몸은 한 박자 늦게 "그제서야" 따라오는 것처럼 읽힙니다.
         우하단 고정 도우미일 때는 하지 않습니다 — 화면 모서리와 말풍선에 붙어 있어
         몸만 움직이면 자리가 어긋나 보입니다.
@@ -144,14 +146,21 @@
     var MAX_Y = 4.5;
     var SQUEEZE = 0.24;  // 끝까지 옆을 볼 때 두 눈 "간격"이 줄어드는 비율(= 1 - cos θ)
 
-    /* 몸 흔들림 — 눈처럼 계속 따라다니지 않고 "알아채고 → 뜸 들이고 → 천천히 옮긴다"의
-       3단계입니다. 아래 다섯 값이 그 성격 전부입니다. */
-    var SWAY = 7;         // 최대치(CSS px)
-    var SWAY_DEAD = 0.15; // 화면 폭의 이 비율 안쪽이면 아예 반응하지 않음(사각지대)
-    var SWAY_SPAN = 0.45; // 사각지대 끝에서 여기까지 0 → SWAY로 커짐
-    var SWAY_WAIT = 1000; // 사각지대를 벗어나고 이만큼(ms) 뜸을 들인 뒤에 움직이기 시작
-    var SWAY_MOVE = 1200; // 목표까지 옮겨 가는 데 걸리는 시간(ms) — ease-in-out
-    var SWAY_STEP = 1.5;  // 목표가 이만큼(px) 달라져야 새로 반응합니다(잔떨림 무시)
+    /* 몸 옮기기 — 눈처럼 계속 따라다니지 않고 "알아채고 → 뜸 들이고 → 걸어간다"의
+       3단계입니다. 목표는 포인터의 가로 위치 자체(그 거리의 SWAY_FOLLOW배)라, 포인터가
+       화면 반대편에 있으면 캐릭터가 말풍선과 함께 언덕을 가로질러 거기까지 갑니다.
+       (예전에는 최대 7px였는데, 눈만 움직이는 것과 구별이 안 돼 서 있는 것처럼 보였습니다.)
+       아래 값이 그 성격 전부입니다. */
+    var SWAY_FOLLOW = 0.92;  // 포인터까지 가로 거리의 이 비율만큼 — 1이면 정확히 포인터 아래
+    var SWAY_DEAD = 28;      // 이 거리(px) 안이면 반응하지 않음(포인터가 캐릭터 위에 있을 때)
+    var SWAY_EDGE = 12;      // 씬 좌우 가장자리에서 이만큼(px)은 남깁니다 — 말풍선 포함
+    var SWAY_WAIT = 1000;    // 목표가 바뀌고 이만큼(ms) 뜸을 들인 뒤에 출발
+    var SWAY_SPEED = 380;    // 걷는 속도(px/s) — 이동 시간은 거리에 비례
+    var SWAY_MOVE_MIN = 600; // 이동 시간의 하한·상한(ms) — ease-in-out
+    var SWAY_MOVE_MAX = 2800;
+    var SWAY_STEP = 8;       // 목표가 이만큼(px) 달라져야 새로 반응합니다(잔떨림 무시)
+    var SWAY_WALK = 24;      // 이 거리(px) 이상 갈 때만 걷는 모션 — 몇 px 조정은 미끄러지듯
+    var SWAY_LEAN = 4;       // 걷는 동안 진행 방향으로 기우는 각도(deg) — 비행(5deg)보다 살짝
 
     /* 두 눈 중심(77.5, 28.25)의 viewBox 내 비율 */
     var CX = (77.5 + 4) / 158;
@@ -168,17 +177,64 @@
     var aimX = 0, aimY = 0, curX = 0, curY = 0;
     var raf = 0, reaim = 0, host = null, ptrX = 0, ptrY = 0, seen = false;
 
-    /* 몸 흔들림의 상태. want는 지금 포인터가 시키는 값, goal은 실제로 향하기로
+    /* 몸 옮기기의 상태. want는 지금 포인터가 시키는 값, goal은 실제로 향하기로
        "정한" 값입니다 — 둘이 SWAY_STEP 넘게 벌어지면 armAt에 시각을 적어 두고,
-       SWAY_WAIT가 지나야 비로소 goal을 갱신하고 moveAt부터 트윈을 시작합니다. */
+       SWAY_WAIT가 지나야 비로소 goal을 갱신하고 moveAt부터 moveDur 동안 트윈합니다.
+       값은 전부 도킹 자리 기준 가로 오프셋(CSS px)이며 .helper의 --pix-sway로 나갑니다. */
     var curSway = 0, swayWant = 0, swayGoal = 0, swayFrom = 0;
-    var armAt = 0, moveAt = 0;
+    var armAt = 0, moveAt = 0, moveDur = SWAY_MOVE_MIN;
+    var walking = false, wasWave = false, scene = null;
 
     /* 도킹 여부는 .helper의 클래스로 봅니다. trackEyes가 불리는 시점엔 캐릭터가 아직
        .helper 안에 붙기 전이라, 처음 찾을 수 있을 때 찾아서 기억해 둡니다. */
     function docked() {
       if (!host && svg.closest) host = svg.closest(".helper");
       return !!host && host.classList.contains("helper--docked");
+    }
+
+    function writeSway() {
+      (host || svg).style.setProperty("--pix-sway", curSway.toFixed(2) + "px");
+    }
+
+    /* 씬 좌우 가장자리 안쪽으로 — 말풍선까지 실린 .helper 상자가 잘리지 않는 범위.
+       상자의 지금 위치에서 현재 translate(curSway)를 빼면 도킹 자리가 나옵니다. */
+    function clampSway(v) {
+      if (!host) return v;
+      if (!scene && svg.closest) scene = svg.closest(".hero__scene");
+      var s = scene ? scene.getBoundingClientRect() : { left: 0, right: window.innerWidth || 0 };
+      var h = host.getBoundingClientRect();
+      var lo = s.left + SWAY_EDGE - (h.left - curSway);
+      var hi = s.right - SWAY_EDGE - (h.right - curSway);
+      return lo > hi ? 0 : Math.max(lo, Math.min(hi, v));
+    }
+
+    /* 도킹을 벗어나면(비행 시작) 즉시 0으로 — 도킹 translate 규칙 자체가 사라지므로
+       보이는 자리는 FLIP 비행이 맡고, 여기서는 상태만 지웁니다. 다시 도킹할 때
+       착지점을 재는 measureDockSlot이 묵은 오프셋을 같이 재지 않게. 표정·기울기는
+       비행이 직접 쓰므로 건드리지 않습니다. */
+    function dropSway() {
+      if (!curSway && !swayGoal && !armAt && !moveAt) return;
+      curSway = swayGoal = swayFrom = 0;
+      armAt = moveAt = 0;
+      walking = false;
+      writeSway();
+    }
+
+    /* 걷는 동안 — 비행과 같은 걷기 모듈(.pix--travel)에 진행 방향으로 살짝 기울기.
+       끝나면 도킹 상태의 원래 동작(손 흔들기)으로 돌아갑니다. */
+    function startWalk(dir) {
+      if (!walking) {
+        walking = true;
+        wasWave = svg.classList.contains("pix--wave");
+        setPixState(svg, { anim: "travel" });
+      }
+      svg.style.setProperty("--pix-lean", dir * SWAY_LEAN + "deg");
+    }
+    function endWalk() {
+      if (!walking) return;
+      walking = false;
+      setPixState(svg, { anim: wasWave ? "wave" : "idle" });
+      svg.style.removeProperty("--pix-lean");
     }
 
     /* --ease-in-out(cubic-bezier(.65, 0, .35, 1))과 같은 곡선 — 비행(flyTo)과 같은 식 */
@@ -191,18 +247,22 @@
       curX += (aimX - curX) * 0.16;
       curY += (aimY - curY) * 0.16;
 
-      /* 뜸 들이기가 끝났으면 그 순간의 목표를 확정하고 출발합니다 */
+      /* 뜸 들이기가 끝났으면 그 순간의 목표를 확정하고 출발합니다 — 시간은 거리에 비례 */
       var t = Date.now();
+      if (!docked()) dropSway();
       if (armAt && t - armAt >= SWAY_WAIT) {
         armAt = 0;
         swayFrom = curSway;
         swayGoal = swayWant;
         moveAt = t;
+        var span = Math.abs(swayGoal - swayFrom);
+        moveDur = Math.max(SWAY_MOVE_MIN, Math.min(SWAY_MOVE_MAX, span / SWAY_SPEED * 1000));
+        if (span >= SWAY_WALK) startWalk(swayGoal < swayFrom ? -1 : 1);
       }
       if (moveAt) {
-        var p = Math.min(1, (t - moveAt) / SWAY_MOVE);
+        var p = Math.min(1, (t - moveAt) / moveDur);
         curSway = swayFrom + (swayGoal - swayFrom) * easeInOut(p);
-        if (p >= 1) moveAt = 0;
+        if (p >= 1) { moveAt = 0; endWalk(); }
       }
 
       eyes.style.transform =
@@ -217,7 +277,7 @@
           side.nodes[i].style.transform = "translate(" + d + "px,0)";
         }
       });
-      svg.style.setProperty("--pix-sway", curSway.toFixed(2) + "px");
+      writeSway();
 
       if (Math.abs(aimX - curX) > 0.01 || Math.abs(aimY - curY) > 0.01 ||
           armAt || moveAt) raf = requestAnimationFrame(step);
@@ -238,11 +298,18 @@
       var pull = Math.min(1, dist / NEAR);
       aimX = (dx / dist) * pull * MAX_X;
       aimY = (dy / dist) * pull * MAX_Y;
-      /* 눈은 방향만 보지만, 몸은 실제 가로 거리에 비례해서 — 사각지대(SWAY_DEAD)를
-         벗어난 만큼만 0에서부터 커집니다. 사각지대 안이거나 도킹 상태가 아니면 0 */
-      var w = window.innerWidth || 1;
-      var over = (Math.abs(dx) / w - SWAY_DEAD) / (SWAY_SPAN - SWAY_DEAD);
-      swayWant = docked() ? (dx < 0 ? -1 : 1) * Math.max(0, Math.min(1, over)) * SWAY : 0;
+      /* 눈은 방향만 보지만, 몸은 포인터의 가로 위치 자체를 목표로 삼습니다. 재는 기준은
+         지금 서 있는 자리가 아니라 도킹 자리(translate를 뺀 곳) — 도착한 뒤 남은 거리를
+         또 목표로 잡아 조금씩 더 다가가는 일이 없게. 코앞(SWAY_DEAD)은 0, 그 밖은 거리의
+         SWAY_FOLLOW배를 씬 가장자리 안쪽으로 자릅니다. 도킹 상태가 아니면 0 */
+      if (docked()) {
+        var reach = ptrX - (r.left + r.width / 2 - curSway);
+        var mag = Math.max(0, Math.abs(reach) - SWAY_DEAD) * SWAY_FOLLOW;
+        swayWant = clampSway(reach < 0 ? -mag : mag);
+      } else {
+        swayWant = 0;
+        dropSway();
+      }
 
       /* 정해 둔 목표에서 의미 있게 벌어졌을 때만 뜸 들이기를 시작합니다. 이미 재고
          있는 중이면 다시 시작하지 않습니다 — 포인터가 계속 움직여도 대기가 끝나면
